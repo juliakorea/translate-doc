@@ -1,6 +1,6 @@
 # Julia Documentation
 
-## Manual
+## 매뉴얼
 
   * [Introduction](@ref man-introduction)
   * [Getting Started](@ref)
