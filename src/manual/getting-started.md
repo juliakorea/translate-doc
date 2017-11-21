@@ -1,11 +1,9 @@
-# Getting Started
+# 시작하기
 
-Julia installation is straightforward, whether using precompiled binaries or compiling from source.
-Download and install Julia by following the instructions at [https://julialang.org/downloads/](https://julialang.org/downloads/).
+줄리아의 설치는 어렵지 않다.  미리 컴파일된 실행파일을 이용하거나, 아니면 소스로부터 직접 컴파일하는 두가지 방법이 존재한다. [https://julialang.org/downloads/](https://julialang.org/downloads/)에서
+ 알려주는 방법에 따라 Julia를 다운로드하고 설치하면 된다.
 
-The easiest way to learn and experiment with Julia is by starting an interactive session (also
-known as a read-eval-print loop or "repl") by double-clicking the Julia executable or running
-`julia` from the command line:
+Julia를 처음 접할 때는 대화형 실행 환경을 통해서 시작하는 것이 가장 쉽게 Julia를 익힐 수 있는 방법이다. 대화형 실행 환경은 단순히 Julia 실행파일을 더블 클릭하거나, 명령창에서 `julia` 명령어를 입력하여 실행할 수 있다.
 
 ```
 $ julia
@@ -25,28 +23,20 @@ julia> ans
 3
 ```
 
-To exit the interactive session, type `^D` -- the control key together with the `d` key or type
-`quit()`. When run in interactive mode, `julia` displays a banner and prompts the user for input.
-Once the user has entered a complete expression, such as `1 + 2`, and hits enter, the interactive
-session evaluates the expression and shows its value. If an expression is entered into an interactive
-session with a trailing semicolon, its value is not shown. The variable `ans` is bound to the
-value of the last evaluated expression whether it is shown or not. The `ans` variable is only
-bound in interactive sessions, not when Julia code is run in other ways.
+대화형 실행 환경을 종료하기 위해서는 `^D`(컨트롤 키와 `d` 키를 함께 누른다.) 를 입력하거나 
+`quit()`를 대화형 실행 환경 입력창에 타이핑한다. 대화형 실행 환경을 실행하면, 위와 같이 `julia` 배너가 보여지고, 커서창이 사용자의 입력을 기다리며 깜빡이고 있다. 사용자가 `1 + 2`, 와 같은 표현식을 입력한 뒤, 엔터 버튼을 누르는 순간, Julia는 표현식을 평가하고 그 결과를 보여준다. 만약 사용자가 입력한 표현식이 세미콜론(;)으로 끝난다면, 대화형 실행 환경은 결과를 바로 보여주지 않는다. 대신에 `ans` 라는 변수가 결과를 보여주든 보여주지 않든 가장 마지막으로 계산된 표현식의 결과를 저장하고 있다 `ans` 변수는 대화형 실행 환경에서만 존재하며, 다른 방식으로 동작하는 Julia 코드 상에서는 나타나지 않는다.
 
-To evaluate expressions written in a source file `file.jl`, write `include("file.jl")`.
+`file.jl`라는 소스 파일에 저장되어 있는 표현식을 계산하기 위해서는, `include("file.jl")`와 같이 입력한다.
 
-To run code in a file non-interactively, you can give it as the first argument to the `julia`
-command:
+대화형 실행 환경을 이용하지 않고 파일에 저장되어 있는 소스 코드를 실행하기 위해서는, 소스 코드 파일 이름을`julia` 명령어의 첫번째 매개 변수로 넣어서 실행한다.
+
+명령어:
 
 ```
 $ julia script.jl arg1 arg2...
 ```
 
-As the example implies, the following command-line arguments to `julia` are taken as command-line
-arguments to the program `script.jl`, passed in the global constant `ARGS`. The name of the script
-itself is passed in as the global `PROGRAM_FILE`. Note that `ARGS` is also set when script code
-is given using the `-e` option on the command line (see the `julia` help output below) but `PROGRAM_FILE`
-will be empty. For example, to just print the arguments given to a script, you could do this:
+예제와 같이`julia` 실행 명령 뒤에 오는 매개변수들은 전역 상수 `ARGS`라고 불리우는 `script.jl`라는 프로그램의 명령줄 인자로 작동한다. 이 프로그램의 이름은 전역 상수 `PROGRAM_FILE` 에도 설정된다. 또한 `ARGS`는 이 뿐만이 아니라`-e` 옵션을 통해서 julia 스크립트를 실행할 때도 설정할 수 있음을 알 필요가 있다. 그러나 이 경우에는 `PROGRAM_FILE` 은 아무것도 설정되지 않은 채로 실행될 것이다.(아래의 `julia` 도움말을 보도록 하자.) 예를 들어, 단순히 스크립트에 주어진 명령줄 인자를 출력할 때는 다음과 같이 입력하면 된다.
 
 ```
 $ julia -e 'println(PROGRAM_FILE); for x in ARGS; println(x); end' foo bar
@@ -55,7 +45,7 @@ foo
 bar
 ```
 
-Or you could put that code into a script and run it:
+아니면 저 코드를 스크립트 파일에 넣고 실행시켜도 가능하다.
 
 ```
 $ echo 'println(PROGRAM_FILE); for x in ARGS; println(x); end' > script.jl
@@ -65,22 +55,15 @@ foo
 bar
 ```
 
-The `--` delimiter can be used to separate command-line args to the scriptfile from args to Julia:
+`--` 구분자는 명령어와 줄리아에 넘겨줄 인자를 구분하는데 사용한다.
 
 ```
 $ julia --color=yes -O -- foo.jl arg1 arg2..
 ```
 
-Julia can be started in parallel mode with either the `-p` or the `--machinefile` options. `-p n`
-will launch an additional `n` worker processes, while `--machinefile file` will launch a worker
-for each line in file `file`. The machines defined in `file` must be accessible via a passwordless
-`ssh` login, with Julia installed at the same location as the current host. Each machine definition
-takes the form `[count*][user@]host[:port] [bind_addr[:port]]` . `user` defaults to current user,
-`port` to the standard ssh port. `count` is the number of workers to spawn on the node, and defaults
-to 1. The optional `bind-to bind_addr[:port]` specifies the ip-address and port that other workers
-should use to connect to this worker.
+Julia는 `-p` 옵션이나 `--machinefile` 옵션을 이용하여 병렬 환경에서 실행시킬 수 있다. `-p n` 옵션은 n개의 worker 프로세스를 생성하지만, `--machinefile file` 옵션은 file의 각 행에 지정된 노드마다 worker를 생성한다. `file` 에 지정된 노드(machine)들은 `ssh` 로그인을 통해 패스워드가 필요없이 실행할 수 있어야 하며, Julia는 현재 호스트와 같은 경로에 설치가 되어 있어야 한다. `file` 에 작성되는 노드는 `[count*][user@]host[:port] [bind_addr[:port]]` 와 같은 형식으로 작성한다. `user` 는 현재 user id를 나타내고, `port` 는 기본 ssh port, `count` 는 각 노드당 생성하는 worker의 개수 (기본값 : 1) `bin-to bind_addr[:port]` 은 선택적인 옵션으로 다른 worker들이 현재의 worker로 연결하기 위해 필요한 특정 ip 주소와 포트를 지정한다.
 
-If you have code that you want executed whenever Julia is run, you can put it in `~/.juliarc.jl`:
+만약 Julia가 실행할 때마다 실행되는 코드가 있다면, 그 코드를 `~/.juliarc.ji` 에 넣으면 된다.
 
 ```
 $ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.juliarc.jl
@@ -90,15 +73,14 @@ Greetings! 你好! 안녕하세요?
 ...
 ```
 
-There are various ways to run Julia code and provide options, similar to those available for the
-`perl` and `ruby` programs:
+`perl` 과 `ruby` 와 같이,  Julia 코드를 실행하고 옵션을 지정하는 방법은 다음과 같이 여러가지가 있다.
 
 ```
 julia [switches] -- [programfile] [args...]
- -v, --version             Display version information
- -h, --help                Print this message
+ -v, --version             버전 정보를 표시한다.
+ -h, --help                이 메세지를 표시한다.
 
- -J, --sysimage <file>     Start up with the given system image file
+ -J, --sysimage <file>     <file>이라는 시스템 이미지 파일을 로드한 뒤 실행한다.
  -H, --home <dir>          Set location of `julia` executable
  --startup-file={yes|no}   Load ~/.juliarc.jl
  --handle-signals={yes|no} Enable or disable Julia's default signal handlers
@@ -107,16 +89,16 @@ julia [switches] -- [programfile] [args...]
  --compiled-modules={yes|no}
                            Enable or disable incremental precompilation of modules
 
- -e, --eval <expr>         Evaluate <expr>
- -E, --print <expr>        Evaluate <expr> and display the result
- -L, --load <file>         Load <file> immediately on all processors
+ -e, --eval <expr>         <expr>를 실행만 한다
+ -E, --print <expr>        <expr>를 실행하고 표시한다.
+ -L, --load <file>         <file>을 모든 프로세서에 로드한다.
 
- -p, --procs {N|auto}      Integer value N launches N additional local worker processes
-                           "auto" launches as many workers as the number of local cores
+ -p, --procs {N|auto}      N개의 worker 프로세스를 추가로 생성한다. "auto"는 현재 Julia를 실행하는 컴퓨터의 최대 코어수만큼 worker 프로세스를 생성한다.
+                           
  --machinefile <file>      Run processes on hosts listed in <file>
 
- -i                        Interactive mode; REPL runs and isinteractive() is true
- -q, --quiet               Quiet startup: no banner, suppress REPL warnings
+ -i                        대화형 모드; PEPL을 돌리며 ininteractive()는 true이다.
+ -q, --quiet               시작할 때 배너, REPL 경고를 제거한다.
  --banner={yes|no}         Enable or disable startup banner
  --color={yes|no}          Enable or disable color text
  --history-file={yes|no}   Load or save history
@@ -137,10 +119,9 @@ julia [switches] -- [programfile] [args...]
                            Count bytes allocated by each source line
 ```
 
-## Resources
+## 읽을거리
 
-In addition to this manual, there are various other resources that may help new users get started
-with Julia:
+이 매뉴얼 뿐만 아니라 Julia를 처음 접하는 사용자들에게 도움을 줄 수 있는 다른 문서를 소개한다.
 
   * [Julia and IJulia cheatsheet](http://math.mit.edu/~stevenj/Julia-cheatsheet.pdf)
   * [Learn Julia in a few minutes](https://learnxinyminutes.com/docs/julia/)
