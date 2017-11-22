@@ -2,16 +2,16 @@
 
 Julia는 다양한 제어 흐름 구조를 제공합니다.
 
-  * [복합 표현](@ref man-compound-expressions): `begin` 및 `(;)`.
-  * [조건부 평가](@ref man-conditional-evaluation): `if`-`elseif`-`else` 및 `?:` (삼항 연산자).
-  * [단락 평가](@ref): `&&`, `||` 및 연속 비교문.
-  * [반복 평가: 루프](@ref man-loops): `while` 및 `for`.
-  * [예외 처리](@ref): `try`-`catch`, [`error`](@ref) 및 [`throw`](@ref).
-  * [Tasks (aka Coroutines)](@ref man-tasks): [`yieldto`](@ref).
+  * 복합 표현: `begin` 및 `(;)`.
+  * 조건부 평가: `if`-`elseif`-`else` 및 `?:` (삼항 연산자).
+  * 단락 평가: `&&`, `||` 및 연속 비교문.
+  * 반복 평가: 루프: `while` 및 `for`.
+  * 예외 처리: `try`-`catch`, `error` 및 `throw`.
+  * Tasks (aka Coroutines): `yieldto`.
 
-처음 5개의 제어 흐름 메커니즘은 고급 프로그래밍 언어의 표준입니다. 하지만 [`태스크`](@ref)는 그렇지 않습니다. 태스크는 비지역적 제어 흐름을 제공하여, 일시적으로 중단된 계산을 바꾸는 것을 가능하게 만듭니다. 태스크는 강력한 구조입니다: Julia는 예외 처리 및 협력적 멀티태스킹 모두를 태스크를 사용하여 구현합니다. 일상적인 프로그래밍에서는 태스크를 사용할 필요가 없지만, 몇몇 문제는 태스크를 사용함으로써 더 쉽게 해결될 수 있습니다.
+처음 5개의 제어 흐름 메커니즘은 고급 프로그래밍 언어의 표준입니다. 하지만 `태스크`는 그렇지 않습니다. 태스크는 비지역적 제어 흐름을 제공하여, 일시적으로 중단된 계산을 바꾸는 것을 가능하게 만듭니다. 태스크는 강력한 구조입니다: Julia는 예외 처리 및 협력적 멀티태스킹 모두를 태스크를 사용하여 구현합니다. 일상적인 프로그래밍에서는 태스크를 사용할 필요가 없지만, 몇몇 문제는 태스크를 사용함으로써 더 쉽게 해결될 수 있습니다.
 
-## [복합 표현](@id man-compound-expressions)
+## 복합 표현
 
 때로는 여러 하위식을 순서대로 평가하는 단 하나의 식이 더 편리하며, 이 경우 마지막 하위식의 값을 그 값으로 반환하게 됩니다. 이를 수행하는 두 개의 Julia 구조가 있습니다: 바로 `begin` 구문과 `(;)` 체인 구문입니다. 두 복합 표현 구조의 값은 마지막 하위식의 값입니다. 다음은 `begin` 구문의 예제입니다.
 
@@ -31,7 +31,7 @@ julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-이 구문은 [함수](@ref) 문서에 소개된 간결한 단일 행 함수를 정의할 때 특히 유용합니다. 전형적인 구문처럼 보이겠지만, `begin` 블록 내부가 여러 줄일 필요도 없고, `(;)` 체인이 전부 한 줄에서 이루어질 필요도 없습니다.
+이 구문은 함수 문서에 소개된 간결한 단일 행 함수를 정의할 때 특히 유용합니다. 전형적인 구문처럼 보이겠지만, `begin` 블록 내부가 여러 줄일 필요도 없고, `(;)` 체인이 전부 한 줄에서 이루어질 필요도 없습니다.
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end
@@ -43,7 +43,7 @@ julia> (x = 1;
 3
 ```
 
-## [조건부 평가](@id man-conditional-evaluation)
+## 조건부 평가
 
 조건부 평가는 논리식의 값에 따라 일부 코드의 실행 여부를 결정합니다. 다음은 `if`-`elseif`-`else` 조건 구문의 구조입니다.
 
@@ -149,7 +149,7 @@ julia> if 1
 ERROR: TypeError: non-boolean (Int64) used in boolean context
 ```
 
-이 오류는 조건부에 잘못된 자료형을 넣었음을 나타냅니다. [`Int64`](@ref)형 대신 [`Bool`](@ref)형이 들어가야 하죠.
+이 오류는 조건부에 잘못된 자료형을 넣었음을 나타냅니다. `Int64`형 대신 `Bool`형이 들어가야 하죠.
 
 소위 "삼항 연산자"라고 불리는 `?:`는 `if`-`elseif`-`else` 구문과 밀접한 관련이 있습니다. 후자가 긴 코드 블록의 조건 실행에 사용되는 것과 달리, 전자는 단일식에서의 조건부 선택이 필요한 곳에서 사용됩니다. 이 연산자는 대부분의 다른 언어에서도 피연산자 셋을 취하는 유일한 연산자라는 칭호를 얻었습니다.
 
@@ -286,7 +286,7 @@ Stacktrace:
  [1] fact(::Int64) at ./none:2
 ```
 
-[Mathematical Operations and Elementary Functions](@ref): `&` 및 `|`에서 소개한 비트 논리 연산자로 단락 평가가 없는 논리 연산을 할 수 있습니다. 그것들은 이항연산자 구문을 지원하지만, 항상 인수를 평가하는 일반적인 함수라고 할 수 있습니다.
+Mathematical Operations and Elementary Functions: `&` 및 `|`에서 소개한 비트 논리 연산자로 단락 평가가 없는 논리 연산을 할 수 있습니다. 그것들은 이항연산자 구문을 지원하지만, 항상 인수를 평가하는 일반적인 함수라고 할 수 있습니다.
 
 ```jldoctest tandf
 julia> f(1) & t(2)
@@ -317,7 +317,7 @@ julia> false && (x = (1, 2, 3))
 false
 ```
 
-## [반복 평가: 루프](@id man-loops)
+## 반복 평가: 루프
 
 반복 평가식에는 두 구문이 있습니다. 바로 `while` 루프와 `for` 루프입니다. 다음은 `while` 루프의 예제입니다.
 
@@ -366,7 +366,7 @@ julia> j
 ERROR: UndefVarError: j not defined
 ```
 
-변수 범위에 관한 자세한 설명과 그것이 Julia에서 어떻게 작동하는지는 [Scope of Variables](@ref scope-of-variables) 문서를 통해 확인하십시오.
+변수 범위에 관한 자세한 설명과 그것이 Julia에서 어떻게 작동하는지는 Scope of Variables 문서를 통해 확인하십시오.
 
 일반적으로, `for` 루프 구조는 어떤 컨테이너든 반복할 수 있습니다. 이 경우, 코드의 더 명확한 가독성을 위해 `=` 대신 일반적으로 `in`이나 `∈`가 대용(그러나 완전히 동등한) 키워드로 사용됩니다.
 
@@ -386,7 +386,7 @@ bar
 baz
 ```
 
-다양한 유형의 반복 가능한 컨테이너가 매뉴얼 뒷부분(예: [Multi-dimensional Arrays](@ref man-multi-dim-arrays) 참조)에서 소개되고 논의될 것입니다.
+다양한 유형의 반복 가능한 컨테이너가 매뉴얼 뒷부분(예: Multi-dimensional Arrays 문서 참조)에서 소개되고 논의될 것입니다.
 
 테스트 조건이 위조되기 전에 `while` 반복을 종료하거나, 반복용 변수가 끝에 도달하기 전에 `for` 루프를 멈추는 것이 편리할 때가 있습니다. 이는 `break` 키워드로 수행할 수 있습니다.
 
@@ -486,7 +486,7 @@ julia> for i = 1:2, j = 3:4
 | [`UndefVarError`](@ref)       |
 | `UnicodeError`                |
 
-예를 들어, 음의 실수 값에 적용된 [`sqrt`](@ref) 함수는 [`DomainError`](@ref)를 throw합니다.
+예를 들어, 음의 실수 값에 적용된 `sqrt` 함수는 `DomainError`를 throw합니다.
 
 ```jldoctest
 julia> sqrt(-1)
@@ -502,9 +502,9 @@ Stacktrace:
 julia> struct MyCustomException <: Exception end
 ```
 
-### [`throw`](@ref) 함수
+### `throw` 함수
 
-예외는 [`throw`](@ref)를 사용하여 명시적으로 만들 수 있습니다. 예를 들어, 인수가 음수이면 인수가 음수가 아닌 숫자로만 정의된 함수를 작성하여 [`DomainError`](@ref)를 [`throw`](@ref)할 수 있습니다.
+예외는 `throw`를 사용하여 명시적으로 만들 수 있습니다. 예를 들어, 인수가 음수이면 인수가 음수가 아닌 숫자로만 정의된 함수를 작성하여 `DomainError`를 `throw`할 수 있습니다.
 
 ```jldoctest
 julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, "argument must be nonnegative"))
@@ -520,7 +520,7 @@ Stacktrace:
  [1] f(::Int64) at ./none:1
 ```
 
-괄호가 없는 [`DomainError`](@ref)는 예외가 아니라 예외 유형임을 기억하십시오. `Exception` 객체를 얻으려면 호출해야 합니다.
+괄호가 없는 `DomainError`는 예외가 아니라 예외 유형임을 기억하십시오. `Exception` 객체를 얻으려면 호출해야 합니다.
 
 ```jldoctest
 julia> typeof(DomainError(nothing)) <: Exception
@@ -537,7 +537,7 @@ julia> throw(UndefVarError(:x))
 ERROR: UndefVarError: x not defined
 ```
 
-이 메커니즘은 [`UndefVarError`](@ref)가 쓰여지는 방식에 따라 사용자 정의 예외 유형에 의해 쉽게 구현될 수 있습니다.
+이 메커니즘은 `UndefVarError`가 쓰여지는 방식에 따라 사용자 정의 예외 유형에 의해 쉽게 구현될 수 있습니다.
 
 ```jldoctest
 julia> struct MyUndefVarError <: Exception
@@ -559,12 +559,9 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
 
 ### 오류
 
-The [`error`](@ref) function is used to produce an [`ErrorException`](@ref) that interrupts
-the normal flow of control.
+`error` 함수는 정상적인 제어 흐름을 방해하는 `ErrorException`을 생성하는 데 사용됩니다.
 
-Suppose we want to stop execution immediately if the square root of a negative number is taken.
-To do this, we can define a fussy version of the [`sqrt`](@ref) function that raises an error
-if its argument is negative:
+음수의 제곱근을 취하면 즉시 실행을 멈추고 싶다고 합시다. 이것을 하기 위해 인수가 음수이면 오류가 발생하는 `sqrt` 함수의 까다로운 버전을 정의할 수 있습니다.
 
 ```jldoctest fussy_sqrt
 julia> fussy_sqrt(x) = x >= 0 ? sqrt(x) : error("negative x not allowed")
@@ -579,9 +576,7 @@ Stacktrace:
  [1] fussy_sqrt(::Int64) at ./none:1
 ```
 
-If `fussy_sqrt` is called with a negative value from another function, instead of trying to continue
-execution of the calling function, it returns immediately, displaying the error message in the
-interactive session:
+`fussy_sqrt`가 호출 함수의 실행을 계속하려 하는 것이 아니라 다른 함수에서 음수 값으로 호출되면, 즉시 반환되어 대화식 세션에 오류 메시지를 표시합니다.
 
 ```jldoctest fussy_sqrt
 julia> function verbose_fussy_sqrt(x)
@@ -607,8 +602,7 @@ Stacktrace:
 
 ### 경고 및 정보 메시지
 
-Julia also provides other functions that write messages to the standard error I/O, but do not
-throw any `Exception`s and hence do not interrupt execution:
+또한 Julia는 표준 오류 입출력에 메시지를 쓰지만 `Exception`을 throw하지도 않고, 때문에 실행을 중단하지도 않는 다른 함수를 제공합니다.
 
 ```jldoctest
 julia> info("Hi"); 1+1
@@ -627,9 +621,7 @@ Stacktrace:
 
 ### `try/catch`문
 
-The `try/catch` statement allows for `Exception`s to be tested for. For example, a customized
-square root function can be written to automatically call either the real or complex square root
-method on demand using `Exception`s :
+`try/catch`문은 `Exception`을 테스트할 수 있습니다. 예를 들어, 사용자 정의 제곱근 함수를 `Exception`을 사용하여 필요에 따라 실수 또는 복소수 제곱근 방법을 자동으로 호출하도록 작성할 수 있습니다.
 
 ```jldoctest
 julia> f(x) = try
@@ -646,12 +638,9 @@ julia> f(-1)
 0.0 + 1.0im
 ```
 
-It is important to note that in real code computing this function, one would compare `x` to zero
-instead of catching an exception. The exception is much slower than simply comparing and branching.
+이 함수를 계산하는 실제 코드에서는 예외를 잡는 대신 `x`와 0을 비교한다는 점에 유의해야 합니다. 단순히 비교하고 분기하는 것보다 예외는 훨씬 느립니다.
 
-`try/catch` statements also allow the `Exception` to be saved in a variable. In this contrived
-example, the following example calculates the square root of the second element of `x` if `x`
-is indexable, otherwise assumes `x` is a real number and returns its square root:
+또한 `try/catch`문은 `Exception`이 변수에 저장되도록 합니다. 이 고안된 예제에서, 다음 예제는 `x`가 색인 가능한 경우 `x`의 두 번째 요소의 제곱근을 계산하고, 그렇지 않으면 `x`가 실수임을 가정하고 제곱근을 반환합니다.
 
 ```jldoctest
 julia> sqrt_second(x) = try
@@ -681,15 +670,13 @@ Stacktrace:
 [...]
 ```
 
-Note that the symbol following `catch` will always be interpreted as a name for the exception,
-so care is needed when writing `try/catch` expressions on a single line. The following code will
-*not* work to return the value of `x` in case of an error:
+`catch` 다음의 기호는 항상 예외 이름으로 해석될 것이고, 때문에 한 줄로 `try/catch`문을 작성할 때 주의해야 합니다. 다음 코드는 오류가 발생하더라도 `x`의 값을 반환하지 않습니다.
 
 ```julia
 try bad() catch x end
 ```
 
-Instead, use a semicolon or insert a line break after `catch`:
+대신 세미콜론을 사용하거나 `catch` 다음에 개행 문자를 삽입하십시오.
 
 ```julia
 try bad() catch; x end
@@ -700,27 +687,19 @@ catch
 end
 ```
 
-The `catch` clause is not strictly necessary; when omitted, the default return value is `nothing`.
+`catch`절은 꼭 필요한 것은 아닙니다. 생략한다면 기본 반환값은 `nothing`입니다.
 
 ```jldoctest
 julia> try error() end # Returns nothing
 ```
 
-The power of the `try/catch` construct lies in the ability to unwind a deeply nested computation
-immediately to a much higher level in the stack of calling functions. There are situations where
-no error has occurred, but the ability to unwind the stack and pass a value to a higher level
-is desirable. Julia provides the [`rethrow`](@ref), [`backtrace`](@ref) and [`catch_backtrace`](@ref)
-functions for more advanced error handling.
+`try/catch`문의 장점은 호출 함수의 스택에서 훨씬 더 높은 레벨로 깊게 중첩된 계산을 즉시 풀 수 있는 능력에 있습니다. 오류가 발생하지 않은 상황이 있지만 스택을 풀어 더 높은 레벨로 값을 전달하는 것이 바람직합니다. Julia는 고급 오류 처리를 위해 `rethrow`, `backtrace`, `catch_backtrace`와 같은 함수들을 제공합니다.
 
-### `finally`절
+### `finally`문
 
-In code that performs state changes or uses resources like files, there is typically clean-up
-work (such as closing files) that needs to be done when the code is finished. Exceptions potentially
-complicate this task, since they can cause a block of code to exit before reaching its normal
-end. The `finally` keyword provides a way to run some code when a given block of code exits, regardless
-of how it exits.
+상태 변경을 수행하거나 파일과 같은 리소스를 사용하는 코드에서는 일반적으로 코드가 끝났을 때 수행해야 하는 정리 작업(예: 파일 닫기)이 있습니다. 예외는 이 작업을 어쩌면 복잡하게 만들 수 있습니다. 왜냐하면 코드 블록이 정상적으로 끝나기 전에 종료될 수 있기 때문입니다. `finally` 키워드는 주어진 코드 블록의 종료가 정상 유무를 가리지 않고 특정 코드를 실행하게 해줍니다.
 
-For example, here is how we can guarantee that an opened file is closed:
+예를 들면, 열린 파일을 확실히 닫을 수 있는 방법은 다음과 같습니다.
 
 ```julia
 f = open("file")
@@ -731,10 +710,7 @@ finally
 end
 ```
 
-When control leaves the `try` block (for example due to a `return`, or just finishing normally),
-`close(f)` will be executed. If the `try` block exits due to an exception, the exception will
-continue propagating. A `catch` block may be combined with `try` and `finally` as well. In this
-case the `finally` block will run after `catch` has handled the error.
+제어가 `try` 블록을 떠날 때(`return` 때문에 끝나든, 정상적으로 끝나든) `close(f)`가 실행됩니다. 만약 여기서 `try` 블록이 예외로 인해 종료되면 예외는 계속 증식할 것입니다. `catch` 블록은 `try` 및 `finally`와 결합할 수 있으므로, 이 상황에서는 `catch`가 오류를 처리한 후에 `finally`문이 실행되면 좋을 것입니다.
 
 ## [Tasks (aka Coroutines)](@id man-tasks)
 
@@ -833,7 +809,7 @@ function mytask(myarg)
 end
 
 taskHdl = Task(() -> mytask(7))
-# or, equivalently
+# 또는 동일하게
 taskHdl = @task mytask(7)
 ```
 
