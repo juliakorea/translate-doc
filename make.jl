@@ -1,3 +1,7 @@
+# Directory name must be 'doc' to open UnicodeData.txt
+
+@assert splitdir(@__DIR__)[end] == "doc" "Directory name must be 'doc'"
+
 # Install dependencies needed to build the documentation.
 ENV["JULIA_PKGDIR"] = joinpath(@__DIR__, "deps")
 
