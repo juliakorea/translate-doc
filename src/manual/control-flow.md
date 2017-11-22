@@ -1,22 +1,24 @@
 # Control Flow
 
-Julia provides a variety of control flow constructs:
+Julia는 다양한 제어 흐름 구조를 제공합니다:
 
-  * [Compound Expressions](@ref man-compound-expressions): `begin` and `(;)`.
-  * [Conditional Evaluation](@ref man-conditional-evaluation): `if`-`elseif`-`else` and `?:` (ternary operator).
-  * [Short-Circuit Evaluation](@ref): `&&`, `||` and chained comparisons.
-  * [Repeated Evaluation: Loops](@ref man-loops): `while` and `for`.
-  * [Exception Handling](@ref): `try`-`catch`, [`error`](@ref) and [`throw`](@ref).
-  * [Tasks (aka Coroutines)](@ref man-tasks): [`yieldto`](@ref).
+  * [복합 표현](@ref man-compound-expressions): `begin`과 `(;)`.
+  * [조건부 평가](@ref man-conditional-evaluation): `if`-`elseif`-`else`와 `?:` (삼항 연산자).
+  * [단락문](@ref): `&&`, `||`와 연속 비교문.
+  * [반복문: 루프](@ref man-loops): `while`과 `for`.
+  * [예외 처리](@ref): `try`-`catch`, [`error`](@ref)와 [`throw`](@ref).
+  * [태스크 (Coroutines라고도 불림)](@ref man-tasks): [`yieldto`](@ref).
 
+처음 5개의 제어 흐름 메커니즘은 고급 프로그래밍 언어의 표준입니다. 하지만 태스크는 그렇지 않습니다: 태스크는 비지역적 제어 흐름을 제공하여, 일시적으로 중단된 계산을 바꾸는 것을 가능하게 만듭니다. 태스크는 강력한 구조입니다: Julia는 예외 처리 및 협력적 멀티태스킹 모두를 태스크를 사용하여 구현합니다. 일상적인 프로그래밍에서는 태스크를 사용할 필요가 없지만, 몇몇 문제는 태스크를 사용함으로써 더 쉽게 해결될 수 있습니다.
 The first five control flow mechanisms are standard to high-level programming languages. [`Task`](@ref)s
 are not so standard: they provide non-local control flow, making it possible to switch between
 temporarily-suspended computations. This is a powerful construct: both exception handling and
 cooperative multitasking are implemented in Julia using tasks. Everyday programming requires no
 direct usage of tasks, but certain problems can be solved much more easily by using tasks.
 
-## [Compound Expressions](@id man-compound-expressions)
+## [복합 표현](@id man-compound-expressions)
 
+때로는 여러 하위 표현식을 순서대로 평가하는 단일 표현식이 더 편리하며, 이 경우 마지막 하위 표현식의 값을 그 값으로 반환하게 됩니다. 이를 수행하는 두 개의 Julia 구조가 있습니다: 바로 `begin` 구문과 `(;)` 체인 구문입니다. 두 복합 표현 구조의 값은 마지막 하위 표현식의 값입니다. 다음은 `begin` 구문의 예제입니다:
 Sometimes it is convenient to have a single expression which evaluates several subexpressions
 in order, returning the value of the last subexpression as its value. There are two Julia constructs
 that accomplish this: `begin` blocks and `(;)` chains. The value of both compound expression constructs
@@ -31,6 +33,7 @@ julia> z = begin
 3
 ```
 
+위와 같이 표현식의 길이가 매우 짧고 단순하다면, `(;)` 체인 구문을 사용해 한 줄로 쉽게 표현할 수 있습니다.
 Since these are fairly small, simple expressions, they could easily be placed onto a single line,
 which is where the `(;)` chain syntax comes in handy:
 
@@ -39,6 +42,7 @@ julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
+이 구문은 [함수](@ref) 문서에 소개된 간결한 단일 행 함수를 정의할 때 특히 유용합니다. 비록 전형적이지만 `begin` 구문 안이 여러 줄일 필요도 없고, `(;)` 체인이 전부 한 줄에서 이루어질 필요도 없습니다:
 This syntax is particularly useful with the terse single-line function definition form introduced
 in [Functions](@ref). Although it is typical, there is no requirement that `begin` blocks be multiline
 or that `(;)` chains be single-line:
@@ -53,21 +57,23 @@ julia> (x = 1;
 3
 ```
 
-## [Conditional Evaluation](@id man-conditional-evaluation)
+## [조건부 평가](@id man-conditional-evaluation)
 
+조건부 평가는 논리 표현식의 값에 따라 일부 코드의 실행 여부를 결정합니다. 다음은 `if`-`elseif`-`else` 조건 구문의 구조입니다.
 Conditional evaluation allows portions of code to be evaluated or not evaluated depending on the
 value of a boolean expression. Here is the anatomy of the `if`-`elseif`-`else` conditional syntax:
 
 ```julia
 if x < y
-    println("x is less than y")
+    println("x는 y보다 작다")
 elseif x > y
-    println("x is greater than y")
+    println("x는 y보다 크다")
 else
-    println("x is equal to y")
+    println("x는 y와 같다")
 end
 ```
 
+조건 표현식 `x < y`가 `true`이면 해당 블록이 실행됩니다. 참이 아니라면, 조건 표현식 `x > y`를 평가하고 `true`이면 해당 블록이 실행됩니다. 만약 두 표현 둘 다 참이 아니라면, `else` 블록이 실행됩니다. 다음은 실행 예제입니다:
 If the condition expression `x < y` is `true`, then the corresponding block is evaluated; otherwise
 the condition expression `x > y` is evaluated, and if it is `true`, the corresponding block is
 evaluated; if neither expression is true, the `else` block is evaluated. Here it is in action:
@@ -75,30 +81,32 @@ evaluated; if neither expression is true, the `else` block is evaluated. Here it
 ```jldoctest
 julia> function test(x, y)
            if x < y
-               println("x is less than y")
+               println("x는 y보다 작다")
            elseif x > y
-               println("x is greater than y")
+               println("x는 y보다 크다")
            else
-               println("x is equal to y")
+               println("x는 y와 같다")
            end
        end
 test (generic function with 1 method)
 
 julia> test(1, 2)
-x is less than y
+x는 y보다 작다
 
 julia> test(2, 1)
-x is greater than y
+x는 y보다 크다
 
 julia> test(1, 1)
-x is equal to y
+x는 y와 같다
 ```
 
+`elseif`와 `else` 블록은 선택 사항이며, 원하는 만큼 많은 `elseif` 블록을 사용할 수 있습니다. `if`-`elseif`-`else` 구문 안의 조건 표현식은 어느 한 식이 처음으로 `true`로 평가될 때까지 평가되고, 그 후에 관련 블록이 실행되며, 이후로는 어떤 표현식이나 블록도 실행되지 않습니다.
 The `elseif` and `else` blocks are optional, and as many `elseif` blocks as desired can be used.
 The condition expressions in the `if`-`elseif`-`else` construct are evaluated until the first
 one evaluates to `true`, after which the associated block is evaluated, and no further condition
 expressions or blocks are evaluated.
 
+`if` 블록은 지역 범위를 만들지 않기 때문에 한 마디로 "구멍이 났다"고 할 수 있습니다. 이는 `if` 절 안에서 정의된 새로운 변수가 `if` 블록 다음에도 사용될 수 있음을 의미합니다. 따라서, 위에서 정의한 `test` 함수를 다음과 같이 정의 할 수도 있습니다.
 `if` blocks are "leaky", i.e. they do not introduce a local scope. This means that new variables
 defined inside the `if` clauses can be used after the `if` block, even if they weren't defined
 before. So, we could have defined the `test` function above as
@@ -106,20 +114,21 @@ before. So, we could have defined the `test` function above as
 ```jldoctest
 julia> function test(x,y)
            if x < y
-               relation = "less than"
+               relation = "보다 작다."
            elseif x == y
-               relation = "equal to"
+               relation = "와 같다."
            else
-               relation = "greater than"
+               relation = "보다 크다."
            end
-           println("x is ", relation, " y.")
+           println("x는 ", "y", relation)
        end
 test (generic function with 1 method)
 
 julia> test(2, 1)
-x is greater than y.
+x는 y보다 크다.
 ```
 
+`relation` 변수는 `if` 블록 안에서 선언되었지만, 블록 밖에서 사용되고 있습니다. 그러나, 모든 코드 경로가 이 구문을 통해 변수 값을 정의할 수 있는지 확인해야 합니다. 위 함수를 다음과 같이 변경하면 런타임 오류가 발생합니다.
 The variable `relation` is declared inside the `if` block, but used outside. However, when depending
 on this behavior, make sure all possible code paths define a value for the variable. The following
 change to the above function results in a runtime error
@@ -127,22 +136,23 @@ change to the above function results in a runtime error
 ```jldoctest
 julia> function test(x,y)
            if x < y
-               relation = "less than"
+               relation = "보다 작다."
            elseif x == y
-               relation = "equal to"
+               relation = "와 같다."
            end
-           println("x is ", relation, " y.")
+           println("x는 ", "y", relation)
        end
 test (generic function with 1 method)
 
 julia> test(1,2)
-x is less than y.
+x는 y보다 작다.
 
 julia> test(2,1)
 ERROR: UndefVarError: relation not defined
 Stacktrace:
  [1] test(::Int64, ::Int64) at ./none:7
 ```
+
 
 `if` blocks also return a value, which may seem unintuitive to users coming from many other languages.
 This value is simply the return value of the last executed statement in the branch that was chosen,
