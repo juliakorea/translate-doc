@@ -7,7 +7,7 @@ Julia는 다양한 제어 흐름 구조를 제공합니다.
   * 단락 평가: `&&`, `||` 및 연속 비교문.
   * 반복 평가: 루프: `while` 및 `for`.
   * 예외 처리: `try`-`catch`, `error` 및 `throw`.
-  * Tasks (aka Coroutines): `yieldto`.
+  * 태스크(일명 코루틴): `yieldto`.
 
 처음 5개의 제어 흐름 메커니즘은 고급 프로그래밍 언어의 표준입니다. 하지만 `태스크`는 그렇지 않습니다. 태스크는 비지역적 제어 흐름을 제공하여, 일시적으로 중단된 계산을 바꾸는 것을 가능하게 만듭니다. 태스크는 강력한 구조입니다: Julia는 예외 처리 및 협력적 멀티태스킹 모두를 태스크를 사용하여 구현합니다. 일상적인 프로그래밍에서는 태스크를 사용할 필요가 없지만, 몇몇 문제는 태스크를 사용함으로써 더 쉽게 해결될 수 있습니다.
 
@@ -712,36 +712,18 @@ end
 
 제어가 `try` 블록을 떠날 때(`return` 때문에 끝나든, 정상적으로 끝나든) `close(f)`가 실행됩니다. 만약 여기서 `try` 블록이 예외로 인해 종료되면 예외는 계속 증식할 것입니다. `catch` 블록은 `try` 및 `finally`와 결합할 수 있으므로, 이 상황에서는 `catch`가 오류를 처리한 후에 `finally`문이 실행되면 좋을 것입니다.
 
-## [Tasks (aka Coroutines)](@id man-tasks)
+## 태스크(일명 코루틴)
 
-Tasks are a control flow feature that allows computations to be suspended and resumed in a flexible
-manner. This feature is sometimes called by other names, such as symmetric coroutines, lightweight
-threads, cooperative multitasking, or one-shot continuations.
+태스크는 유연한 방식으로 계산을 일시 중단하고 다시 시작할 수 있게 해주는 제어 흐름 기능입니다. 이 기능은 다른 프로그래밍 언어에서는 대칭 코루틴, 경량 스레드, 협업 멀티태스킹 또는 원샷 컨티뉴에이션과 같은 다른 이름으로 불립니다.
 
-When a piece of computing work (in practice, executing a particular function) is designated as
-a [`Task`](@ref), it becomes possible to interrupt it by switching to another [`Task`](@ref).
-The original [`Task`](@ref) can later be resumed, at which point it will pick up right where it
-left off. At first, this may seem similar to a function call. However there are two key differences.
-First, switching tasks does not use any space, so any number of task switches can occur without
-consuming the call stack. Second, switching among tasks can occur in any order, unlike function
-calls, where the called function must finish executing before control returns to the calling function.
+컴퓨팅 작업(실제로는 특정 기능 실행)이 `Task`로 지정되면, 다른 `Task`로 전환하여 그 태스크를 중단할 수 있습니다. 원래의 `Task`는 나중에 다시 시작될 수 있으며, 중단된 그 시점에서 바로 시작됩니다. 처음에는 함수 호출과 비슷하게 보일 수 있지만, 두 가지 중요한 차이점이 있습니다.
+첫째, 태스크 전환은 공간을 사용하지 않아 호출 스택을 사용하지 않고도 얼마든지 태스크 전환이 발생할 수 있습니다. 둘째, 함수 호출과는 달리 태스크간 전환은 임의의 순서로 발생할 수 있습니다. 함수 호출은 호출된 함수가 제어가 호출 함수로 돌아가기 전에 실행을 완료해야 하는 구조입니다.
 
-This kind of control flow can make it much easier to solve certain problems. In some problems,
-the various pieces of required work are not naturally related by function calls; there is no obvious
-"caller" or "callee" among the jobs that need to be done. An example is the producer-consumer
-problem, where one complex procedure is generating values and another complex procedure is consuming
-them. The consumer cannot simply call a producer function to get a value, because the producer
-may have more values to generate and so might not yet be ready to return. With tasks, the producer
-and consumer can both run as long as they need to, passing values back and forth as necessary.
+이러한 종류의 제어 흐름은 특정 문제를 훨씬 쉽게 해결할 수 있습니다. 일부 문제에서 필요한 작업의 다양한 부분은 함수 호출에 의해 자연스럽게 관련되지 않습니다. 수행해야 할 작업 중에 명확한 "호출자"나 "호출 수신자"가 없기 때문입니다. 한 예로 복잡한 프로시저가 값을 생성하고, 다른 복잡한 프로시저가 값을 소비하는 생산자-소비자 문제가 있습니다. 소비자는 단순히 값을 얻기 위해 생산자 함수를 호출할 수 없습니다. 왜냐하면 생산자가 생성할 값이 더 많아 반환할 준비가 되지 않았기 때문입니다. 태스크를 통해 생산자와 소비자는 필요한 만큼 오래 실행하고 필요한 만큼 값을 주고 받을 수 있습니다.
 
-Julia provides a [`Channel`](@ref) mechanism for solving this problem.
-A [`Channel`](@ref) is a waitable first-in first-out queue which can have
-multiple tasks reading from and writing to it.
+Julia는 이 문제를 해결하기 위한 `Channel` 메커니즘을 제공합니다. `Channel`은 여러 태스크를 읽고 쓸 수 있는 대기 가능한 선입선출(FIFO) 대기열(queue)입니다.
 
-Let's define a producer task, which produces values via the [`put!`](@ref) call.
-To consume values, we need to schedule the producer to run in a new task. A special [`Channel`](@ref)
-constructor which accepts a 1-arg function as an argument can be used to run a task bound to a channel.
-We can then [`take!`](@ref) values repeatedly from the channel object:
+`put!` 호출을 통해 값을 생성하는 생산자 태스크를 정의해 봅시다. 값을 소비하려면 생산자가 새 태스크를 실행하도록 예약해야 합니다. 인수가 하나인 함수를 인수로 받아들이는 특별한 `Channel` 생성자는 채널에 묶여진 작업을 실행하는 데 사용할 수 있습니다. 그런 다음 채널 객체에서 반복적으로 값을 `take!`를 통해 가져올 수 있습니다.
 
 ```jldoctest producer
 julia> function producer(c::Channel)
@@ -773,11 +755,9 @@ julia> take!(chnl)
 "stop"
 ```
 
-One way to think of this behavior is that `producer` was able to return multiple times. Between
-calls to [`put!`](@ref), the producer's execution is suspended and the consumer has control.
+이 동작을 생각하는 한 가지 방법은 `producer`가 여러 번 반환이 가능하다는 것입니다. `put!` 호출 사이에 생성자의 실행이 일시 중단되고 소비자가 제어권을 가집니다.
 
-The returned [`Channel`](@ref) can be used as an iterable object in a `for` loop, in which case the
-loop variable takes on all the produced values. The loop is terminated when the channel is closed.
+반환된 `Channel`은 `for` 루프에서 반복용 객체로 사용될 수 있습니다. 이때 루프 변수는 생성된 모든 값을 취합니다. 채널이 닫히면 루프도 종료됩니다.
 
 ```jldoctest producer
 julia> for x in Channel(producer)
@@ -820,7 +800,7 @@ constructors to explicitly link a set of channels with a set of producer/consume
 Note that currently Julia tasks are not scheduled to run on separate CPU cores.
 True kernel threads are discussed under the topic of [Parallel Computing](@ref).
 
-### Core task operations
+### 코어 태스크 연산
 
 Let us explore the low level construct [`yieldto`](@ref) to underestand how task switching works.
 `yieldto(task,value)` suspends the current task, switches to the specified `task`, and causes
@@ -844,7 +824,7 @@ In addition to [`yieldto`](@ref), a few other basic functions are needed to use 
   * [`istaskstarted`](@ref) queries whether a task has run yet.
   * [`task_local_storage`](@ref) manipulates a key-value store specific to the current task.
 
-### Tasks and events
+### 태스크와 이벤트
 
 Most task switches occur as a result of waiting for events such as I/O requests, and are performed
 by a scheduler included in the standard library. The scheduler maintains a queue of runnable tasks,
@@ -869,7 +849,7 @@ would expect. It is also possible to make the scheduler run a task whenever it c
 waiting for any events. This is done by calling [`schedule`](@ref), or using the [`@schedule`](@ref)
 or [`@async`](@ref) macros (see [Parallel Computing](@ref) for more details).
 
-### Task states
+### 태스크 상태
 
 Tasks have a `state` field that describes their execution status. A [`Task`](@ref) `state` is one of the following
 symbols:
