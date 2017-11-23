@@ -806,14 +806,9 @@ taskHdl = @task mytask(7)
 
 ### 태스크와 이벤트
 
-Most task switches occur as a result of waiting for events such as I/O requests, and are performed
-by a scheduler included in the standard library. The scheduler maintains a queue of runnable tasks,
-and executes an event loop that restarts tasks based on external events such as message arrival.
+대부분의 태스크 전환은 입출력 요청과 같은 이벤트를 기다린 결과로 발생하며, 이는 표준 라이브러리에 포함된 스케줄러에 의해 수행됩니다. 스케줄러는 실행 가능한 작업 대기열을 관리하고 메시지 도착과 같은 외부 이벤트를 기반으로 작업을 다시 시작하는 이벤트 루프를 실행합니다.
 
-The basic function for waiting for an event is [`wait`](@ref). Several objects implement [`wait`](@ref);
-for example, given a `Process` object, [`wait`](@ref) will wait for it to exit. [`wait`](@ref)
-is often implicit; for example, a [`wait`](@ref) can happen inside a call to [`read`](@ref)
-to wait for data to be available.
+이벤트를 기다리는 기본적인 함수로는 `wait`가 있습니다. 여러 객체는 `wait`를 구현할 수 있는데, 그 예로 `Process` 객체가 주어진다면, `wait`는 그 객체가 종료될 때까지 기다릴 것입니다. `wait`는 종종 명시적이지 않습니다. 예를 들자면, `wait`는 데이터를 사용할 수 있을 때까지 기다리기 위해 `read` 호출 내부에서 발생할 수 있습니다.
 
 In all of these cases, [`wait`](@ref) ultimately operates on a [`Condition`](@ref) object, which
 is in charge of queueing and restarting tasks. When a task calls [`wait`](@ref) on a [`Condition`](@ref),
