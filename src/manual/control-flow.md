@@ -771,17 +771,11 @@ start
 stop
 ```
 
-Note that we did not have to explicitly close the channel in the producer. This is because
-the act of binding a [`Channel`](@ref) to a [`Task`](@ref) associates the open lifetime of
-a channel with that of the bound task. The channel object is closed automatically when the task
-terminates. Multiple channels can be bound to a task, and vice-versa.
+생산자 측에서 채널을 명시적으로 닫을 필요는 없었음을 알아두십시오. 이는 채널을 태스크에 묶는 동작이 채널의 수명과 묶인 태스크의 수명을 연결짓기 때문입니다. 채널 객체는 태스크가 종료되면 자동으로 닫힙니다. 여러 채널을 하나의 태스크에 묶을 수 있고, 그 반대로도 가능합니다.
 
-While the [`Task`](@ref) constructor expects a 0-argument function, the [`Channel`](@ref)
-method which creates a channel bound task expects a function that accepts a single argument of
-type [`Channel`](@ref). A common pattern is for the producer to be parameterized, in which case a partial
-function application is needed to create a 0 or 1 argument [anonymous function](@ref man-anonymous-functions).
+태스크 생성자가 인수가 없는 함수를 예상하는 동안, 태스크에 묶인 채널을 만드는 채널 메소드는 채널 유형의 단일 인수를 허용하는 함수를 필요로 합니다. 공통 패턴은 생산자가 매개 변수화된 경우이며, 이 경우 부분 함수 응용 프로그램은 인수가 없거나 1개의 인수를 갖는 익명 함수를 작성하는 데 필요합니다.
 
-For [`Task`](@ref) objects this can be done either directly or by use of a convenience macro:
+태스크 객체의 경우 직접 또는 편리한 매크로를 사용하여 수행할 수 있습니다.
 
 ```julia
 function mytask(myarg)
@@ -793,36 +787,22 @@ taskHdl = Task(() -> mytask(7))
 taskHdl = @task mytask(7)
 ```
 
-To orchestrate more advanced work distribution patterns, [`bind`](@ref) and [`schedule`](@ref)
-can be used in conjunction with [`Task`](@ref) and [`Channel`](@ref)
-constructors to explicitly link a set of channels with a set of producer/consumer tasks.
+고급 작업 배분 패턴을 조율하기 위해, 태스크 및 채널 생성자와 바인드 및 스케쥴을 사용하여 일련의 채널을 생산자/소비자 태스크 집합과 명시적으로 연결할 수 있습니다.
 
-Note that currently Julia tasks are not scheduled to run on separate CPU cores.
-True kernel threads are discussed under the topic of [Parallel Computing](@ref).
+현재 Julia의 태스크 기능은 별도의 CPU 코어를 사용하도록 스케쥴되어 있지 않습니다. 진짜 커널 스레드는 Parallel Computing 주제에서 논의하겠습니다.
 
 ### 코어 태스크 연산
 
-Let us explore the low level construct [`yieldto`](@ref) to underestand how task switching works.
-`yieldto(task,value)` suspends the current task, switches to the specified `task`, and causes
-that task's last [`yieldto`](@ref) call to return the specified `value`. Notice that [`yieldto`](@ref)
-is the only operation required to use task-style control flow; instead of calling and returning
-we are always just switching to a different task. This is why this feature is also called "symmetric
-coroutines"; each task is switched to and from using the same mechanism.
+작업 중 태스크가 어떻게 전환되는지 이해하기 위해 `yieldto` 저수준 구조를 탐험해 봅시다. `yieldto(task,value)`는 현재 태스크를 잠시 중단하고, 지정된 태스크로 전환하며, 태스크가 특정한 값을 반환하도록 하는 `yieldto` 호출을 하도록 합니다. 태스크 방식 제어 흐름을 사용하려면 `yieldto`만이 유일한 해법임을 명심하십시오. 호출하고 반환하는 동작 대신 항상 다른 태스크로 전환할 뿐입니다. 이것이 이 기능이 "대칭 코루틴"이라고 불리는 이유입니다. 각 태스크는 동일한 메커니즘을 통해 다른 태스크로 전환하거나 전환됩니다.
 
-[`yieldto`](@ref) is powerful, but most uses of tasks do not invoke it directly. Consider why
-this might be. If you switch away from the current task, you will probably want to switch back
-to it at some point, but knowing when to switch back, and knowing which task has the responsibility
-of switching back, can require considerable coordination. For example, [`put!`](@ref) and [`take!`](@ref)
-are blocking operations, which, when used in the context of channels maintain state to remember
-who the consumers are. Not needing to manually keep track of the consuming task is what makes [`put!`](@ref)
-easier to use than the low-level [`yieldto`](@ref).
+`yieldto`는 강력하지만, 하지만 대부분의 태스크가 그것을 직접 호출하지는 않습니다. 왜 그런지 한번 볼까요. 현재 태스크를 전환한다면 아마 특정 시점에서 다시 전환하고 싶을 겁니다. 하지만 언제 전환을 해야 하는지, 무슨 태스크를 전환해야할 지를 파악하는 데에 상당한 조율이 필요할 것입니다. 예를 들어, `put!`과 `take!`는 채널 컨텍스트에서 사용될 때 소비자가 누구인지를 기억하기 위해 상태를 유지하는 차단 작업입니다. 소비 작업을 수동으로 추적할 필요가 없으므로 `put!`을 저수준인 `yieldto`보다 쉽게 사용할 수 있습니다.
 
-In addition to [`yieldto`](@ref), a few other basic functions are needed to use tasks effectively.
+`yieldto` 외에, 태스크를 효과적으로 사용하기 위해서는 몇 가지 기본적인 함수가 더 필요합니다.
 
-  * [`current_task`](@ref) gets a reference to the currently-running task.
-  * [`istaskdone`](@ref) queries whether a task has exited.
-  * [`istaskstarted`](@ref) queries whether a task has run yet.
-  * [`task_local_storage`](@ref) manipulates a key-value store specific to the current task.
+  * [`current_task`](@ref)는 현재 실행중인 태스크를 참조합니다.
+  * [`istaskdone`](@ref)는 태스크가 종료했는지 여부를 묻습니다.
+  * [`istaskstarted`](@ref)는 태스크가 실행 중인지 여부를 묻습니다.
+  * [`task_local_storage`](@ref) 현재 태스크와 관련된 키값 저장소를 조작합니다.
 
 ### 태스크와 이벤트
 
@@ -851,13 +831,12 @@ or [`@async`](@ref) macros (see [Parallel Computing](@ref) for more details).
 
 ### 태스크 상태
 
-Tasks have a `state` field that describes their execution status. A [`Task`](@ref) `state` is one of the following
-symbols:
+태스크에는 실행 상태를 설명하는 `state` 필드가 있습니다. 태스크의 모든 `state`는 다음과 같습니다.
 
-| Symbol      | Meaning                                            |
-|:----------- |:-------------------------------------------------- |
-| `:runnable` | Currently running, or available to be switched to  |
-| `:waiting`  | Blocked waiting for a specific event               |
-| `:queued`   | In the scheduler's run queue about to be restarted |
-| `:done`     | Successfully finished executing                    |
-| `:failed`   | Finished with an uncaught exception                |
+| 상태	      | 의미 	                                        |
+|:----------- |:----------------------------------------------- |
+| `:runnable` | 현재 실행 중이거나 전환할 수 있는 상태		|
+| `:waiting`  | 특정 이벤트를 기다리고 있어 블록된 상태		|
+| `:queued`   | 스케줄러의 실행 대기열에 있어 곧 다시 시작될 상태	|
+| `:done`     | 실행을 성공적으로 완료한 상태                 	|
+| `:failed`   | 알 수 없는 예외로 종료된 상태               	|
