@@ -1,29 +1,30 @@
-# Variables
+의 변수는 값에 연결된 (또는 바인딩 된) 이름입니다. 나중에 사용할 수 있도록 값 (예 : 일부 계산 후에 얻은 값)을 저장하려는 경우 유용합니다.
 
-A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to
-store a value (that you obtained after some math, for example) for later use. For example:
+예 :
 
 ```julia-repl
+# 변수 x에 10을 할당할때
 # Assign the value 10 to the variable x
 julia> x = 10
 10
 
-# Doing math with x's value
+# x의 값으로 계산할떄
 julia> x + 1
 11
 
-# Reassign x's value
+# x의값을 재설계할때
 julia> x = 1 + 1
 2
 
-# You can assign values of other types, like strings of text
+# 텍스트 문자열과 같은 다른 유형의 값을 지정할 수 있습니다.
+
 julia> x = "Hello World!"
 "Hello World!"
 ```
 
-Julia provides an extremely flexible system for naming variables. Variable names are case-sensitive,
-and have no semantic meaning (that is, the language will not treat variables differently based
-on their names).
+ Julia는 변수 명명에 매우 유연한 시스템을 제공합니다. 변수 이름은 대소 문자를 구
+분합니다. 그리고 의미 론적 의미가 없습니다 (즉, 언어는 변수를 다르게 취급하지 않
+습니다.
 
 ```jldoctest
 julia> x = 1.0
@@ -38,7 +39,7 @@ julia> Z = "My string"
 julia> customary_phrase = "Hello world!"
 "Hello world!"
 
-julia> UniversalDeclarationOfHumanRightsStart = "人人生而自由，在尊严和权利上一律平等。"
+julia> UniversalDeclarationOfHumanRightsStart = "人人生而自由，在尊严和权利上一>律平等。"
 "人人生而自由，在尊严和权利上一律平等。"
 ```
 
@@ -52,17 +53,10 @@ julia> 안녕하세요 = "Hello"
 "Hello"
 ```
 
-In the Julia REPL and several other Julia editing environments, you can type many Unicode math
-symbols by typing the backslashed LaTeX symbol name followed by tab. For example, the variable
-name `δ` can be entered by typing `\delta`-*tab*, or even `α̂₂` by `\alpha`-*tab*-`\hat`-
-*tab*-`\_2`-*tab*. (If you find a symbol somewhere, e.g. in someone else's code,
-that you don't know how to type, the REPL help will tell you: just type `?` and
-then paste the symbol.)
+ a REPL 및 다른 여러 줄리아 편집 환경에서 많은 유니 코드 수학을 입력 할 수 있습>니다 백 슬래쉬 된 LaTeX 심볼 이름 다음에 탭을 입력하여 심볼을 제거하십시오.예를 를어 `TeX 심볼 이름 다음에 탭을 입력하여 심볼을 제거하십시오. 예를 들어, 변수 `delta`- * tab *을 입력하거나`\ alpha`- * tab * -` \ hat`-
+* tab * -`\ _2` - * tab *. 다른 사람의 코드와 같이 기호를 어딘가에서 찾으면
+당신이 입력하는 방법을 모르겠다면, REPL 도움말은 당신에게 말할 것입니다 
 
-Julia will even let you redefine built-in constants and functions if needed (although
-this is not recommended to avoid potential confusions):
-
-```jldoctest
 julia> pi = 3
 3
 
@@ -73,8 +67,8 @@ julia> sqrt = 4
 4
 ```
 
-However, if you try to redefine a built-in constant or function already in use, Julia will give
-you an error:
+그러나 이미 사용중인 내장 상수 또는 기능을 다시 정의하려고하면 
+julia는 다음과같은 에러를 낼것이다
 
 ```jldoctest
 julia> pi
@@ -90,24 +84,28 @@ julia> sqrt = 4
 ERROR: cannot assign variable Base.sqrt from module Main
 ```
 
-## Allowed Variable Names
+##허용된 변수 이름
 
-Variable names must begin with a letter (A-Z or a-z), underscore, or a subset of Unicode code
-points greater than 00A0; in particular, [Unicode character categories](http://www.fileformat.info/info/unicode/category/index.htm)
-Lu/Ll/Lt/Lm/Lo/Nl (letters), Sc/So (currency and other symbols), and a few other letter-like characters
-(e.g. a subset of the Sm math symbols) are allowed. Subsequent characters may also include ! and
-digits (0-9 and other characters in categories Nd/No), as well as other Unicode code points: diacritics
-and other modifying marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category Pc),
-primes, and a few other characters.
 
-Operators like `+` are also valid identifiers, but are parsed specially. In some contexts, operators
-can be used just like variables; for example `(+)` refers to the addition function, and `(+) = f`
-will reassign it. Most of the Unicode infix operators (in category Sm), such as `⊕`, are parsed
-as infix operators and are available for user-defined methods (e.g. you can use `const ⊗ = kron`
-to define `⊗` as an infix Kronecker product).  Operators can also be suffixed with modifying marks,
-primes, and sub/superscripts, e.g. `+̂ₐ″` is parsed as an infix operator with the same precedence as `+`.
+변수 이름은 문자 (A-Z 또는 a-z), 밑줄 또는 유니 코드 코드의 하위 집합으로 시작해
+야합니다
+00A0보다 큰 점; 특히 [유니 코드 문자 범주] (http://www.fileformat.info/info/unicode/category/index.htm)
+Lu / Ll / Lt / Lm / Lo / Nl (문자), Sc / So (통화 및 기타 기호) 및 기타 문자와 >유사한 문자
+(예 : Sm 수학 기호의 서브 세트)이 허용됩니다. 그 다음 문자는
+숫자 (0-9 및 Nd / No 범주의 다른 문자) 및 기타 유니 코드 코드 포인트 : 발음 구별
+ 기호
+및 기타 수정 표시 (Mn / Mc / Me / Sk 범주), 일부 구두점 커넥터 (범주 Pc),
+소수 (primes) 및 몇 가지 다른 문자가 포함되어 있습니다.
 
-The only explicitly disallowed names for variables are the names of built-in statements:
+`+`와 같은 연산자도 유효한 식별자이지만 특별히 구문 분석됩니다. 일부 상황에서는 연산자
+변수와 마찬가지로 사용할 수 있습니다. 예를 들어`(+)`는 더하기 함수를,`(+) = f`는그것을 재 할당합니다. `⊕ '와 같은 대부분의 유니 코드 중온 연산자 (범주 Sm에서)는
+ 파싱됩니다
+중온 연산자 (infix operators)로 사용되며 사용자 정의 메소드 (예 :`const ⊗ = kron`를 사용할 수 있습니다.
+'⊗`을 크로 니커 제품으로 정의). 연산자에는 수정 표시가 붙을 수 있습니다.
+소수 (primes), 서브 / 윗 첨자 (sub / superscript). `+ ₐ '`는`+`와 같은 우선 순위
+를 가진 중위 연산자로 파싱됩니다.
+명시 적으로 허용되지 않는 변수 이름은 내장 명령문의 이름입니다.
+
 
 ```julia-repl
 julia> else = false
@@ -117,26 +115,24 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-Some Unicode characters are considered to be equivalent in identifiers.
-Different ways of entering Unicode combining characters (e.g., accents)
-are treated as equivalent (specifically, Julia identifiers are NFC-normalized).
-The Unicode characters `ɛ` (U+025B: Latin small letter open e)
-and `µ` (U+00B5: micro sign) are treated as equivalent to the corresponding
-Greek letters, because the former are easily accessible via some input methods.
 
-## Stylistic Conventions
+일부 유니 코드 문자는 식별자에서 동등한 것으로 간주됩니다.
+문자 조합 (예 : 악센트)을 입력하는 다양한 방법
+(줄리아 식별자는 NFC 표준화되어 있음).
+유니 코드 문자`ɛ` (U + 025B : 라틴 소문자 e)
+및 'μ'(U + 00B5 : 마이크로 부호)는 대응하는
+전자는 일부 입력 방법을 통해 쉽게 액세스 할 수 있기 때문에 그리스 문자를 사용합>니다.
+## 문체 규칙
 
-While Julia imposes few restrictions on valid names, it has become useful to adopt the following
-conventions:
 
-  * Names of variables are in lower case.
-  * Word separation can be indicated by underscores (`'_'`), but use of underscores is discouraged
-    unless the name would be hard to read otherwise.
-  * Names of `Type`s and `Module`s begin with a capital letter and word separation is shown with upper
-    camel case instead of underscores.
-  * Names of `function`s and `macro`s are in lower case, without underscores.
-  * Functions that write to their arguments have names that end in `!`. These are sometimes called
-    "mutating" or "in-place" functions because they are intended to produce changes in their arguments
-    after the function is called, not just return a value.
+Julia는 유효한 이름에 대해 제한을 두지 않지만 다음을 채택하는 것이 유용 해졌습니
+다
+협약 :
 
-For more information about stylistic conventions, see the [Style Guide](@ref).
+  * 변수는 소문자를 사용합니다.
+  *  (`'_'`)를 사용할수 있지만,사용 안하는 것이 좋습니다.(다른사람이 사용하기 불
+    편합니다)
+  * `Type`과`Module`의 이름은 대문자로 시작하고 단어 분리는 upper
+    camel 경우에 대신에  underscores.
+  * `함수`와`매크로`의 이름에는 밑줄을 넣지 않습니다
+  * 인수에 쓰는 함수의 이름은!로 끝납니다. 이들은 때때로 "mutating"또는 "in-place"함수라고 불리는데, 그 이유는 값을 반환하는 것이 아니라 함수가 호출 된 후에 인>수가 변경되기 때문입니다.
