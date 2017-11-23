@@ -1,7 +1,3 @@
-# Directory name must be 'doc' to open UnicodeData.txt
-
-@assert splitdir(@__DIR__)[end] == "doc" "Directory name must be 'doc'"
-
 # Install dependencies needed to build the documentation.
 ENV["JULIA_PKGDIR"] = joinpath(@__DIR__, "deps")
 
@@ -155,16 +151,16 @@ const PAGES = [
     ],
 ]
 
-using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c
+using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c, Dates
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
-    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching],
+    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, Dates],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
-    strict    = true,
+    strict    = false,
     checkdocs = :none,
     format    = "pdf" in ARGS ? :latex : :html,
     sitename  = "The Julia Language",
