@@ -81,13 +81,13 @@ julia [switches] -- [programfile] [args...]
  -h, --help                이 메세지를 표시한다.
 
  -J, --sysimage <file>     <file>이라는 시스템 이미지 파일을 로드한 뒤 실행한다.
- -H, --home <dir>          Set location of `julia` executable
- --startup-file={yes|no}   Load ~/.juliarc.jl
- --handle-signals={yes|no} Enable or disable Julia's default signal handlers
+ -H, --home <dir>          julia 실행파일의 위치를 지정한다.
+ --startup-file={yes|no}   ~/.juliarc.jl를 불러온다.
+ --handle-signals={yes|no} Julia의 기본 시그널 핸들러를 켜거나 끈다.
  --sysimage-native-code={yes|no}
-                           Use native code from system image if available
+                           시스템 이미지의 기존 코드 사용/사용하지 않는다.
  --compiled-modules={yes|no}
-                           Enable or disable incremental precompilation of modules
+                           모듈의 사전 증분 컴파일을 활성화/비활성화 한다.
 
  -e, --eval <expr>         <expr>를 실행만 한다
  -E, --print <expr>        <expr>를 실행하고 표시한다.
@@ -95,28 +95,28 @@ julia [switches] -- [programfile] [args...]
 
  -p, --procs {N|auto}      N개의 worker 프로세스를 추가로 생성한다. "auto"는 현재 Julia를 실행하는 컴퓨터의 최대 코어수만큼 worker 프로세스를 생성한다.
                            
- --machinefile <file>      Run processes on hosts listed in <file>
+ --machinefile <file>      <file>에 나열된 호스트에서 worker 프로세스를 실행한다.
 
  -i                        대화형 모드; PEPL을 돌리며 ininteractive()는 true이다.
  -q, --quiet               시작할 때 배너, REPL 경고를 제거한다.
- --banner={yes|no}         Enable or disable startup banner
- --color={yes|no}          Enable or disable color text
- --history-file={yes|no}   Load or save history
+ --banner={yes|no}         시작 배너 사용/사용하지 않는다.
+ --color={yes|no}          모든 텍스트에 색상을 표시하거나 표시하지 않는다.
+ --history-file={yes|no}   작업내역을 저장하거나 로드한다.
 
- --depwarn={yes|no|error}  Enable or disable syntax and method deprecation warnings ("error" turns warnings into errors)
- --warn-overwrite={yes|no} Enable or disable method overwrite warnings
+ --depwarn={yes|no|error}  문법과 함수가 폐기됐다는 경고를 활성화/비활성화 한다.("error"는 경고를 에러로 바꾼다.)
+ --warn-overwrite={yes|no} 메소드 오버라이딩 경고를 활성화/비활성화 한다.
 
- -C, --cpu-target <target> Limit usage of cpu features up to <target>; set to "help" to see the available options
- -O, --optimize={0,1,2,3}  Set the optimization level (default level is 2 if unspecified or 3 if used without a level)
- -g, -g <level>            Enable / Set the level of debug info generation (default level is 1 if unspecified or 2 if used without a level)
- --inline={yes|no}         Control whether inlining is permitted, including overriding @inline declarations
- --check-bounds={yes|no}   Emit bounds checks always or never (ignoring declarations)
- --math-mode={ieee,fast}   Disallow or enable unsafe floating point optimizations (overrides @fastmath declaration)
+ -C, --cpu-target <target> <target>까지의 CUPU기능만을 사용한다() 사용 가능한 옵션을 보려면 "help"로 설정)
+ -O, --optimize={0,1,2,3}  코드 실행시간에 관련된 최적화를 실행한다.(지정되지 않을 경우 2단계 실행, 레벨 이외의 값을 사용할 경우 3단계 실행)
+ -g, -g <level>            디버그 정보 생성 수준을 활성화/비활성화 합니다.(지정되지 않을 경우 레벨 1, 레벨 이외의 값을 사용할 경우 레벨 2)
+ --inline={yes|no}         @inline으로 선언된 함수를 덮어쓰는 경우를 포함해서, inlining을 허용할지 결정한다.
+ --check-bounds={yes|no}   배열의 경계 체크를 항상 실행/생략한다. (변수 선언을 무시)
+ --math-mode={ieee,fast}   IEEE 부동소수점 표준을 쓰거나(변수 선언을 무시) 소스에서 선언된 부동소수점을 따른다.
 
  --code-coverage={none|user|all}, --code-coverage
-                           Count executions of source lines (omitting setting is equivalent to "user")
+                           소스 코드 라인의 실행 횟수를 기록한다. (기본값:"user")
  --track-allocation={none|user|all}, --track-allocation
-                           Count bytes allocated by each source line
+                           각 소스 코드 라인에 의해 할당되는  바이트 수를 기록한다.
 ```
 
 ## 읽을거리
