@@ -810,19 +810,9 @@ taskHdl = @task mytask(7)
 
 이벤트를 기다리는 기본적인 함수로는 `wait`가 있습니다. 여러 객체는 `wait`를 구현할 수 있는데, 그 예로 `Process` 객체가 주어진다면, `wait`는 그 객체가 종료될 때까지 기다릴 것입니다. `wait`는 종종 명시적이지 않습니다. 예를 들자면, `wait`는 데이터를 사용할 수 있을 때까지 기다리기 위해 `read` 호출 내부에서 발생할 수 있습니다.
 
-In all of these cases, [`wait`](@ref) ultimately operates on a [`Condition`](@ref) object, which
-is in charge of queueing and restarting tasks. When a task calls [`wait`](@ref) on a [`Condition`](@ref),
-the task is marked as non-runnable, added to the condition's queue, and switches to the scheduler.
-The scheduler will then pick another task to run, or block waiting for external events. If all
-goes well, eventually an event handler will call [`notify`](@ref) on the condition, which causes
-tasks waiting for that condition to become runnable again.
+이 모든 경우에, `wait`는 태스크를 대기열에 넣고 재시작하는 `Condition` 객체에서 궁극적으로 작동합니다. 태스크가 `Condition`에서 `wait`를 호출하면, 태스크는 실행 불가능한 것으로 표시되고, 조건 대기열에 추가되며 스케줄러로 전환됩니다. 스케줄러는 실행할 다른 태스크를 선택하거나 외부 이벤트 대기를 차단합니다. 모든 것이 잘되면 결국 이벤트 처리기가 조건에서 `notify`를 호출하여 해당 조건을 기다리는 작업을 다시 실행 가능하게 만듭니다.
 
-A task created explicitly by calling [`Task`](@ref) is initially not known to the scheduler. This
-allows you to manage tasks manually using [`yieldto`](@ref) if you wish. However, when such
-a task waits for an event, it still gets restarted automatically when the event happens, as you
-would expect. It is also possible to make the scheduler run a task whenever it can, without necessarily
-waiting for any events. This is done by calling [`schedule`](@ref), or using the [`@schedule`](@ref)
-or [`@async`](@ref) macros (see [Parallel Computing](@ref) for more details).
+태스크를 호출하여 명시적으로 생성된 태스크는 처음에는 스케줄러에게 알려지지 않습니다. 원한다면 `yieldto`를 사용하여 수동으로 작업을 관리할 수도 있습니다. 하지만 그런 태스크가 이벤트를 기다리면 예상대로 이벤트가 발생할 때 자동적으로 재시작됩니다. 이벤트를 기다리지 않고 언제든지 스케줄러가 작업을 실행할 수 있게 하는 것도 가능합니다. 이 방법은 `schedule`을 호출하거나, `schedule` 또는 `@async` 매크로(자세한 사항은 Parallel Computing 참조)를 사용하여 수행할 수 있습니다.
 
 ### 태스크 상태
 
