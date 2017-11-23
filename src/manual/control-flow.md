@@ -1,26 +1,19 @@
 # Control Flow
 
-Julia provides a variety of control flow constructs:
+Julia는 다양한 제어 흐름 구조를 제공합니다.
 
-  * [Compound Expressions](@ref man-compound-expressions): `begin` and `(;)`.
-  * [Conditional Evaluation](@ref man-conditional-evaluation): `if`-`elseif`-`else` and `?:` (ternary operator).
-  * [Short-Circuit Evaluation](@ref): `&&`, `||` and chained comparisons.
-  * [Repeated Evaluation: Loops](@ref man-loops): `while` and `for`.
-  * [Exception Handling](@ref): `try`-`catch`, [`error`](@ref) and [`throw`](@ref).
-  * [Tasks (aka Coroutines)](@ref man-tasks): [`yieldto`](@ref).
+  * 복합 표현: `begin` 및 `(;)`.
+  * 조건부 평가: `if`-`elseif`-`else` 및 `?:` (삼항 연산자).
+  * 단락 평가: `&&`, `||` 및 연속 비교문.
+  * 반복 평가: 루프: `while` 및 `for`.
+  * 예외 처리: `try`-`catch`, `error` 및 `throw`.
+  * 태스크(일명 코루틴): `yieldto`.
 
-The first five control flow mechanisms are standard to high-level programming languages. [`Task`](@ref)s
-are not so standard: they provide non-local control flow, making it possible to switch between
-temporarily-suspended computations. This is a powerful construct: both exception handling and
-cooperative multitasking are implemented in Julia using tasks. Everyday programming requires no
-direct usage of tasks, but certain problems can be solved much more easily by using tasks.
+처음 5개의 제어 흐름 메커니즘은 고급 프로그래밍 언어의 표준입니다. 하지만 `태스크`는 그렇지 않습니다. 태스크는 비지역적 제어 흐름을 제공하여, 일시적으로 중단된 계산을 바꾸는 것을 가능하게 만듭니다. 태스크는 강력한 구조입니다: Julia는 예외 처리 및 협력적 멀티태스킹 모두를 태스크를 사용하여 구현합니다. 일상적인 프로그래밍에서는 태스크를 사용할 필요가 없지만, 몇몇 문제는 태스크를 사용함으로써 더 쉽게 해결될 수 있습니다.
 
-## [Compound Expressions](@id man-compound-expressions)
+## 복합 표현
 
-Sometimes it is convenient to have a single expression which evaluates several subexpressions
-in order, returning the value of the last subexpression as its value. There are two Julia constructs
-that accomplish this: `begin` blocks and `(;)` chains. The value of both compound expression constructs
-is that of the last subexpression. Here's an example of a `begin` block:
+때로는 여러 하위식을 순서대로 평가하는 단 하나의 식이 더 편리하며, 이 경우 마지막 하위식의 값을 그 값으로 반환하게 됩니다. 이를 수행하는 두 개의 Julia 구조가 있습니다: 바로 `begin` 구문과 `(;)` 체인 구문입니다. 두 복합 표현 구조의 값은 마지막 하위식의 값입니다. 다음은 `begin` 구문의 예제입니다.
 
 ```jldoctest
 julia> z = begin
@@ -31,17 +24,14 @@ julia> z = begin
 3
 ```
 
-Since these are fairly small, simple expressions, they could easily be placed onto a single line,
-which is where the `(;)` chain syntax comes in handy:
+위와 같이 식의 길이가 매우 짧고 단순하다면, 유용한 `(;)` 체인 구문을 사용해 한 줄로 쉽게 표현할 수 있습니다.
 
 ```jldoctest
 julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-This syntax is particularly useful with the terse single-line function definition form introduced
-in [Functions](@ref). Although it is typical, there is no requirement that `begin` blocks be multiline
-or that `(;)` chains be single-line:
+이 구문은 함수 문서에 소개된 간결한 단일 행 함수를 정의할 때 특히 유용합니다. 전형적인 구문처럼 보이겠지만, `begin` 블록 내부가 여러 줄일 필요도 없고, `(;)` 체인이 전부 한 줄에서 이루어질 필요도 없습니다.
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end
@@ -53,10 +43,9 @@ julia> (x = 1;
 3
 ```
 
-## [Conditional Evaluation](@id man-conditional-evaluation)
+## 조건부 평가
 
-Conditional evaluation allows portions of code to be evaluated or not evaluated depending on the
-value of a boolean expression. Here is the anatomy of the `if`-`elseif`-`else` conditional syntax:
+조건부 평가는 논리식의 값에 따라 일부 코드의 실행 여부를 결정합니다. 다음은 `if`-`elseif`-`else` 조건 구문의 구조입니다.
 
 ```julia
 if x < y
@@ -68,9 +57,7 @@ else
 end
 ```
 
-If the condition expression `x < y` is `true`, then the corresponding block is evaluated; otherwise
-the condition expression `x > y` is evaluated, and if it is `true`, the corresponding block is
-evaluated; if neither expression is true, the `else` block is evaluated. Here it is in action:
+조건식 `x < y`가 `true`이면 해당 블록이 실행됩니다. 참이 아니라면, 조건식 `x > y`를 평가하고 `true`이면 해당 블록이 실행됩니다. 만약 두 표현 둘 다 참이 아니라면, `else` 블록이 실행됩니다. 다음은 실행 예제입니다.
 
 ```jldoctest
 julia> function test(x, y)
@@ -94,14 +81,9 @@ julia> test(1, 1)
 x is equal to y
 ```
 
-The `elseif` and `else` blocks are optional, and as many `elseif` blocks as desired can be used.
-The condition expressions in the `if`-`elseif`-`else` construct are evaluated until the first
-one evaluates to `true`, after which the associated block is evaluated, and no further condition
-expressions or blocks are evaluated.
+`elseif`와 `else` 블록은 선택 사항이며, 원하는 만큼 많은 `elseif` 블록을 사용할 수 있습니다. `if`-`elseif`-`else` 구문 안의 조건식은 어느 한 식이 처음으로 `true`로 평가될 때까지 평가되고, 그 후에 관련 블록이 실행되며, 이후로는 어떤 식이나 블록도 실행되지 않습니다.
 
-`if` blocks are "leaky", i.e. they do not introduce a local scope. This means that new variables
-defined inside the `if` clauses can be used after the `if` block, even if they weren't defined
-before. So, we could have defined the `test` function above as
+`if` 블록은 지역 범위를 만들지 않기 때문에 한 마디로 "구멍이 났다"고 할 수 있습니다. 이는 `if` 절 안에서 정의된 새로운 변수가 `if` 블록 다음에도 사용될 수 있음을 의미합니다. 따라서, 위에서 정의한 `test` 함수를 다음과 같이 정의할 수도 있습니다.
 
 ```jldoctest
 julia> function test(x,y)
@@ -120,9 +102,7 @@ julia> test(2, 1)
 x is greater than y.
 ```
 
-The variable `relation` is declared inside the `if` block, but used outside. However, when depending
-on this behavior, make sure all possible code paths define a value for the variable. The following
-change to the above function results in a runtime error
+`relation` 변수는 `if` 블록 안에서 선언되었지만, 블록 밖에서 사용되고 있습니다. 그러나, 모든 코드 경로가 이 구문을 통해 변수 값을 정의할 수 있는지 확인해야 합니다. 위 함수를 다음과 같이 변경하면 런타임 오류가 발생합니다.
 
 ```jldoctest
 julia> function test(x,y)
@@ -144,9 +124,7 @@ Stacktrace:
  [1] test(::Int64, ::Int64) at ./none:7
 ```
 
-`if` blocks also return a value, which may seem unintuitive to users coming from many other languages.
-This value is simply the return value of the last executed statement in the branch that was chosen,
-so
+`if` 블록도 값을 반환하기 때문에 다른 많은 언어에서 오는 사용자에게는 어색해 보일 수 있습니다. 이 값은 단순히 선택한 분기에서 마지막으로 실행한 명령문의 반환값이며, 따라서
 
 ```jldoctest
 julia> x = 3
@@ -160,11 +138,9 @@ julia> if x > 0
 "positive!"
 ```
 
-Note that very short conditional statements (one-liners) are frequently expressed using Short-Circuit
-Evaluation in Julia, as outlined in the next section.
+아주 짧은(한 줄로 된) 조건문은 다음 절에 설명되었듯이 Julia의 단락 회로 평가를 통해 자주 표현된다는 것을 유념하시기 바랍니다.
 
-Unlike C, MATLAB, Perl, Python, and Ruby -- but like Java, and a few other stricter, typed languages
--- it is an error if the value of a conditional expression is anything but `true` or `false`:
+C, MATLAB, Perl, Python, Ruby와는 다르게 조건식의 값이 `true`나 `false`가 아니면 오류가 발생하며, 이는 Java와 같이 자료형을 엄격하게 다루는 언어와 비슷하다고 할 수 있습니다.
 
 ```jldoctest
 julia> if 1
@@ -173,28 +149,17 @@ julia> if 1
 ERROR: TypeError: non-boolean (Int64) used in boolean context
 ```
 
-This error indicates that the conditional was of the wrong type: [`Int64`](@ref) rather
-than the required [`Bool`](@ref).
+이 오류는 조건부에 잘못된 자료형을 넣었음을 나타냅니다. `Int64`형 대신 `Bool`형이 들어가야 하죠.
 
-The so-called "ternary operator", `?:`, is closely related to the `if`-`elseif`-`else` syntax,
-but is used where a conditional choice between single expression values is required, as opposed
-to conditional execution of longer blocks of code. It gets its name from being the only operator
-in most languages taking three operands:
+소위 "삼항 연산자"라고 불리는 `?:`는 `if`-`elseif`-`else` 구문과 밀접한 관련이 있습니다. 후자가 긴 코드 블록의 조건 실행에 사용되는 것과 달리, 전자는 단일식에서의 조건부 선택이 필요한 곳에서 사용됩니다. 이 연산자는 대부분의 다른 언어에서도 피연산자 셋을 취하는 유일한 연산자라는 칭호를 얻었습니다.
 
 ```julia
 a ? b : c
 ```
 
-The expression `a`, before the `?`, is a condition expression, and the ternary operation evaluates
-the expression `b`, before the `:`, if the condition `a` is `true` or the expression `c`, after
-the `:`, if it is `false`. Note that the spaces around `?` and `:` are mandatory: an expression
-like `a?b:c` is not a valid ternary expression (but a newline is acceptable after both the `?` and
-the `:`).
+`?` 앞의 `a`는 조건식이고, 삼항 연산자는 `a`가 `true`이면 `:` 앞의 `b`를, `false`이면 `:` 뒤의 `c`를 실행합니다. 여기서 `?`와 `:` 주위에는 공백이 있어야 함을 명심하십시오. `a?b:c`와 같은 식은 유효하지 않은 식입니다.(다만 `?`와 `:` 각각의 뒤에 개행 문자는 사용 가능)
 
-The easiest way to understand this behavior is to see an example. In the previous example, the
-`println` call is shared by all three branches: the only real choice is which literal string to
-print. This could be written more concisely using the ternary operator. For the sake of clarity,
-let's try a two-way version first:
+이 동작을 이해하는 가장 쉬운 방법은 예제를 보는 것입니다. 이전 예제에서 `println` 호출은 세 브랜치 모두에서 공유되었습니다. 실제로 고른 것은 오직 출력할 리터럴 문자열이었습니다. 이제 삼항 연산자를 사용하여 보다 간결하게 예제를 작성할 수 있습니다. 명확히 하기 위해, 먼저 둘 중 하나를 고르는 버전을 사용해 봅시다.
 
 ```jldoctest
 julia> x = 1; y = 2;
@@ -208,9 +173,7 @@ julia> println(x < y ? "less than" : "not less than")
 not less than
 ```
 
-If the expression `x < y` is true, the entire ternary operator expression evaluates to the string
-`"less than"` and otherwise it evaluates to the string `"not less than"`. The original three-way
-example requires chaining multiple uses of the ternary operator together:
+`x < y` 식이 참이면, 전체 삼항 연산자 식은 `"미만"` 문자열을 평가하고, 거짓이면 `"이상"` 문자열을 평가할 것입니다. 기존의 셋 중 하나를 고르는 예제를 구현하려면 삼항 연산자를 여러 번 사용하여 중첩할 필요가 있습니다.
 
 ```jldoctest
 julia> test(x, y) = println(x < y ? "x is less than y"    :
@@ -227,10 +190,9 @@ julia> test(1, 1)
 x is equal to y
 ```
 
-To facilitate chaining, the operator associates from right to left.
+연결을 쉽게 하기 위해 연산자는 오른쪽에서 왼쪽으로 연결됩니다.
 
-It is significant that like `if`-`elseif`-`else`, the expressions before and after the `:` are
-only evaluated if the condition expression evaluates to `true` or `false`, respectively:
+`if`-`elseif`-`else`와 같이 조건식이 각각 `true`나 `false`로 평가될 때만 `:` 앞뒤로 있는 식이 평가된다는 점 역시 중요합니다.
 
 ```jldoctest
 julia> v(x) = (println(x); x)
@@ -245,21 +207,14 @@ no
 "no"
 ```
 
-## Short-Circuit Evaluation
+## 단락 평가
 
-Short-circuit evaluation is quite similar to conditional evaluation. The behavior is found in
-most imperative programming languages having the `&&` and `||` boolean operators: in a series
-of boolean expressions connected by these operators, only the minimum number of expressions are
-evaluated as are necessary to determine the final boolean value of the entire chain. Explicitly,
-this means that:
+단락 평가는 조건부 평가와 상당히 유사합니다. 이 동작은 `&&` 및 `||` 연산자가 있는 대부분의 명령형 프로그래밍 언어에서 찾을 수 있습니다. 이런 연산자로 연결된 일련의 표현식에서, 최종 논리값을 결정하는 데 필요한 최소 식만 평가됩니다. 명쾌하게 말하자면, 이는 다음을 의미합니다.
 
-  * In the expression `a && b`, the subexpression `b` is only evaluated if `a` evaluates to `true`.
-  * In the expression `a || b`, the subexpression `b` is only evaluated if `a` evaluates to `false`.
+  * 표현식 `a && b`에서, 하위 표현식 `b`는 오직 `a`가 `true`로 평가될 때만 평가를 받는다.
+  * 표현식 `a || b`에서, 하위 표현식 `b`는 오직 `a`가 `false`로 평가될 때만 평가를 받는다.
 
-The reasoning is that `a && b` must be `false` if `a` is `false`, regardless of the value of
-`b`, and likewise, the value of `a || b` must be true if `a` is `true`, regardless of the value
-of `b`. Both `&&` and `||` associate to the right, but `&&` has higher precedence than `||` does.
-It's easy to experiment with this behavior:
+왜냐 하면, `a`가 `false`이면, `b`의 값에 관계없이 `a && b`는 무조건 `false`가 되고, `a`가 `true`이면, `b`의 값에 관계없이 `a && b`는 무조건 `true`가 되기 때문입니다. `&&`와 `||` 모두 오른쪽에 연관되지만, `&&`가 `||`보다 우선 순위가 더 높습니다. 실험해 보면 동작을 이해하기 쉽습니다.
 
 ```jldoctest tandf
 julia> t(x) = (println(x); true)
@@ -305,15 +260,11 @@ julia> f(1) || f(2)
 false
 ```
 
-You can easily experiment in the same way with the associativity and precedence of various combinations
-of `&&` and `||` operators.
+`&&` 및 `||` 연산자의 다양한 조합의 연관성과 우선 순위를 통해 같은 방식으로 쉽게 실험할 수 있습니다.
 
-This behavior is frequently used in Julia to form an alternative to very short `if` statements.
-Instead of `if <cond> <statement> end`, one can write `<cond> && <statement>` (which could be
-read as: <cond> *and then* <statement>). Similarly, instead of `if ! <cond> <statement> end`,
-one can write `<cond> || <statement>` (which could be read as: <cond> *or else* <statement>).
+이 동작은 Julia에서 매우 짧은 `if` 문의 대용으로 자주 사용됩니다. `if <조건> <문장> end` 대신에, `<조건>` 그리고 나서 `<문장>`이라고 읽을 수 있는 `<조건> && <문장>`을 쓸 수 있습니다. 비슷하게, `if ! <조건> <문장> end` 대신에, `<조건>` 아니면 `<문장>`이라고 읽을 수 있는 `<조건> || <문장>`을 쓸 수 있습니다.
 
-For example, a recursive factorial routine could be defined like this:
+예제로 재귀적 팩토리얼 함수를 다음과 같이 선언할 수 있습니다.
 
 ```jldoctest
 julia> function fact(n::Int)
@@ -335,9 +286,7 @@ Stacktrace:
  [1] fact(::Int64) at ./none:2
 ```
 
-Boolean operations *without* short-circuit evaluation can be done with the bitwise boolean operators
-introduced in [Mathematical Operations and Elementary Functions](@ref): `&` and `|`. These are
-normal functions, which happen to support infix operator syntax, but always evaluate their arguments:
+Mathematical Operations and Elementary Functions: `&` 및 `|`에서 소개한 비트 논리 연산자로 단락 평가가 없는 논리 연산을 할 수 있습니다. 그것들은 이항연산자 구문을 지원하지만, 항상 인수를 평가하는 일반적인 함수라고 할 수 있습니다.
 
 ```jldoctest tandf
 julia> f(1) & t(2)
@@ -351,17 +300,14 @@ julia> t(1) | t(2)
 true
 ```
 
-Just like condition expressions used in `if`, `elseif` or the ternary operator, the operands of
-`&&` or `||` must be boolean values (`true` or `false`). Using a non-boolean value anywhere except
-for the last entry in a conditional chain is an error:
+`if`, `elseif` 또는 삼항 연산자에서 사용되는 조건식과 마찬가지로, `&&`나 `||` 역시 피연산자가 논리값(`true` 또는 `false`)을 가져야 합니다. 조건부 체인의 가장 마지막 항목을 제외하고는 어디에도 비논리값을 사용하면 오류가 발생합니다.
 
 ```jldoctest
 julia> 1 && true
 ERROR: TypeError: non-boolean (Int64) used in boolean context
 ```
 
-On the other hand, any type of expression can be used at the end of a conditional chain. It will
-be evaluated and returned depending on the preceding conditionals:
+반면에 조건부 체인 끝에는 어떤 표현식이든 사용할 수 있습니다. 이는 선행 조건에 따라 평가되고 반환될 것이기 때문입니다.
 
 ```jldoctest
 julia> true && (x = (1, 2, 3))
@@ -371,10 +317,9 @@ julia> false && (x = (1, 2, 3))
 false
 ```
 
-## [Repeated Evaluation: Loops](@id man-loops)
+## 반복 평가: 루프
 
-There are two constructs for repeated evaluation of expressions: the `while` loop and the `for`
-loop. Here is an example of a `while` loop:
+반복 평가식에는 두 구문이 있습니다. 바로 `while` 루프와 `for` 루프입니다. 다음은 `while` 루프의 예제입니다.
 
 ```jldoctest
 julia> i = 1;
@@ -390,13 +335,9 @@ julia> while i <= 5
 5
 ```
 
-The `while` loop evaluates the condition expression (`i <= 5` in this case), and as long it remains
-`true`, keeps also evaluating the body of the `while` loop. If the condition expression is `false`
-when the `while` loop is first reached, the body is never evaluated.
+`while` 루프는 조건식(여기서는 `i <= 5`)을 평가하여, `true`가 아닐 때까지 내내 `while` 루프를 반복하여 실행합니다. `while` 루프에 도착했을 때, 조건식이 `false`이면 루프를 실행하지 않습니다.
 
-The `for` loop makes common repeated evaluation idioms easier to write. Since counting up and
-down like the above `while` loop does is so common, it can be expressed more concisely with a
-`for` loop:
+`for` 루프는 평범한 반복 평가문을 작성하기 쉽게 만들어 줍니다. 위의 `while` 루프와 같이 위아래로 세는 것이 일반적이므로 `for` 루프를 통해 보다 간결하게 표현할 수 있습니다.
 
 ```jldoctest
 julia> for i = 1:5
@@ -409,13 +350,7 @@ julia> for i = 1:5
 5
 ```
 
-Here the `1:5` is a range object, representing the sequence of numbers 1, 2, 3, 4, 5. The `for`
-loop iterates through these values, assigning each one in turn to the variable `i`. One rather
-important distinction between the previous `while` loop form and the `for` loop form is the scope
-during which the variable is visible. If the variable `i` has not been introduced in another
-scope, in the `for` loop form, it is visible only inside of the `for` loop, and not
-outside/afterwards. You'll either need a new interactive session instance or a different variable
-name to test this:
+여기에서 `1:5`는 범위 객체이며 숫자 1, 2, 3, 4, 5의 순서를 나타냅니다. `for` 루프는 이 값들을 반복하며, 각 수들을 차례로 변수 `i`에 할당합니다. 앞의 `while` 루프 형식과 `for` 루프 형식의 중요한 차이점 중 하나는 바로 변수가 표시되는 범위입니다. 만약 변수 `i`가 다른 영역에서 선언되지 않았다면, `for` 루프 형식에서는 `for` 루프 내부에서만 볼 수 있고, 루프 외부나 루프 종료 이후로는 볼 수 없습니다. 이를 테스트하려면 새로운 대화형 세션 인스턴스나 다른 변수 이름이 필요할 겁니다.
 
 ```jldoctest
 julia> for j = 1:5
@@ -431,12 +366,9 @@ julia> j
 ERROR: UndefVarError: j not defined
 ```
 
-See [Scope of Variables](@ref scope-of-variables) for a detailed explanation of variable scope and how it works in
-Julia.
+변수 범위에 관한 자세한 설명과 그것이 Julia에서 어떻게 작동하는지는 Scope of Variables 문서를 통해 확인하십시오.
 
-In general, the `for` loop construct can iterate over any container. In these cases, the alternative
-(but fully equivalent) keyword `in` or `∈` is typically used instead of `=`, since it makes
-the code read more clearly:
+일반적으로, `for` 루프 구조는 어떤 컨테이너든 반복할 수 있습니다. 이 경우, 코드의 더 명확한 가독성을 위해 `=` 대신 일반적으로 `in`이나 `∈`가 대용(그러나 완전히 동등한) 키워드로 사용됩니다.
 
 ```jldoctest
 julia> for i in [1,4,0]
@@ -454,12 +386,9 @@ bar
 baz
 ```
 
-Various types of iterable containers will be introduced and discussed in later sections of the
-manual (see, e.g., [Multi-dimensional Arrays](@ref man-multi-dim-arrays)).
+다양한 유형의 반복 가능한 컨테이너가 매뉴얼 뒷부분(예: Multi-dimensional Arrays 문서 참조)에서 소개되고 논의될 것입니다.
 
-It is sometimes convenient to terminate the repetition of a `while` before the test condition
-is falsified or stop iterating in a `for` loop before the end of the iterable object is reached.
-This can be accomplished with the `break` keyword:
+테스트 조건이 위조되기 전에 `while` 반복을 종료하거나, 반복용 변수가 끝에 도달하기 전에 `for` 루프를 멈추는 것이 편리할 때가 있습니다. 이는 `break` 키워드로 수행할 수 있습니다.
 
 ```jldoctest
 julia> i = 1;
@@ -490,10 +419,9 @@ julia> for j = 1:1000
 5
 ```
 
-Without the `break` keyword, the above `while` loop would never terminate on its own, and the `for` loop would iterate up to 1000. These loops are both exited early by using `break`.
+`break` 키워드 없이는 `while` 루프는 절대 스스로 종료되지 않을 것이며, `for` 루프는 1000까지 세고 말 것입니다. 이 루프 모두 `break`를 사용하여 빠져나갈 수 있습니다.
 
-In other circumstances, it is handy to be able to stop an iteration and move on to the next one
-immediately. The `continue` keyword accomplishes this:
+다른 상황에서는 반복을 중지하고 즉시 다음 단계로 넘어가는 것이 더 유용할 수 있습니다. `continue` 키워드는 다음을 수행합니다.
 
 ```jldoctest
 julia> for i = 1:10
@@ -507,13 +435,9 @@ julia> for i = 1:10
 9
 ```
 
-This is a somewhat contrived example since we could produce the same behavior more clearly by
-negating the condition and placing the `println` call inside the `if` block. In realistic usage
-there is more code to be evaluated after the `continue`, and often there are multiple points from
-which one calls `continue`.
+이는 조건을 무효화하고 조건을 무효화하고 `println` 호출을 `if` 블록 안에 두어 더 똑같은 동작을 명확하게 나타낼 수 있기 때문에 다소 고안된 예제입니다. 실제 코드에서는 `continue` 뒤에 평가할 코드가 더 많을 것이며, 종종 `continue`가 여러 번 사용될 수도 있습니다.
 
-Multiple nested `for` loops can be combined into a single outer loop, forming the cartesian product
-of its iterables:
+다중 중첩 `for` 루프는 하나의 외부 루프로 결합되어, 반복용 변수의 데카르트 곱을 형성합니다.
 
 ```jldoctest
 julia> for i = 1:2, j = 3:4
@@ -525,19 +449,15 @@ julia> for i = 1:2, j = 3:4
 (2, 4)
 ```
 
-A `break` statement inside such a loop exits the entire nest of loops, not just the inner one.
+이러한 루프 내부의 `break`문은 내부의 루프 하나만을 종료하는 것이 아닌, 루프 전체를 종료합니다.
 
-## Exception Handling
+## 예외 처리
 
-When an unexpected condition occurs, a function may be unable to return a reasonable value to
-its caller. In such cases, it may be best for the exceptional condition to either terminate the
-program while printing a diagnostic error message, or if the programmer has provided code to handle
-such exceptional circumstances then allow that code to take the appropriate action.
+예기치 않은 조건이 발생하면 함수가 호출자에게 적절한 값을 반환하지 못할 수 있습니다. 이런 경우에는 예외적인 조건에서 진단 오류 메시지를 출력하는 동안 프로그램을 종료하는 것이 좋을 수도 있지만, 프로그래머가 예외적인 상황을 처리하는 코드를 제공한 경우 해당 코드가 적절한 조치를 취하도록 하는 것이 최선의 방법입니다.
 
-### Built-in `Exception`s
+### 기본 제공 '예외'
 
-`Exception`s are thrown when an unexpected condition has occurred. The built-in `Exception`s listed
-below all interrupt the normal flow of control.
+예기치 않은 조건이 일어나면 `Exception`이 발생합니다. 아래에 나열된 기본 제공 `Exception`은 모두 정상적인 제어 흐름을 방해합니다.
 
 | `Exception`                   |
 |:----------------------------- |
@@ -566,8 +486,7 @@ below all interrupt the normal flow of control.
 | [`UndefVarError`](@ref)       |
 | `UnicodeError`                |
 
-For example, the [`sqrt`](@ref) function throws a [`DomainError`](@ref) if applied to a negative
-real value:
+예를 들어, 음의 실수 값에 적용된 `sqrt` 함수는 `DomainError`를 throw합니다.
 
 ```jldoctest
 julia> sqrt(-1)
@@ -577,17 +496,15 @@ Stacktrace:
 [...]
 ```
 
-You may define your own exceptions in the following way:
+다음과 같은 방법으로 사용자 정의 예외를 직접 만들 수 있습니다.
 
 ```jldoctest
 julia> struct MyCustomException <: Exception end
 ```
 
-### The [`throw`](@ref) function
+### `throw` 함수
 
-Exceptions can be created explicitly with [`throw`](@ref). For example, a function defined only
-for nonnegative numbers could be written to [`throw`](@ref) a [`DomainError`](@ref) if the argument
-is negative:
+예외는 `throw`를 사용하여 명시적으로 만들 수 있습니다. 예를 들어, 인수가 음수이면 인수가 음수가 아닌 숫자로만 정의된 함수를 작성하여 `DomainError`를 `throw`할 수 있습니다.
 
 ```jldoctest
 julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, "argument must be nonnegative"))
@@ -603,8 +520,7 @@ Stacktrace:
  [1] f(::Int64) at ./none:1
 ```
 
-Note that [`DomainError`](@ref) without parentheses is not an exception, but a type of exception.
-It needs to be called to obtain an `Exception` object:
+괄호가 없는 `DomainError`는 예외가 아니라 예외 유형임을 기억하십시오. `Exception` 객체를 얻으려면 호출해야 합니다.
 
 ```jldoctest
 julia> typeof(DomainError(nothing)) <: Exception
@@ -614,15 +530,14 @@ julia> typeof(DomainError) <: Exception
 false
 ```
 
-Additionally, some exception types take one or more arguments that are used for error reporting:
+또한 일부 예외 유형은 오류 보고에 사용되는 하나 이상의 인수를 필요로 합니다.
 
 ```jldoctest
 julia> throw(UndefVarError(:x))
 ERROR: UndefVarError: x not defined
 ```
 
-This mechanism can be implemented easily by custom exception types following the way [`UndefVarError`](@ref)
-is written:
+이 메커니즘은 `UndefVarError`가 쓰여지는 방식에 따라 사용자 정의 예외 유형에 의해 쉽게 구현될 수 있습니다.
 
 ```jldoctest
 julia> struct MyUndefVarError <: Exception
@@ -632,25 +547,21 @@ julia> struct MyUndefVarError <: Exception
 julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defined")
 ```
 
-!!! note
-    When writing an error message, it is preferred to make the first word lowercase. For example,
+!!! 주의
+    오류 메시지를 작성할 때 첫 번째 단어를 소문자로 만드는 것이 좋습니다. 예를 들어,
     `size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
 
-    is preferred over
+    가 아래보다 선호됩니다.
 
     `size(A) == size(B) || throw(DimensionMismatch("Size of A not equal to size of B"))`.
 
-    However, sometimes it makes sense to keep the uppercase first letter, for instance if an argument
-    to a function is a capital letter: `size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`.
+    하지만 때로는 대문자의 첫 번째 문자는 그대로 두는 것이 좋은데, 예를 들어 함수의 인수가 대문자일 경우입니다. `size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`.
 
-### Errors
+### 오류
 
-The [`error`](@ref) function is used to produce an [`ErrorException`](@ref) that interrupts
-the normal flow of control.
+`error` 함수는 정상적인 제어 흐름을 방해하는 `ErrorException`을 생성하는 데 사용됩니다.
 
-Suppose we want to stop execution immediately if the square root of a negative number is taken.
-To do this, we can define a fussy version of the [`sqrt`](@ref) function that raises an error
-if its argument is negative:
+음수의 제곱근을 취하면 즉시 실행을 멈추고 싶다고 합시다. 이것을 하기 위해 인수가 음수이면 오류가 발생하는 `sqrt` 함수의 까다로운 버전을 정의할 수 있습니다.
 
 ```jldoctest fussy_sqrt
 julia> fussy_sqrt(x) = x >= 0 ? sqrt(x) : error("negative x not allowed")
@@ -665,9 +576,7 @@ Stacktrace:
  [1] fussy_sqrt(::Int64) at ./none:1
 ```
 
-If `fussy_sqrt` is called with a negative value from another function, instead of trying to continue
-execution of the calling function, it returns immediately, displaying the error message in the
-interactive session:
+`fussy_sqrt`가 호출 함수의 실행을 계속하려 하는 것이 아니라 다른 함수에서 음수 값으로 호출되면, 즉시 반환되어 대화식 세션에 오류 메시지를 표시합니다.
 
 ```jldoctest fussy_sqrt
 julia> function verbose_fussy_sqrt(x)
@@ -691,10 +600,9 @@ Stacktrace:
  [2] verbose_fussy_sqrt(::Int64) at ./none:3
 ```
 
-### Warnings and informational messages
+### 경고 및 정보 메시지
 
-Julia also provides other functions that write messages to the standard error I/O, but do not
-throw any `Exception`s and hence do not interrupt execution:
+또한 Julia는 표준 오류 입출력에 메시지를 쓰지만 `Exception`을 throw하지도 않고, 때문에 실행을 중단하지도 않는 다른 함수를 제공합니다.
 
 ```jldoctest
 julia> info("Hi"); 1+1
@@ -711,11 +619,9 @@ Stacktrace:
  [1] error(::String) at ./error.jl:33
 ```
 
-### The `try/catch` statement
+### `try/catch`문
 
-The `try/catch` statement allows for `Exception`s to be tested for. For example, a customized
-square root function can be written to automatically call either the real or complex square root
-method on demand using `Exception`s :
+`try/catch`문은 `Exception`을 테스트할 수 있습니다. 예를 들어, 사용자 정의 제곱근 함수를 `Exception`을 사용하여 필요에 따라 실수 또는 복소수 제곱근 방법을 자동으로 호출하도록 작성할 수 있습니다.
 
 ```jldoctest
 julia> f(x) = try
@@ -732,12 +638,9 @@ julia> f(-1)
 0.0 + 1.0im
 ```
 
-It is important to note that in real code computing this function, one would compare `x` to zero
-instead of catching an exception. The exception is much slower than simply comparing and branching.
+이 함수를 계산하는 실제 코드에서는 예외를 잡는 대신 `x`와 0을 비교한다는 점에 유의해야 합니다. 단순히 비교하고 분기하는 것보다 예외는 훨씬 느립니다.
 
-`try/catch` statements also allow the `Exception` to be saved in a variable. In this contrived
-example, the following example calculates the square root of the second element of `x` if `x`
-is indexable, otherwise assumes `x` is a real number and returns its square root:
+또한 `try/catch`문은 `Exception`이 변수에 저장되도록 합니다. 이 고안된 예제에서, 다음 예제는 `x`가 색인 가능한 경우 `x`의 두 번째 요소의 제곱근을 계산하고, 그렇지 않으면 `x`가 실수임을 가정하고 제곱근을 반환합니다.
 
 ```jldoctest
 julia> sqrt_second(x) = try
@@ -767,15 +670,13 @@ Stacktrace:
 [...]
 ```
 
-Note that the symbol following `catch` will always be interpreted as a name for the exception,
-so care is needed when writing `try/catch` expressions on a single line. The following code will
-*not* work to return the value of `x` in case of an error:
+`catch` 다음의 기호는 항상 예외 이름으로 해석될 것이고, 때문에 한 줄로 `try/catch`문을 작성할 때 주의해야 합니다. 다음 코드는 오류가 발생하더라도 `x`의 값을 반환하지 않습니다.
 
 ```julia
 try bad() catch x end
 ```
 
-Instead, use a semicolon or insert a line break after `catch`:
+대신 세미콜론을 사용하거나 `catch` 다음에 개행 문자를 삽입하십시오.
 
 ```julia
 try bad() catch; x end
@@ -786,27 +687,19 @@ catch
 end
 ```
 
-The `catch` clause is not strictly necessary; when omitted, the default return value is `nothing`.
+`catch`절은 꼭 필요한 것은 아닙니다. 생략한다면 기본 반환값은 `nothing`입니다.
 
 ```jldoctest
 julia> try error() end # Returns nothing
 ```
 
-The power of the `try/catch` construct lies in the ability to unwind a deeply nested computation
-immediately to a much higher level in the stack of calling functions. There are situations where
-no error has occurred, but the ability to unwind the stack and pass a value to a higher level
-is desirable. Julia provides the [`rethrow`](@ref), [`backtrace`](@ref) and [`catch_backtrace`](@ref)
-functions for more advanced error handling.
+`try/catch`문의 장점은 호출 함수의 스택에서 훨씬 더 높은 레벨로 깊게 중첩된 계산을 즉시 풀 수 있는 능력에 있습니다. 오류가 발생하지 않은 상황이 있지만 스택을 풀어 더 높은 레벨로 값을 전달하는 것이 바람직합니다. Julia는 고급 오류 처리를 위해 `rethrow`, `backtrace`, `catch_backtrace`와 같은 함수들을 제공합니다.
 
-### `finally` Clauses
+### `finally`문
 
-In code that performs state changes or uses resources like files, there is typically clean-up
-work (such as closing files) that needs to be done when the code is finished. Exceptions potentially
-complicate this task, since they can cause a block of code to exit before reaching its normal
-end. The `finally` keyword provides a way to run some code when a given block of code exits, regardless
-of how it exits.
+상태 변경을 수행하거나 파일과 같은 리소스를 사용하는 코드에서는 일반적으로 코드가 끝났을 때 수행해야 하는 정리 작업(예: 파일 닫기)이 있습니다. 예외는 이 작업을 어쩌면 복잡하게 만들 수 있습니다. 왜냐하면 코드 블록이 정상적으로 끝나기 전에 종료될 수 있기 때문입니다. `finally` 키워드는 주어진 코드 블록의 종료가 정상 유무를 가리지 않고 특정 코드를 실행하게 해줍니다.
 
-For example, here is how we can guarantee that an opened file is closed:
+예를 들면, 열린 파일을 확실히 닫을 수 있는 방법은 다음과 같습니다.
 
 ```julia
 f = open("file")
@@ -817,41 +710,20 @@ finally
 end
 ```
 
-When control leaves the `try` block (for example due to a `return`, or just finishing normally),
-`close(f)` will be executed. If the `try` block exits due to an exception, the exception will
-continue propagating. A `catch` block may be combined with `try` and `finally` as well. In this
-case the `finally` block will run after `catch` has handled the error.
+제어가 `try` 블록을 떠날 때(`return` 때문에 끝나든, 정상적으로 끝나든) `close(f)`가 실행됩니다. 만약 여기서 `try` 블록이 예외로 인해 종료되면 예외는 계속 증식할 것입니다. `catch` 블록은 `try` 및 `finally`와 결합할 수 있으므로, 이 상황에서는 `catch`가 오류를 처리한 후에 `finally`문이 실행되면 좋을 것입니다.
 
-## [Tasks (aka Coroutines)](@id man-tasks)
+## 태스크(일명 코루틴)
 
-Tasks are a control flow feature that allows computations to be suspended and resumed in a flexible
-manner. This feature is sometimes called by other names, such as symmetric coroutines, lightweight
-threads, cooperative multitasking, or one-shot continuations.
+태스크는 유연한 방식으로 계산을 일시 중단하고 다시 시작할 수 있게 해주는 제어 흐름 기능입니다. 이 기능은 다른 프로그래밍 언어에서는 대칭 코루틴, 경량 스레드, 협업 멀티태스킹 또는 원샷 컨티뉴에이션과 같은 다른 이름으로 불립니다.
 
-When a piece of computing work (in practice, executing a particular function) is designated as
-a [`Task`](@ref), it becomes possible to interrupt it by switching to another [`Task`](@ref).
-The original [`Task`](@ref) can later be resumed, at which point it will pick up right where it
-left off. At first, this may seem similar to a function call. However there are two key differences.
-First, switching tasks does not use any space, so any number of task switches can occur without
-consuming the call stack. Second, switching among tasks can occur in any order, unlike function
-calls, where the called function must finish executing before control returns to the calling function.
+컴퓨팅 작업(실제로는 특정 기능 실행)이 `Task`로 지정되면, 다른 `Task`로 전환하여 그 태스크를 중단할 수 있습니다. 원래의 `Task`는 나중에 다시 시작될 수 있으며, 중단된 그 시점에서 바로 시작됩니다. 처음에는 함수 호출과 비슷하게 보일 수 있지만, 두 가지 중요한 차이점이 있습니다.
+첫째, 태스크 전환은 공간을 사용하지 않아 호출 스택을 사용하지 않고도 얼마든지 태스크 전환이 발생할 수 있습니다. 둘째, 함수 호출과는 달리 태스크간 전환은 임의의 순서로 발생할 수 있습니다. 함수 호출은 호출된 함수가 제어가 호출 함수로 돌아가기 전에 실행을 완료해야 하는 구조입니다.
 
-This kind of control flow can make it much easier to solve certain problems. In some problems,
-the various pieces of required work are not naturally related by function calls; there is no obvious
-"caller" or "callee" among the jobs that need to be done. An example is the producer-consumer
-problem, where one complex procedure is generating values and another complex procedure is consuming
-them. The consumer cannot simply call a producer function to get a value, because the producer
-may have more values to generate and so might not yet be ready to return. With tasks, the producer
-and consumer can both run as long as they need to, passing values back and forth as necessary.
+이러한 종류의 제어 흐름은 특정 문제를 훨씬 쉽게 해결할 수 있습니다. 일부 문제에서 필요한 작업의 다양한 부분은 함수 호출에 의해 자연스럽게 관련되지 않습니다. 수행해야 할 작업 중에 명확한 "호출자"나 "호출 수신자"가 없기 때문입니다. 한 예로 복잡한 프로시저가 값을 생성하고, 다른 복잡한 프로시저가 값을 소비하는 생산자-소비자 문제가 있습니다. 소비자는 단순히 값을 얻기 위해 생산자 함수를 호출할 수 없습니다. 왜냐하면 생산자가 생성할 값이 더 많아 반환할 준비가 되지 않았기 때문입니다. 태스크를 통해 생산자와 소비자는 필요한 만큼 오래 실행하고 필요한 만큼 값을 주고 받을 수 있습니다.
 
-Julia provides a [`Channel`](@ref) mechanism for solving this problem.
-A [`Channel`](@ref) is a waitable first-in first-out queue which can have
-multiple tasks reading from and writing to it.
+Julia는 이 문제를 해결하기 위한 `Channel` 메커니즘을 제공합니다. `Channel`은 여러 태스크를 읽고 쓸 수 있는 대기 가능한 선입선출(FIFO) 대기열(queue)입니다.
 
-Let's define a producer task, which produces values via the [`put!`](@ref) call.
-To consume values, we need to schedule the producer to run in a new task. A special [`Channel`](@ref)
-constructor which accepts a 1-arg function as an argument can be used to run a task bound to a channel.
-We can then [`take!`](@ref) values repeatedly from the channel object:
+`put!` 호출을 통해 값을 생성하는 생산자 태스크를 정의해 봅시다. 값을 소비하려면 생산자가 새 태스크를 실행하도록 예약해야 합니다. 인수가 하나인 함수를 인수로 받아들이는 특별한 `Channel` 생성자는 채널에 묶여진 작업을 실행하는 데 사용할 수 있습니다. 그런 다음 채널 객체에서 반복적으로 값을 `take!`를 통해 가져올 수 있습니다.
 
 ```jldoctest producer
 julia> function producer(c::Channel)
@@ -883,11 +755,9 @@ julia> take!(chnl)
 "stop"
 ```
 
-One way to think of this behavior is that `producer` was able to return multiple times. Between
-calls to [`put!`](@ref), the producer's execution is suspended and the consumer has control.
+이 동작을 생각하는 한 가지 방법은 `producer`가 여러 번 반환이 가능하다는 것입니다. `put!` 호출 사이에 생성자의 실행이 일시 중단되고 소비자가 제어권을 가집니다.
 
-The returned [`Channel`](@ref) can be used as an iterable object in a `for` loop, in which case the
-loop variable takes on all the produced values. The loop is terminated when the channel is closed.
+반환된 `Channel`은 `for` 루프에서 반복용 객체로 사용될 수 있습니다. 이때 루프 변수는 생성된 모든 값을 취합니다. 채널이 닫히면 루프도 종료됩니다.
 
 ```jldoctest producer
 julia> for x in Channel(producer)
@@ -919,7 +789,7 @@ function mytask(myarg)
 end
 
 taskHdl = Task(() -> mytask(7))
-# or, equivalently
+# 또는 동일하게
 taskHdl = @task mytask(7)
 ```
 
@@ -930,7 +800,7 @@ constructors to explicitly link a set of channels with a set of producer/consume
 Note that currently Julia tasks are not scheduled to run on separate CPU cores.
 True kernel threads are discussed under the topic of [Parallel Computing](@ref).
 
-### Core task operations
+### 코어 태스크 연산
 
 Let us explore the low level construct [`yieldto`](@ref) to underestand how task switching works.
 `yieldto(task,value)` suspends the current task, switches to the specified `task`, and causes
@@ -954,7 +824,7 @@ In addition to [`yieldto`](@ref), a few other basic functions are needed to use 
   * [`istaskstarted`](@ref) queries whether a task has run yet.
   * [`task_local_storage`](@ref) manipulates a key-value store specific to the current task.
 
-### Tasks and events
+### 태스크와 이벤트
 
 Most task switches occur as a result of waiting for events such as I/O requests, and are performed
 by a scheduler included in the standard library. The scheduler maintains a queue of runnable tasks,
@@ -979,7 +849,7 @@ would expect. It is also possible to make the scheduler run a task whenever it c
 waiting for any events. This is done by calling [`schedule`](@ref), or using the [`@schedule`](@ref)
 or [`@async`](@ref) macros (see [Parallel Computing](@ref) for more details).
 
-### Task states
+### 태스크 상태
 
 Tasks have a `state` field that describes their execution status. A [`Task`](@ref) `state` is one of the following
 symbols:
