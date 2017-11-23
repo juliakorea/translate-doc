@@ -1,4 +1,4 @@
-# [Functions](@id man-functions)
+# [함수](@id man-functions)
 
 In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
 functions are not pure mathematical functions, in the sense that functions can alter and be affected
