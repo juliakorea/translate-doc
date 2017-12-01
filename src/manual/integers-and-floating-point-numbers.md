@@ -534,11 +534,8 @@ julia> 2^2x
 julia> 2(x-1)^2 - 3(x-1) + 1
 3
 ```
-!!! note
-    The precedence of numeric literal coefficients used for implicit
-    multiplication is higher than other binary operators such as multiplication
-    (`*`), and division (`/`, `\`, and `//`).  This means, for example, that
-    `1 / 2im` equals `-0.5im` and `6 // 2(2 + 1)` equals `1 // 1`.
+!!! 중요 : 
+    내재적(implicit)으로 사용된 수치형 리터럴 계수의 선행은 다른 곱셈(`*`)과 나눗셈(`/`,`\`, `//`) 같은 이진 연산자보다 높습니다. 예를들어 `1/2im1`은 `-0.5im`과 같고, `6//2(2+1)`는 `1//1`과 같습니다.
 
 게다가 괄호 표현식은 변수 또한 계수로 생각하여, 곱셈기호 없이도 변수들 간의 곱으로 식을 표현할 수도 있다:
 
