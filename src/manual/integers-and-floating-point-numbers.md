@@ -440,16 +440,11 @@ julia> setrounding(Float64,RoundDown) do
   * 상급자들은 부동 소수점의 내부 구현에 관한 이야기들과 부동 소수점 연산을 할 때 맞닥뜨릴 수 있는 수치적인 정확도에 관한 문제들에 대해서는 David Goldberg의 논문 [What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.6768&rep=rep1&type=pdf)를 참고하는 것이 좋다.
   * 특별히 부동 소수점의 역사, 근거 및 문제점에 대한 훨씬 더 자세한 문서화, 수치 컴퓨팅에서의 토론은  일반적으로 "부동 소수점의 아버지"로 알려진 [William Kahan](https://en.wikipedia.org/wiki/William_Kahan)의 [collected writings](https://people.eecs.berkeley.edu/~wkahan/)을 참조하세요. 관심이 더 생긴다면 [An Interview with the Old Man of Floating-Point](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html)를 읽기 바란다.
 
-## Arbitrary Precision Arithmetic
+## 임의 정밀도 연산
 
-To allow computations with arbitrary-precision integers and floating point numbers, Julia wraps
-the [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org) and the [GNU MPFR Library](http://www.mpfr.org),
-respectively. The [`BigInt`](@ref) and [`BigFloat`](@ref) types are available in Julia for arbitrary
-precision integer and floating point numbers respectively.
+임의 정밀도의 정수와 부동 소수점들의 연산을 위해, Julia는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 Julia에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
 
-Constructors exist to create these types from primitive numerical types, and [`parse`](@ref)
-can be used to construct them from `AbstractString`s.  Once created, they participate in arithmetic
-with all other numeric types thanks to Julia's [type promotion and conversion mechanism](@ref conversion-and-promotion):
+기본 수치 타입으로부터 임의 정밀도 정수와 부동 소수점 타입을 만들기 위해 생성자가 존재하며, [`parse`](@ref)는 `AbstractString`들로 부터 임의 정밀도 타입을 만들 수 있게 해준다. 한번 임의 정밀도 타입이 만들어지면, [type promotion and conversion mechanism](@ref conversion-and-promotion)덕분에 자유롭게 다른 수치타입과 연산을 수행할 수 있다:
 
 ```jldoctest
 julia> BigInt(typemax(Int64)) + 1
@@ -468,8 +463,7 @@ julia> factorial(BigInt(40))
 815915283247897734345611269596115894272000000000
 ```
 
-However, type promotion between the primitive types above and [`BigInt`](@ref)/[`BigFloat`](@ref)
-is not automatic and must be explicitly stated.
+그러나, 기본 타입과 [`BigInt`](@ref)/[`BigFloat`](@ref)간의 묵시적 형 변환(type promotion)은 자동으로 이루어지지 않고, 반드시 명시적으로 처리되어야 한다.
 
 ```jldoctest
 julia> x = typemin(Int64)
@@ -491,11 +485,7 @@ julia> typeof(y)
 BigInt
 ```
 
-The default precision (in number of bits of the significand) and rounding mode of [`BigFloat`](@ref)
-operations can be changed globally by calling [`setprecision`](@ref) and [`setrounding`](@ref),
-and all further calculations will take these changes in account.  Alternatively, the precision
-or the rounding can be changed only within the execution of a particular block of code by using
-the same functions with a `do` block:
+[`BigFloat`](@ref)타입에서 기본 정밀도(가수부의 비트수)와 반올림 모드는 [`setprecision`](@ref)와 [`setrounding`](@ref)를 호출함으로써 변경할 수 있으며, 한 번 호출된 이후에는 그 설정이 계속 유지 된다. 특정 블럭의 코드에서만 정밀도와 반올림을 변경하기 위해서는 `do`블럭의 코드에서와 같은 함수를 호출한다:
 
 ```jldoctest
 julia> setrounding(BigFloat, RoundUp) do
@@ -514,11 +504,9 @@ julia> setprecision(40) do
 1.1000000000004
 ```
 
-## [Numeric Literal Coefficients](@id man-numeric-literal-coefficients)
+## [수치형 리터럴 계수](@id man-numeric-literal-coefficients)
 
-To make common numeric formulas and expressions clearer, Julia allows variables to be immediately
-preceded by a numeric literal, implying multiplication. This makes writing polynomial expressions
-much cleaner:
+보통의 수학 식과 표현식을 깔끔하게 표현하기 위해서, Julia는 변수가 수치형 리터럴 바로 다음에 있으면 둘 사이의 관계가 곱셈임을 가정한다. 이는 다항식의 표현을 더욱 깔끔하게 만든다:
 
 ```jldoctest numeric-coefficients
 julia> x = 3
@@ -531,17 +519,16 @@ julia> 1.5x^2 - .5x + 1
 13.0
 ```
 
-It also makes writing exponential functions more elegant:
+이는 지수함수의 표현도 매우 아름답게 만들 수 있다:
 
 ```jldoctest numeric-coefficients
 julia> 2^2x
 64
 ```
 
-The precedence of numeric literal coefficients is the same as that of unary operators such as
-negation. So `2^3x` is parsed as `2^(3x)`, and `2x^3` is parsed as `2*(x^3)`.
+수치형 리터럴 계수의 선행(precedence)도 부정연산과 같은 단항 연산과 같이 작동한다. 따라서 `2^3x`는 `2^(3x)`으로, `2x^3`은 `2*(x^3)`으로 파싱(parsing)된다.
 
-Numeric literals also work as coefficients to parenthesized expressions:
+수치형 리터럴은 괄호가 있는 식에서도 계수(coeffiients)로 작동할 수 있다:
 
 ```jldoctest numeric-coefficients
 julia> 2(x-1)^2 - 3(x-1) + 1
@@ -553,16 +540,14 @@ julia> 2(x-1)^2 - 3(x-1) + 1
     (`*`), and division (`/`, `\`, and `//`).  This means, for example, that
     `1 / 2im` equals `-0.5im` and `6 // 2(2 + 1)` equals `1 // 1`.
 
-Additionally, parenthesized expressions can be used as coefficients to variables, implying multiplication
-of the expression by the variable:
+게다가 괄호 표현식은 변수 또한 계수로 생각하여, 곱셈기호 없이도 변수들 간의 곱으로 식을 표현할 수도 있다:
 
 ```jldoctest numeric-coefficients
 julia> (x-1)x
 6
 ```
 
-Neither juxtaposition of two parenthesized expressions, nor placing a variable before a parenthesized
-expression, however, can be used to imply multiplication:
+그러나 두 괄호식을 병치하거나 괄호식 앞에 변수를 두는 경우는 계수로 사용할 수 없다:
 
 ```jldoctest numeric-coefficients
 julia> (x-1)(x+1)
@@ -572,43 +557,32 @@ julia> x(x+1)
 ERROR: MethodError: objects of type Int64 are not callable
 ```
 
-Both expressions are interpreted as function application: any expression that is not a numeric
-literal, when immediately followed by a parenthetical, is interpreted as a function applied to
-the values in parentheses (see [Functions](@ref) for more about functions). Thus, in both of these
-cases, an error occurs since the left-hand value is not a function.
+두 표현식은 함수로써 인식된다. 괄호앞에 붙는 수치형 리터럴이 아닌 표현식들은 모두 함수와 함수의 매개변수로 인식된다(자세한 설명을 위해서는 [Functions](@ref)를 참고하도록 하자). 그래서 두 가지 경우 모두 왼쪽에 있는 값이 함수가 아님을 알려주는 에러가 발생한다.
 
-The above syntactic enhancements significantly reduce the visual noise incurred when writing common
-mathematical formulae. Note that no whitespace may come between a numeric literal coefficient
-and the identifier or parenthesized expression which it multiplies.
+위에서 언급한 문법적 강화효과는 수학식을 작성할 때 생기는 시각적 공해를 줄일 수 있도록 해준다. 단지 한 가지 알아야 할 점은 수치형 계수와 이에 곱해지는 변수 혹은 괄호식 등 사이에는 빈칸이 있어서는 안된다.
 
-### Syntax Conflicts
+### 문법적 충돌
 
-Juxtaposed literal coefficient syntax may conflict with two numeric literal syntaxes: hexadecimal
-integer literals and engineering notation for floating-point literals. Here are some situations
-where syntactic conflicts arise:
+리터럴 계수를 병치하는 문법은 16진수 정수 리터럴과 부동 소수점의 공학적 표현이라는 두 수치형 리터럴 문법과 충돌이 생길 수 있다. 다음은 문법적 충돌이 발생하는 예이다:
 
-  * The hexadecimal integer literal expression `0xff` could be interpreted as the numeric literal
-    `0` multiplied by the variable `xff`.
-  * The floating-point literal expression `1e10` could be interpreted as the numeric literal `1` multiplied
-    by the variable `e10`, and similarly with the equivalent `E` form.
+  * 16진수 리터럴 표현식 `0xff`는 수치형 리터럴 `0`과 변수 `xff`의 곱셈으로 해석될 수 있다.
+  * 부동 소수점 리터럴 표현식 `1e10`은 수치형 리터럴 `1`이 변수 `e10`에 곱해지는 걸로 해석될 수 있고 이는 `e`가 아닌 `E`를 쓸 때에도 마찬가지이다.
 
-In both cases, we resolve the ambiguity in favor of interpretation as a numeric literals:
+이 두 가지 경우에, 우리는 수치형 리터러를 해석하는데 있어서 다음과 같은 방식으로 모호함을 해결했다:
 
-  * Expressions starting with `0x` are always hexadecimal literals.
-  * Expressions starting with a numeric literal followed by `e` or `E` are always floating-point literals.
+  * `0x`로 시작하는 표현식은 항상 16진수 리터럴이다.
+  * 수치형 리터럴으로 시작하는 표현식에서 수치형 리터럴 다음에 `e`또는 `E`가 뒤따라오면 항상 부동소수점 리터럴이다.
 
-## Literal zero and one
+## 리터럴 0과 1
 
-Julia provides functions which return literal 0 and 1 corresponding to a specified type or the
-type of a given variable.
+Julia는 어떤 특정한 타입이나 주어진 변수의 타입에 따라 리터럴 0이나 1을 리턴하는 함수를 제공한다.
 
-| Function          | Description                                      |
+| 함수          | 설명                                     |
 |:----------------- |:------------------------------------------------ |
-| [`zero(x)`](@ref) | Literal zero of type `x` or type of variable `x` |
-| [`one(x)`](@ref)  | Literal one of type `x` or type of variable `x`  |
+| [`zero(x)`](@ref) | `x`타입이나 변수 `x`의 타입의 리터럴 0 |
+| [`one(x)`](@ref)  | `x`타입이나 변수 `x`의 타입의 리터럴 1  |
 
-These functions are useful in [Numeric Comparisons](@ref) to avoid overhead from unnecessary
-[type conversion](@ref conversion-and-promotion).
+위 함수들은 [Numeric Comparisons](@ref)에서 불필요한 [type conversion](@ref conversion-and-promotion)에 의한 성능저하를 줄일 때 유용하다.
 
 Examples:
 
