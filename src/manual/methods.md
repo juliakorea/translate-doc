@@ -601,7 +601,7 @@ function matmul(a::AbstractMatrix, b::AbstractMatrix)
     # R = promote_type(ai, bi)
 
     # 타입 추론의 반환 값에 따라 매우 취약하기 때문에 잘못되었습니다.(최적화가 불가능할뿐만 아니라):
-    # R = return_types(op, (eltype(a), eltype(b)))
+    # R = Base.return_types(op, (eltype(a), eltype(b)))
 
     ## 그래서 결국 이렇습니다.:
     R = promote_op(op, eltype(a), eltype(b))

@@ -8,17 +8,19 @@ Base.AbstractVector
 Base.AbstractMatrix
 Core.Array
 Core.Array(::Any)
+Core.Array(::Any, ::Any)
 Core.Uninitialized
 Core.uninitialized
 Base.Vector
 Base.Vector(::Any)
+Base.Vector(::Any, ::Any)
 Base.Matrix
-Base.Matrix(::Any, ::Any)
+Base.Matrix(::Any, ::Any, ::Any)
 Base.getindex(::Type, ::Any...)
 Base.zeros
 Base.ones
 Base.BitArray
-Base.BitArray(::Integer...)
+Base.BitArray(::Uninitialized, ::Integer...)
 Base.BitArray(::Any)
 Base.trues
 Base.falses
@@ -64,6 +66,17 @@ Base.Broadcast.broadcast!
 Base.@__dot__
 Base.Broadcast.broadcast_getindex
 Base.Broadcast.broadcast_setindex!
+```
+
+For specializing broadcast on custom types, see
+```@docs
+Base.BroadcastStyle
+Base.broadcast_similar
+Base.broadcast_indices
+Base.Broadcast.Scalar
+Base.Broadcast.AbstractArrayStyle
+Base.Broadcast.ArrayStyle
+Base.Broadcast.DefaultArrayStyle
 ```
 
 ## Indexing and assignment
