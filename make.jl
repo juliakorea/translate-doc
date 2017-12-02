@@ -9,6 +9,7 @@ Pkg.resolve()
 end
 
 using Documenter
+include("contrib/html_writer.jl")
 
 # Include the `build_sysimg` file.
 
