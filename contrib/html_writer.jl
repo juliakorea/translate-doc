@@ -2,7 +2,75 @@
 
 import Documenter: Anchors, Builder, Documents, Expanders, Formats, Documenter, Utilities, Writers
 import Documenter.Utilities.DOM: DOM, Tag, @tags
-import Documenter.Writers.HTMLWriter: pagetitle, mdconvert, navhref, getpage, render_topbar, domify
+import Documenter.Writers.HTMLWriter: pagetitle, domify, open_output
+import Documenter.Writers.HTMLWriter: navhref, relhref
+import Documenter.Writers.HTMLWriter: mdconvert, mdflatten
+import Documenter.Writers.HTMLWriter: getpage, get_url
+import Documenter.Writers.HTMLWriter: render_head, render_topbar, render_navmenu, render_article
+import Documenter.Writers.HTMLWriter: normalize_css, google_fonts, fontawesome_css, highlightjs_css
+import Documenter.Writers.HTMLWriter: analytics_script, requirejs_cdn, asset_links
+
+function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
+    @tags head meta link script title
+    src = get_url(ctx, navnode)
+
+    page_title = "$(mdflatten(pagetitle(ctx, navnode))) · $(ctx.doc.user.sitename)"
+    css_links = [
+        normalize_css,
+        google_fonts,
+        fontawesome_css,
+        highlightjs_css,
+    ]
+    head(
+        meta[:charset=>"UTF-8"],
+        meta[:name => "viewport", :content => "width=device-width, initial-scale=1.0"],
+        title(page_title),
+
+        analytics_script(ctx.doc.user.analytics),
+
+        # Stylesheets.
+        map(css_links) do each
+            link[:href => each, :rel => "stylesheet", :type => "text/css"]
+        end,
+
+        script("documenterBaseURL=\"$(relhref(src, "."))\""),
+        script[
+            :src => requirejs_cdn,
+            Symbol("data-main") => relhref(src, ctx.documenter_js)
+        ],
+
+        script[:src => relhref(src, "siteinfo.js")],
+        script[:src => relhref(src, "../versions.js")],
+
+        # Custom user-provided assets.
+        asset_links(src, ctx.local_assets),
+
+        script[:src => "/js/jquery-1.8.3.min.js"],
+        script[:src => "/js/jquery.word-break-keep-all.min.js"],
+        script("\$(document).ready(function() { \$('p').wordBreakKeepAll(); });")
+    )
+end
+
+function Documenter.Writers.HTMLWriter.render_page(ctx, navnode)
+    @tags html body
+
+    page = getpage(ctx, navnode)
+
+    head = render_head(ctx, navnode)
+    navmenu = render_navmenu(ctx, navnode)
+    article = render_article(ctx, navnode)
+
+    htmldoc = DOM.HTMLDocument(
+        html[:lang=>"ko"](
+            head,
+            body(navmenu, article)
+        )
+    )
+
+    open_output(ctx, navnode) do io
+        print(io, htmldoc)
+    end
+end
 
 function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     @tags article header footer nav ul li hr span a
