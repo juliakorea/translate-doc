@@ -140,7 +140,7 @@ makedocs(
     format    = "pdf" in ARGS ? :latex : :html,
     sitename  = "The Julia Language",
     authors   = "The Julia Project",
-    analytics = "UA-28835595-6",
+    analytics = "UA-110655381-2", # juliakorea 추척 ID
     pages     = PAGES,
     html_prettyurls = ("deploy" in ARGS),
 )
