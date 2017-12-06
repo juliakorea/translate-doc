@@ -498,7 +498,7 @@ ERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Floa
 The compilers for many languages have an internal union construct for reasoning about types; Julia
 simply exposes it to the programmer.
 
-## Parametric Types
+## [Parametric Types](@id Parametric-Types)
 
 An important and powerful feature of Julia's type system is that it is parametric: types can take
 parameters, so that type declarations actually introduce a whole family of new types -- one for

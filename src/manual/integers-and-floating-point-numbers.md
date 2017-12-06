@@ -1,11 +1,11 @@
-# 정수와 부동소수점으로 표현되는 실수
+# [정수와 부동소수점으로 표현되는 실수](@id Integers-and-Floating-Point-Numbers)
 
 정수와 부동소수점(floating-point)으로 표현되는 실수는 수치 연산에 있어서 가장 기본적인 구성 요소이다.
 이와 같은 값들의 Julia 내부에서의 내장 표현은 숫자 프라미티브(numberic primitives)이라고 하고, 실수나 부동소수점처럼 코드상에서 즉각적으로 표현되는 값을은 수치형 리터럴(numeric literal)이라고 알려져있다. 
 예를들어, `1`은 정수형 리터럴이지만, `1.0`은 부동소수점 리터럴이다; 그리고 위 리터럴들이 바이너리 형태로 메모리상에서 표현되는 객체(object)를 숫자 프리미티브(numeric primitives)라고 한다.
 
 Julia는 넓은 범위의 기본 수치 타입과 수치연산자, 그리고 비트연산자를 모두 제공한다.
-현대의 컴퓨터에서 기본으로 제공되는 Julia에 내장된 표준 수학 함수들은 Julia로 하여금 연산 자원을 최대한 활용 수 있도록 한다. 게다가 Julia는 하드웨어에서 기본적으로 표현하지 못하는 자들을 표현할 수 있게 만든 [] Additionally, Julia provides [Arbitrary Precision Arithmetic](@ref)를 지원한다. 그러나 [Arbitrary precision Arithmetic](@ref) 사용하면 성능상으로 느려질 수 있다
+현대의 컴퓨터에서 기본으로 제공되는 Julia에 내장된 표준 수학 함수들은 Julia로 하여금 연산 자원을 최대한 활용 수 있도록 한다. 게다가 Julia는 하드웨어에서 기본적으로 표현하지 못하는 자들을 표현할 수 있게 만든 [] Additionally, Julia provides [Arbitrary Precision Arithmetic](@ref)를 지원한다. 그러나 [Arbitrary Precision Arithmetic](@ref) 사용하면 성능상으로 느려질 수 있다
 
 다음은 Julia에서 기본적으로 지원하는 타입니다:
 
@@ -286,7 +286,7 @@ julia> bitstring(-0.0)
 "1000000000000000000000000000000000000000000000000000000000000000"
 ```
 
-### 특별한 부동 소수점 값들
+### [특별한 부동 소수점 값들](@id Special-floating-point-values)
 
 다음은 실수에는 포함되지는 않은 세 종류의 특정 표준 부동 소수점이 있다:
 
@@ -440,7 +440,7 @@ julia> setrounding(Float64,RoundDown) do
   * 상급자들은 부동 소수점의 내부 구현에 관한 이야기들과 부동 소수점 연산을 할 때 맞닥뜨릴 수 있는 수치적인 정확도에 관한 문제들에 대해서는 David Goldberg의 논문 [What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.6768&rep=rep1&type=pdf)를 참고하는 것이 좋다.
   * 특별히 부동 소수점의 역사, 근거 및 문제점에 대한 훨씬 더 자세한 문서화, 수치 컴퓨팅에서의 토론은  일반적으로 "부동 소수점의 아버지"로 알려진 [William Kahan](https://en.wikipedia.org/wiki/William_Kahan)의 [collected writings](https://people.eecs.berkeley.edu/~wkahan/)을 참조하세요. 관심이 더 생긴다면 [An Interview with the Old Man of Floating-Point](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html)를 읽기 바란다.
 
-## 임의 정밀도 연산
+## [임의 정밀도 연산](@id Arbitrary-Precision-Arithmetic)
 
 임의 정밀도의 정수와 부동 소수점들의 연산을 위해, Julia는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 Julia에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
 

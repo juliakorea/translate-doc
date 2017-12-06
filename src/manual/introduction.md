@@ -3,7 +3,7 @@
 과학 분야 컴퓨팅은 고성능의 많은 수학적 계산 처리를 필요로 한다. 하지만
 당사자인 전문 연구자들은 속도가 느리더라도 동적인 언어로서 그들의 업무를 처리한다. 동적인 언어를 즐겨쓰는 나름의 이유들로 보아, 이러한 추세는 쉽게 사그러들지 않아 보인다. 다행히 근래의 언어 디자인과 컴파일러 기법의 발달은 미뤄뒀던 성능 부분을 해결함으로서 프로토타이핑 작업시 개별 환경의 생산성을, 성능이 중요한 애플리케이션 구축시 그 효용성을 충분히 발휘한다. 줄리아 프로그래밍 언어는 다음과 같은 역할을 수행한다: 과학과 수학 분야의 컴퓨팅에 적합한 기존의 정적 타입 언어에 견줄만한 성능을 갖춘 유연한 동적 언어.
 
-줄리아 컴파일러는 파이썬, R에서의 인터프리터 방식과 다르다. 그래서 줄리아의 성능을 처음 접하면 아마도 의아할 것이다. 헌데 막상 작성한 코드가 느리다면  [Performance Tips](@man-performance-tips)을 읽어보길 권한다. 줄리아가 어떤 식으로 작동하는지 이해했다면, C로 짠거마냥 빠른 코드를 쉽게 작성할 수 있을 것이다.
+줄리아 컴파일러는 파이썬, R에서의 인터프리터 방식과 다르다. 그래서 줄리아의 성능을 처음 접하면 아마도 의아할 것이다. 헌데 막상 작성한 코드가 느리다면  [Performance Tips](@ref man-performance-tips)을 읽어보길 권한다. 줄리아가 어떤 식으로 작동하는지 이해했다면, C로 짠거마냥 빠른 코드를 쉽게 작성할 수 있을 것이다.
 
 줄리아는 타입 추론과 [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine) 으로 구현한[적시 컴파일 (JIT)](https://en.wikipedia.org/wiki/Just-in-time_compilation),
 implemented using [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine)을 사용해 선택적 타입, 멀티플 디스패치, 좋은 성능을 이뤄내고 있다. 그리고 명령형, 함수형, 객체 지향 프로그래밍의 특징을 포괄하는 다양한 패러다임을 추구한다. 줄리아는 고급 단계의 수치 계산에 있어 R, 매트랩, 파이썬처럼 간편하고 표현력이 우수하다. 뿐만 아니라 일반적인 형태의 프로그래밍 또한 가능하다. 이를 위해 줄리아는 수학 프로그래밍 언어를 근간으로 구축하였고 [리프스](https://en.wikipedia.org/wiki/Lisp_(programming_language)), [펄](https://en.wikipedia.org/wiki/Perl_(programming_language)), [파이썬](https://en.wikipedia.org/wiki/Python_(programming_language)), [루아](https://en.wikipedia.org/wiki/Lua_(programming_language)), [루비](https://en.wikipedia.org/wiki/Ruby_(programming_language))와 같은 대중적인 동적 언어의 특징을 가져와 취합하고 있다.

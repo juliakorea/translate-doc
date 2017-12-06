@@ -3,9 +3,9 @@
 ## 매뉴얼
 
   * [Introduction](@ref man-introduction)
-  * [Getting Started](@ref)
-  * [Variables](@ref)
-  * [Integers and Floating-Point Numbers](@ref)
+  * [Getting Started](@ref Getting-Started)
+  * [Variables](@ref Variables)
+  * [Integers and Floating-Point Numbers](@ref Integers-and-Floating-Point-Numbers)
   * [Mathematical Operations and Elementary Functions](@ref)
   * [Complex and Rational Numbers](@ref)
   * [Strings](@ref man-strings)
