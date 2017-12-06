@@ -11,7 +11,7 @@ import Documenter.Writers.HTMLWriter: normalize_css, google_fonts, fontawesome_c
 import Documenter.Writers.HTMLWriter: analytics_script, requirejs_cdn, asset_links
 
 function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
-    @tags head meta link script title
+    @tags head meta link script title style
     src = get_url(ctx, navnode)
 
     page_title = "$(mdflatten(pagetitle(ctx, navnode))) · $(ctx.doc.user.sitename)"
@@ -45,6 +45,23 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
         # Custom user-provided assets.
         asset_links(src, ctx.local_assets),
 
+        # juliakorea custom.css
+        style[:type => "text/css"]("""
+        p {
+            font-family: serif;
+            line-height: 1.9em;
+            margin: 0.8em;
+        }
+        li p {
+            line-height: 1.8em;
+            margin: 0em;
+        }
+        article footer {
+            margin: 1em;
+        }
+        """),
+
+        # juliakorea 단어 word break
         script[:src => "/js/jquery-1.8.3.min.js"],
         script[:src => "/js/jquery.word-break-keep-all.min.js"],
         script("\$(document).ready(function() { \$('p').wordBreakKeepAll(); });")
