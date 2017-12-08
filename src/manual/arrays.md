@@ -1,108 +1,101 @@
-# [Multi-dimensional Arrays](@id man-multi-dim-arrays)
+# [다차원 배열](@id man-multi-dim-arrays)
 
-Julia, like most technical computing languages, provides a first-class array implementation. Most
-technical computing languages pay a lot of attention to their array implementation at the expense
-of other containers. Julia does not treat arrays in any special way. The array library is implemented
-almost completely in Julia itself, and derives its performance from the compiler, just like any
-other code written in Julia. As such, it's also possible to define custom array types by inheriting
-from `AbstractArray.` See the [manual section on the AbstractArray interface](@ref man-interface-array) for more details
-on implementing a custom array type.
+대부분의 기술 계산 언어와 마찬가지로, Julia는 일급 배열 구현을 제공한다.
+대부분의 기술 계산 언어는 다른 컨테이너를 희생해 가면서도 배열의 구현에 많은 신경을 쓴다. 
+Julia는 배열을 특별하게 취급하지는 않는다.
+배열 라이브러리는 거의 전부 Julia로 작성되었으며, Julia로 쓰여진 다른 코드와 마찬가지로 컴파일러가 퍼포먼스를 결정한다.
+따라서 `AbstractArray`로 부터 상속하여 커스텀 배열 타입을 정의하는 것도 가능하다.
+커스텀 배열 타입을 구현하는 것의 세부사항은 [manual section on the AbstractArray interface](@ref man-interface-array) 를 참조하기 바란다.
 
-An array is a collection of objects stored in a multi-dimensional grid. In the most general case,
-an array may contain objects of type `Any`. For most computational purposes, arrays should contain
-objects of a more specific type, such as [`Float64`](@ref) or [`Int32`](@ref).
+배열은 다차원 그리드에 저장된 객체들의 모음이다.
+가장 일반적인 경우, 배열은 `Any` 타입의 객체들을 담을 수 있다.
+대부분의 계산 목적을 위해서는, 배열은 [`Float64`](@ref) 혹은 [`Int32`](@ref)와 같이 더 구체적인 타입의 객체를 담는 것이 좋다.
 
-In general, unlike many other technical computing languages, Julia does not expect programs to
-be written in a vectorized style for performance. Julia's compiler uses type inference and generates
-optimized code for scalar array indexing, allowing programs to be written in a style that is convenient
-and readable, without sacrificing performance, and using less memory at times.
+다른 많은 기술 계산 언어에서는 성능을 위해 프로그램을 벡터화된 스타일로 작성할 필요가 있지만, Julia에서는 일반적으로 그럴 필요가 없다.
+Julia 컴파일러는 타입 추론을 사용하여 스칼라 배열 인덱싱에 최적화된 코드를 생성한다.
+따라서 편리하고 읽기 쉬운 스타일로 프로그램을 작성하더라도 성능을 희생하지 않으며, 오히려 메모리를 더 적게 사용하는 경우도 있다.
 
-In Julia, all arguments to functions are passed by reference. Some technical computing languages
-pass arrays by value, and this is convenient in many cases. In Julia, modifications made to input
-arrays within a function will be visible in the parent function. The entire Julia array library
-ensures that inputs are not modified by library functions. User code, if it needs to exhibit similar
-behavior, should take care to create a copy of inputs that it may modify.
+Julia에서 모든 인수는 참조에 의해 전달된다(pass by reference).
+어떤 기술적 계산 언어는 배열을 값에 의해 전달하는데(pass by value), 이렇게 하는 것이 편리한 경우도 많이 있다.
+Julia에서는 함수 내에서 일어난 입력 배열의 변화를 부모 함수에서도 볼 수 있다.
+Julia 배열 라이브러리의 어떤 코드도 입력 배열을 변경하지 않는다.
+사용자의 코드가 이와 비슷하게 행동하도록 하려면, 변경될 수도 있는 배열을 복사하는 것에 소홀해서는 안된다.
 
-## Arrays
+## 배열
 
-### Basic Functions
+### 기본 함수
 
-| Function               | Description                                                                      |
-|:---------------------- |:-------------------------------------------------------------------------------- |
-| [`eltype(A)`](@ref)    | the type of the elements contained in `A`                                        |
-| [`length(A)`](@ref)    | the number of elements in `A`                                                    |
-| [`ndims(A)`](@ref)     | the number of dimensions of `A`                                                  |
-| [`size(A)`](@ref)      | a tuple containing the dimensions of `A`                                         |
-| [`size(A,n)`](@ref)    | the size of `A` along dimension `n`                                              |
-| [`indices(A)`](@ref)   | a tuple containing the valid indices of `A`                                      |
-| [`indices(A,n)`](@ref) | a range expressing the valid indices along dimension `n`                         |
-| [`eachindex(A)`](@ref) | an efficient iterator for visiting each position in `A`                          |
-| [`stride(A,k)`](@ref)  | the stride (linear index distance between adjacent elements) along dimension `k` |
-| [`strides(A)`](@ref)   | a tuple of the strides in each dimension                                         |
+| 함수                   | 설명                                                           |
+|:---------------------- |:-------------------------------------------------------------- |
+| [`eltype(A)`](@ref)    | `A` 의 원소 타입                                               |
+| [`length(A)`](@ref)    | `A` 의 원소 갯수                                               |
+| [`ndims(A)`](@ref)     | `A` 의 차원수                                                  |
+| [`size(A)`](@ref)      | `A` 의 크기 투플                                               |
+| [`size(A,n)`](@ref)    | `A` 의 `n` 차원의 크기                                         |
+| [`indices(A)`](@ref)   | `A` 의 유효한 인덱스 투플                                      |
+| [`indices(A,n)`](@ref) | `A` 의 유효 인덱스 `n`차원 범위(range)                         |
+| [`eachindex(A)`](@ref) | `A` 의 모든 위치를 방문하는 효율적인 반복자(iterator)          |
+| [`stride(A,k)`](@ref)  | `k` 차원 방향의 스트라이드 (연속한 원소 간의 선형 인덱스 거리) |
+| [`strides(A)`](@ref)   | 모든 차원의 스트라이드 투플                                    |
 
-### Construction and Initialization
+### 생성과 초기화
 
-Many functions for constructing and initializing arrays are provided. In the following list of
-such functions, calls with a `dims...` argument can either take a single tuple of dimension sizes
-or a series of dimension sizes passed as a variable number of arguments. Most of these functions
-also accept a first input `T`, which is the element type of the array. If the type `T` is
-omitted it will default to [`Float64`](@ref).
+배열을 생성하고 초기화 하는 많은 함수가 있다.
+다음에 나열된 함수들에서, `dims...` 인수는 차원의 크기들을 나타내는 투플 하나를 받거나, 혹은 각 차원의 크기를 여러 인수로 받을 수 있다.
+이 함수들의 대부분은 첫번째 인수로 배열의 원소 타입 `T`를 받을 수 있다.
+`T`가 생략되었다면 [`Float64`](@ref)가 기본값이다.
 
-| Function                           | Description                                                                                                                                                                                                                                  |
-|:---------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Array{T}(uninitialized, dims...)`](@ref)     | an uninitialized dense [`Array`](@ref)                                                                                                                                                                                                       |
-| [`zeros(T, dims...)`](@ref)                    | an `Array` of all zeros                                                                                                                                                                                                                      |
-| [`ones(T, dims...)`](@ref)                     | an `Array` of all ones                                                                                                                                                                                                                       |
-| [`trues(dims...)`](@ref)                       | a [`BitArray`](@ref) with all values `true`                                                                                                                                                                                                  |
-| [`falses(dims...)`](@ref)                      | a `BitArray` with all values `false`                                                                                                                                                                                                         |
-| [`reshape(A, dims...)`](@ref)                  | an array containing the same data as `A`, but with different dimensions                                                                                                                                                                      |
-| [`copy(A)`](@ref)                              | copy `A`                                                                                                                                                                                                                                     |
-| [`deepcopy(A)`](@ref)                          | copy `A`, recursively copying its elements                                                                                                                                                                                                   |
-| [`similar(A, T, dims...)`](@ref)               | an uninitialized array of the same type as `A` (dense, sparse, etc.), but with the specified element type and dimensions. The second and third arguments are both optional, defaulting to the element type and dimensions of `A` if omitted. |
-| [`reinterpret(T, A)`](@ref)                    | an array with the same binary data as `A`, but with element type `T`                                                                                                                                                                         |
-| [`rand(T, dims...)`](@ref)                     | an `Array` with random, iid [^1] and uniformly distributed values in the half-open interval ``[0, 1)``                                                                                                                                       |
-| [`randn(T, dims...)`](@ref)                    | an `Array` with random, iid and standard normally distributed values                                                                                                                                                                         |
-| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` identity matrix                                                                                                                                                                                                                   |
-| [`linspace(start, stop, n)`](@ref)             | range of `n` linearly spaced elements from `start` to `stop`                                                                                                                                                                                 |
-| [`fill!(A, x)`](@ref)                          | fill the array `A` with the value `x`                                                                                                                                                                                                        |
-| [`fill(x, dims...)`](@ref)                     | an `Array` filled with the value `x`                                                                                                                                                                                                         |
+| 함수                                       | 설명                                                                                                                                                               |
+|:------------------------------------------ |:------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`Array{T}(uninitialized, dims...)`](@ref) | 초기화 되지 않은 밀집 [`Array`](@ref)                                                                                                                              |
+| [`zeros(T, dims...)`](@ref)                | 모든 값이 0으로 초기화 된 `Array`                                                                                                                                  |
+| [`ones(T, dims...)`](@ref)                 | 모든 값이 1로 초기화 된 `Array`                                                                                                                                    |
+| [`trues(dims...)`](@ref)                   | 모든 값이 `true`로 초기화 된 [`BitArray`](@ref)                                                                                                                    |
+| [`falses(dims...)`](@ref)                  | 모든 값이 `false`로 초기화 된 `BitArray`                                                                                                                           |
+| [`reshape(A, dims...)`](@ref)              | `A` 와 동일한 데이타를 가지고 있지만 형상이 다른 배열                                                                                                              |
+| [`copy(A)`](@ref)                          | `A` 의 얕은 복사                                                                                                                                                   |
+| [`deepcopy(A)`](@ref)                      | `A` 의 깊은 복사 (모든 원소를 재귀적으로 복사함)                                                                                                                   |
+| [`similar(A, T, dims...)`](@ref)           | `A` 와 동일한 종류(밀집, 희소, 등)의 초기화 되지 않은 배열. 지정된 원소 타입과 형상을 가짐. 두번째와 세번째 인수는 선택적이며, 기본값은 `A`의 원소타입과 차원이다. |
+| [`reinterpret(T, A)`](@ref)                | `A` 와 동일한 이진 데이터를 가지고 있지만, 원소 타입이 `T` 인 배열                                                                                                 |
+| [`rand(T, dims...)`](@ref)                 | 독립 동일하며 열린구간 ``[0, 1)`` 상에서 연속 균일 분포를 가진 랜덤 `Array`                                                                                        |
+| [`randn(T, dims...)`](@ref)                | 독립 동일하며 표준 정규 분포를 가진 랜덤 `Array`                                                                                                                   |
+| [`Matrix{T}(I, m, n)`](@ref)               | 크기가 `m` × `n` 인 단위 행렬                                                                                                                                      |
+| [`linspace(start, stop, n)`](@ref)         | `start`에서 `stop`까지 `n` 개의 원소가 선형적으로 배치된 구간                                                                                                      |
+| [`fill!(A, x)`](@ref)                      | 배열 `A` 를 `x` 값으로 채우기                                                                                                                                      |
+| [`fill(x, dims...)`](@ref)                 | `x` 값으로 차 있는 `Array`                                                                                                                                         |
 
-[^1]: *iid*, independently and identically distributed.
+`[A, B, C, ...]` 문법은 주어진 인수들의 일차원 배열(벡터)을 생성한다.
+만약 모든 인수가 공통의 [확장 타입(promotion type)](@ref conversion-and-promotion)을 가진다면, 이들은 `convert`를 통해 공통의 확장 타입으로 변환된다.
 
-The syntax `[A, B, C, ...]` constructs a 1-d array (vector) of its arguments. If all
-arguments have a common [promotion type](@ref conversion-and-promotion) then they get
-converted to that type using `convert`.
+### 병합(Concatenation)
 
-### Concatenation
+배열은 다음의 함수를 사용하여 생성하고 병합할 수 있다.
 
-Arrays can be constructed and also concatenated using the following functions:
+| 함수                   | 설명                                  |
+|:---------------------- |:------------------------------------- |
+| [`cat(k, A...)`](@ref) | n차원 입력 배열을 `k`차원을 따라 병합 |
+| [`vcat(A...)`](@ref)   | `cat(1, A...)`의 줄임                 |
+| [`hcat(A...)`](@ref)   | `cat(2, A...)`의 줄임                 |
 
-| Function               | Description                                          |
-|:---------------------- |:---------------------------------------------------- |
-| [`cat(k, A...)`](@ref) | concatenate input n-d arrays along the dimension `k` |
-| [`vcat(A...)`](@ref)   | shorthand for `cat(1, A...)`                         |
-| [`hcat(A...)`](@ref)   | shorthand for `cat(2, A...)`                         |
+스칼라 값이 인수로 전달되면 원소 갯수가 하나인 배열로 취급한다.
 
-Scalar values passed to these functions are treated as 1-element arrays.
+병합 함수는 자주 사용되므로 다음의 특별한 문법을 가진다:
 
-The concatenation functions are used so often that they have special syntax:
-
-| Expression        | Calls             |
-|:----------------- |:----------------- |
+| 표현식            | 함수            |
+|:----------------- |:--------------- |
 | `[A; B; C; ...]`  | [`vcat`](@ref)  |
 | `[A B C ...]`     | [`hcat`](@ref)  |
 | `[A B; C D; ...]` | [`hvcat`](@ref) |
 
-[`hvcat`](@ref) concatenates in both dimension 1 (with semicolons) and dimension 2 (with spaces).
+[`hvcat`](@ref) 은 1차원 (세미콜론으로 구분) 과 2차원(스페이스로 구분) 모두 병합한다.
 
-### Typed array initializers
+### 타입이 있는 배열의 초기화
 
-An array with a specific element type can be constructed using the syntax `T[A, B, C, ...]`. This
-will construct a 1-d array with element type `T`, initialized to contain elements `A`, `B`, `C`,
-etc. For example `Any[x, y, z]` constructs a heterogeneous array that can contain any values.
+특정 원소 타입의 배열은 `T[A, B, C, ...]` 문법을 통해 생성할 수 있다.
+이는 원소 타입이 `T`인 일차원 배열을 생성하고, 원소 `A`, `B`, `C` 등을 담도록 초기화한다.
+예를 들어 `Any[x, y, z]`는 어떤 값이든 가질 수 있는 배열을 생성한다.
 
-Concatenation syntax can similarly be prefixed with a type to specify the element type of the
-result.
+병합 구문 또한 비슷한 방법으로 원소 타입을 지정할 수 있다.
 
 ```jldoctest
 julia> [[1 2] [3 4]]
@@ -114,23 +107,21 @@ julia> Int8[[1 2] [3 4]]
  1  2  3  4
 ```
 
-### Comprehensions
+### 컴프리헨션(Comprehensions)
 
-Comprehensions provide a general and powerful way to construct arrays. Comprehension syntax is
-similar to set construction notation in mathematics:
+컴프리헨션은 배열을 생성하는 일반적이면서도 강력한 방법을 제공한다.
+컴프리헨션의 문법은 수학에서 쓰이는 집합의 조건제시법과 유사하다:
 
 ```
 A = [ F(x,y,...) for x=rx, y=ry, ... ]
 ```
 
-The meaning of this form is that `F(x,y,...)` is evaluated with the variables `x`, `y`, etc. taking
-on each value in their given list of values. Values can be specified as any iterable object, but
-will commonly be ranges like `1:n` or `2:(n-1)`, or explicit arrays of values like `[1.2, 3.4, 5.7]`.
-The result is an N-d dense array with dimensions that are the concatenation of the dimensions
-of the variable ranges `rx`, `ry`, etc. and each `F(x,y,...)` evaluation returns a scalar.
+이는 `x`, `y` 등의 변수가 주어진 목록의 값을 각각 가지도록 하여 `F(x,y,...)`를 계산한다는 뜻이다.
+값의 목록은 반복 가능한(iterable) 어떤 객체도 될 수 있지만, 주로 `1:n` 혹은 `2:(n-1)` 와 같은 범위이거나, `[1.2, 3.4, 5.7]`와 같이 명시적인 값의 배열이다.
+결과는 N차원 배열이며, 그 크기는 변수의 범위인 `rx`, `ry` 등의 크기를 병합한 것과 같다.
+그리고 각 `F(x,y,...)` 계산은 스칼라 값을 리턴한다.
 
-The following example computes a weighted average of the current element and its left and right
-neighbor along a 1-d grid. :
+다음의 예는 일차원 그리드에서, 현재 원소와 왼쪽 이웃, 오른쪽 이웃의 가중 평균을 계산한다:
 
 ```julia-repl
 julia> x = rand(8)
@@ -154,36 +145,33 @@ julia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
  0.656511
 ```
 
-The resulting array type depends on the types of the computed elements. In order to control the
-type explicitly, a type can be prepended to the comprehension. For example, we could have requested
-the result in single precision by writing:
+결과 배열의 타입은 계산된 원소가 결정한다.
+타입을 명시적으로 정하려면 컴프리헨션 앞에 타입을 붙이면 된다.
+예를 들어, 다음과 같이 결과를 단정밀도(single precision)로 요청할 수 있다:
 
 ```julia
 Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 ```
 
-### Generator Expressions
+### 제너레이터 표현식 (Generator Expressions)
 
-Comprehensions can also be written without the enclosing square brackets, producing an object
-known as a generator. This object can be iterated to produce values on demand, instead of allocating
-an array and storing them in advance (see [Iteration](@ref)). For example, the following expression
-sums a series without allocating memory:
+컴프리헨션은 대괄호 없이도 쓸 수 있으며, 이 경우 제너레이터 객체를 생성한다.
+제너레이터는 배열을 미리 할당하고 값을 저장하는 것이 아니라, 필요에 따라 값을 생성하도록 반복할 수 있다 ([반복](@ref man-iteration) 참조).
+예를 들어, 다음의 표현식은 메모리 할당 없이 수열의 합을 계산한다:
 
 ```jldoctest
 julia> sum(1/n^2 for n=1:1000)
 1.6439345666815615
 ```
 
-When writing a generator expression with multiple dimensions inside an argument list, parentheses
-are needed to separate the generator from subsequent arguments:
+인수 목록 안에서 다차원 제너레이터 표현식을 사용할 때에는 괄호를 사용하여 그 다음의 인수와 구분한다:
 
 ```julia-repl
 julia> map(tuple, 1/(i+j) for i=1:2, j=1:2, [1:4;])
 ERROR: syntax: invalid iteration specification
 ```
 
-All comma-separated expressions after `for` are interpreted as ranges. Adding parentheses lets
-us add a third argument to `map`:
+`for` 다음에 나오는 쉼표로 구분된 모든 표현식은 범위로 해석되므로, 여기에 괄호를 추가함으로써 `map`에 세번째 인수를 추가할 수 있다.
 
 ```jldoctest
 julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
@@ -192,8 +180,7 @@ julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
  (0.333333, 2)  (0.25, 4)
 ```
 
-Ranges in generators and comprehensions can depend on previous ranges by writing multiple `for`
-keywords:
+제너레이터와 컴프리헨션에서 `for` 키워드를 여러번 사용함으로써 범위가 앞선 범위에 의존하도록 할 수 있다.
 
 ```jldoctest
 julia> [(i,j) for i=1:3 for j=1:i]
@@ -206,9 +193,9 @@ julia> [(i,j) for i=1:3 for j=1:i]
  (3, 3)
 ```
 
-In such cases, the result is always 1-d.
+이러한 경우 결과는 항상 1차원이다.
 
-Generated values can be filtered using the `if` keyword:
+생성된 값은 `if` 키워드를 사용하여 필터링 할 수 있다.
 
 ```jldoctest
 julia> [(i,j) for i=1:3 for j=1:i if i+j == 4]
@@ -217,41 +204,36 @@ julia> [(i,j) for i=1:3 for j=1:i if i+j == 4]
  (3, 1)
 ```
 
-### [Indexing](@id man-array-indexing)
+### [인덱싱](@id man-array-indexing)
 
-The general syntax for indexing into an n-dimensional array A is:
+n차원 배열 `A`를 인덱싱 하는 일반적인 문법은 다음과 같다:
 
 ```
 X = A[I_1, I_2, ..., I_n]
 ```
 
-where each `I_k` may be a scalar integer, an array of integers, or any other
-[supported index](@ref man-supported-index-types). This includes
-[`Colon`](@ref) (`:`) to select all indices within the entire dimension,
-ranges of the form `a:c` or `a:b:c` to select contiguous or strided
-subsections, and arrays of booleans to select elements at their `true` indices.
+여기서 `I_k` 는 스칼라 정수, 정수의 배열, 혹은 [지원하는 다른 인덱스](@ref man-supported-index-types) 중 하나이다.
+여기에는 모든 인덱스를 선택하는 [`Colon`](@ref) (`:`), 연속되거나 일정한 간격의 부분수열을 선택하는 `a:c` 혹은 `a:b:c`와 같은 형태의 범위, 그리고 `true` 값을 선택하는 부울 배열도 포함된다.
 
-If all the indices are scalars, then the result `X` is a single element from the array `A`. Otherwise,
-`X` is an array with the same number of dimensions as the sum of the dimensionalities of all the
-indices.
+만약 모든 인덱스가 스칼라라면, 결과 `X`는 배열 `A`의 원소 중 하나이다.
+그렇지 않을 경우 `X`는 배열이며, 모든 인덱스의 차원 수의 합이 `X`의 차원수가 된다.
 
-If all indices are vectors, for example, then the shape of `X` would be `(length(I_1), length(I_2), ..., length(I_n))`,
-with location `(i_1, i_2, ..., i_n)` of `X` containing the value `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]`.
-If `I_1` is changed to a two-dimensional matrix, then `X` becomes an `n+1`-dimensional array of
-shape `(size(I_1, 1), size(I_1, 2), length(I_2), ..., length(I_n))`. The matrix adds a dimension.
-The location `(i_1, i_2, i_3, ..., i_{n+1})` contains the value at `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]`.
-All dimensions indexed with scalars are dropped. For example, the result of `A[2, I, 3]` is an
-array with size `size(I)`. Its `i`th element is populated by `A[2, I[i], 3]`.
+예를들어 만약 모든 인덱스가 벡터라면 `X`의 크기는 `(length(I_1), length(I_2), ..., length(I_n))`가 되고, `X`의 `(i_1, i_2, ..., i_n)` 위치는  `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]` 값을 가지게 된다.
+만약 `I_1`이 2차원 행렬로 바뀐다면, `X`는 크기가 `(size(I_1, 1), size(I_1, 2), length(I_2), ..., length(I_n))`인 `n+1`차원 배열이 된다.
+행렬이 차원을 하나 추가하는 것이다.
+`X`의 `(i_1, i_2, i_3, ..., i_{n+1})` 위치는 `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]` 값을 가진다.
+스칼라 인덱스를 가진 모든 차원은 결과에서 빠진다.
+예를 들어, `A[2, I, 3]`의 결과는 크기가 `size(I)`인 배열이며, `i`번째 원소의 값은 `A[2, I[i], 3]`이다.
 
-As a special part of this syntax, the `end` keyword may be used to represent the last index of
-each dimension within the indexing brackets, as determined by the size of the innermost array
-being indexed. Indexing syntax without the `end` keyword is equivalent to a call to `getindex`:
+인덱싱 문법의 특수한 한 부분으로서, 각 차원의 마지막 인덱스를 나타내기 위해서 인덱싱 괄호 안에서 `end` 키워드를 사용할 수 있다.
+마지막 인덱스는 인덱싱 되는 가장 안쪽의 배열의 크기에 따라 결정된다.
+`end` 키워드 없는 인덱싱 문법은 `getindex` 호출과 동일하다:
 
 ```
 X = getindex(A, I_1, I_2, ..., I_n)
 ```
 
-Example:
+예시:
 
 ```jldoctest
 julia> x = reshape(1:16, 4, 4)
@@ -272,9 +254,8 @@ julia> x[1, [2 3; 4 1]]
  13  1
 ```
 
-Empty ranges of the form `n:n-1` are sometimes used to indicate the inter-index location between
-`n-1` and `n`. For example, the [`searchsorted`](@ref) function uses this convention to indicate
-the insertion point of a value not found in a sorted array:
+`n:n-1`과 같은 식의 빈 범위는 인덱스 `n-1`과 `n`사이의 위치를 나타내기 위해 가끔 사용된다.
+예를 들어, [`searchsorted`](@ref) 함수는 이 방법을 사용하여 정렬된 배열에 없는 값의 삽입 위치를 나타낸다.
 
 ```jldoctest
 julia> a = [1,2,5,6,7];
@@ -283,36 +264,30 @@ julia> searchsorted(a, 3)
 3:2
 ```
 
-### Assignment
+### 대입
 
-The general syntax for assigning values in an n-dimensional array A is:
+n차원 배열 `A`에 값을 대입하는 일반적인 문법은 다음과 같다:
 
 ```
 A[I_1, I_2, ..., I_n] = X
 ```
 
-where each `I_k` may be a scalar integer, an array of integers, or any other
-[supported index](@ref man-supported-index-types). This includes
-[`Colon`](@ref) (`:`) to select all indices within the entire dimension,
-ranges of the form `a:c` or `a:b:c` to select contiguous or strided
-subsections, and arrays of booleans to select elements at their `true` indices.
+여기서 `I_k` 는 스칼라 정수, 정수의 배열, 혹은 [지원하는 다른 인덱스](@ref man-supported-index-types) 중 하나이다.
+여기에는 모든 인덱스를 선택하는 [`Colon`](@ref) (`:`), 연속되거나 일정한 간격의 부분수열을 선택하는 `a:c` 혹은 `a:b:c`와 같은 형태의 범위, 그리고 `true` 값을 선택하는 부울 배열도 포함된다.
 
-If `X` is an array, it must have the same number of elements as the product of the lengths of
-the indices: `prod(length(I_1), length(I_2), ..., length(I_n))`. The value in location `I_1[i_1], I_2[i_2], ..., I_n[i_n]`
-of `A` is overwritten with the value `X[i_1, i_2, ..., i_n]`. If `X` is not an array, its value
-is written to all referenced locations of `A`.
+만약 `X`가 배열이라면, 그 원소의 갯수는 모든 인덱스 길이의 곱인 `prod(length(I_1), length(I_2), ..., length(I_n))`와 같아야 한다.
+`A`의 `I_1[i_1], I_2[i_2], ..., I_n[i_n]` 위치에 있는 값은 `X[i_1, i_2, ..., i_n]` 값으로 덮어쓰인다.
+만약 `X`가 배열이 아니라면, `A`의 참조된 모든 위치에 `X`의 값이 대입된다.
 
-Just as in [Indexing](@ref man-array-indexing), the `end` keyword may be used
-to represent the last index of each dimension within the indexing brackets, as
-determined by the size of the array being assigned into. Indexed assignment
-syntax without the `end` keyword is equivalent to a call to
-[`setindex!`](@ref):
+[인덱싱](@ref man-array-indexing)에서와 마찬가지로, 각 차원의 마지막 인덱스를 나타내기 위해서 인덱싱 괄호 안에서 `end` 키워드를 사용할 수 있다.
+마지막 인덱스는 인덱싱 되는 가장 안쪽의 배열의 크기에 따라 결정된다.
+`end` 키워드 없는 대입의 문법은 [`setindex!`](@ref) 호출과 동일하다:
 
 ```
 setindex!(A, X, I_1, I_2, ..., I_n)
 ```
 
-Example:
+예시:
 
 ```jldoctest
 julia> x = collect(reshape(1:9, 3, 3))
@@ -331,29 +306,26 @@ julia> x
  3   6   9
 ```
 
-### [Supported index types](@id man-supported-index-types)
+### [지원하는 인덱스 타입](@id man-supported-index-types)
 
-In the expression `A[I_1, I_2, ..., I_n]`, each `I_k` may be a scalar index, an
-array of scalar indices, or an object that represents an array of scalar
-indices and can be converted to such by [`to_indices`](@ref):
+표현식 `A[I_1, I_2, ..., I_n]`에서, `I_k`는 스칼라 인덱스, 스칼라 인덱스의 배열, 혹은 [`to_indices`](@ref)를 통해 스칼라 인덱스 배열로 변환될 수 있는 객체 중 하나이다:
 
-1. A scalar index. By default this includes:
-    * Non-boolean integers
-    * `CartesianIndex{N}`s, which behave like an `N`-tuple of integers spanning multiple dimensions (see below for more details)
-2. An array of scalar indices. This includes:
-    * Vectors and multidimensional arrays of integers
-    * Empty arrays like `[]`, which select no elements
-    * Ranges like `a:c` or `a:b:c`, which select contiguous or strided subsections from `a` to `c` (inclusive)
-    * Any custom array of scalar indices that is a subtype of `AbstractArray`
-    * Arrays of `CartesianIndex{N}` (see below for more details)
-3. An object that represents an array of scalar indices and can be converted to such by [`to_indices`](@ref). By default this includes:
-    * [`Colon()`](@ref) (`:`), which represents all indices within an entire dimension or across the entire array
-    * Arrays of booleans, which select elements at their `true` indices (see below for more details)
+1. 스칼라 인덱스. 다음을 포함한다:
+    * 부울이 아닌 정수.
+    * `CartesianIndex{N}`. 여러 차원에 걸쳐있는 정수의 `N`투플처럼 행동한다. (자세한 내용은 아래를 참조.)
+2. 스칼라 인덱스의 배열. 다음을 포함한다:
+    * 정수 벡터와 다차원 정수 배열.
+    * `[]`와 같은 빈 배열. 아무 원소도 선택하지 않는다.
+    * `a:c` 나 `a:b:c`와 같은 범위. `a` 와 `c` 사이의 연속되거나 일정 간격의 subsection을 선택.
+    * `AbstractArray`의 서브타입인 배열 스칼라의 .
+    * `CartesianIndex{N}`의 배열 (자세한 내용은 아래를 참조).
+3. 스칼라 인덱스의 배열을 나타내는 객체이면서 [`to_indices`](@ref)를 통해 스칼라 인덱스의 배열로 변환될 수 있는 것. 기본으로 다음을 포함한다:
+    * [`Colon()`](@ref) (`:`). 차원 혹은 배열의 모든 원소를 선택한다.
+    * 부울 배열. `true` 인덱스에 있는 원소를 선택한다.
 
-#### Cartesian indices
+#### 직교 인덱스(Cartesian indices)
 
-The special `CartesianIndex{N}` object represents a scalar index that behaves
-like an `N`-tuple of integers spanning multiple dimensions.  For example:
+`CartesianIndex{N}` 객체는 여러 차원을 포괄하는 정수의 `N`투플처럼 동작하는 스칼라 인덱스를 나타낸다.
 
 ```jldoctest cartesianindex
 julia> A = reshape(1:32, 4, 4, 2);
@@ -365,18 +337,15 @@ julia> A[CartesianIndex(3, 2, 1)] == A[3, 2, 1] == 7
 true
 ```
 
-Considered alone, this may seem relatively trivial; `CartesianIndex` simply
-gathers multiple integers together into one object that represents a single
-multidimensional index. When combined with other indexing forms and iterators
-that yield `CartesianIndex`es, however, this can lead directly to very elegant
-and efficient code. See [Iteration](@ref) below, and for some more advanced
-examples, see [this blog post on multidimensional algorithms and
-iteration](https://julialang.org/blog/2016/02/iteration).
+따로 떼어놓고 생각했을때, 이는 매우 간단하게 보일지도 모른다;
+`CartesianIndex`는 단순히 여러 정수를 하나의 객체로 묶어서 하나의 다차원 인덱스로 나타내는 것이다.
+하지만 다른 형식의 인덱싱이나, `CartesianIndex`를 내어놓는 반복자와 결합하면 매우 우아하고 효율적인 코드를 쓸 수 있다.
+아래의 [반복자](@ref)를 참조하라.
+더 고급 예시는 [다차원 알고리즘과 반복에 관한 이 블로그](https://julialang.org/blog/2016/02/iteration)를 참조하라.
 
-Arrays of `CartesianIndex{N}` are also supported. They represent a collection
-of scalar indices that each span `N` dimensions, enabling a form of indexing
-that is sometimes referred to as pointwise indexing. For example, it enables
-accessing the diagonal elements from the first "page" of `A` from above:
+`CartesianIndex{N}`의 배열 또한 지원된다.
+이는 각각 `N`차원을 포괄하는 스칼라 인덱스의 모음을 나타나며, 점별(pointwise) 인덱싱이라고도 불리는 인덱싱의 형태를 가능하게 한다.
+예를 들어, 앞선 예시에서 정의된 `A`의 첫 "페이지"의 대각원소들을 다음과 같이 엑세스 할 수 있다:
 
 ```jldoctest cartesianindex
 julia> page = A[:,:,1]
@@ -397,10 +366,8 @@ julia> page[[CartesianIndex(1,1),
  16
 ```
 
-This can be expressed much more simply with [dot broadcasting](@ref man-vectorized)
-and by combining it with a normal integer index (instead of extracting the
-first `page` from `A` as a separate step). It can even be combined with a `:`
-to extract both diagonals from the two pages at the same time:
+이는 [점 브로드캐스팅](@ref man-vectorized)을 정수 인덱스와 함께 씀으로써 (`A`로 부터 첫번째 "페이지"를 추출하는 별도의 과정 없이) 더욱더 간단하게 표한할 수 있다.
+뿐만 아니라 `:`와 결합하여 두 페이지의 대각원소들을 한번에 추출할 수도 있다:
 
 ```jldoctest cartesianindex
 julia> A[CartesianIndex.(indices(A, 1), indices(A, 2)), 1]
@@ -418,24 +385,17 @@ julia> A[CartesianIndex.(indices(A, 1), indices(A, 2)), :]
  16  32
 ```
 
-!!! warning
+!!! 경고
 
-    `CartesianIndex` and arrays of `CartesianIndex` are not compatible with the
-    `end` keyword to represent the last index of a dimension. Do not use `end`
-    in indexing expressions that may contain either `CartesianIndex` or arrays thereof.
+    `CartesianIndex`와 `CartesianIndex`의 배열은 차원의 마지막 인덱스를 나타내는 `end` 키워드와 호환되지 않으므로, `CartesianIndex` 혹은 `CartesianIndex`의 배열을 포함할 수도 있는 표현식에서는 `end`를 사용해서는 안된다.
 
-#### Logical indexing
+#### 논리적 인덱싱
 
-Often referred to as logical indexing or indexing with a logical mask, indexing
-by a boolean array selects elements at the indices where its values are `true`.
-Indexing by a boolean vector `B` is effectively the same as indexing by the
-vector of integers that is returned by [`find(B)`](@ref). Similarly, indexing
-by a `N`-dimensional boolean array is effectively the same as indexing by the
-vector of `CartesianIndex{N}`s where its values are `true`. A logical index
-must be a vector of the same length as the dimension it indexes into, or it
-must be the only index provided and match the size and dimensionality of the
-array it indexes into. It is generally more efficient to use boolean arrays as
-indices directly instead of first calling [`find`](@ref).
+부울 배열을 이용한 인덱싱은 값이 `true`인 곳의 인덱스를 선택한다.
+주로 논리적 인덱싱, 혹은 논리적 마스크를 사용한 인덱싱이라고 부르며, 부울 벡터 `B`를 통한 인덱싱은 [`find(B)`](@ref)가 리턴하는 정수의 벡터를 통한 인덱싱과 동일하다.
+이와 마찬가지로, `N`차원 부울 배열을 통한 인덱싱은, `true` 값의 위치를 나타내는 `CartesianIndex{N}`들의 배열을 통한 인덱싱과 동일하다.
+논리적 인덱스는, 인덱스의 크기와 인덱스하는 배열의 해당 차원의 크기가 일치하거나, 혹은 배열과 크기 및 차원이 일치하는 단 하나의 인덱스이어야 한다.
+부울 배열을 사용하여 바로 인덱싱 하는 것이 [`find`](@ref)를 먼저 호출하는 것보다 일반적으로 더 효율적이다.
 
 ```jldoctest
 julia> x = reshape(1:16, 4, 4)
@@ -466,23 +426,22 @@ julia> x[mask]
  16
 ```
 
-### Iteration
+### [반복(Iteration)](@id man-iteration)
 
-The recommended ways to iterate over a whole array are
+배열 전체를 반복하는 방법으로는 다음을 추천한다:
 
 ```julia
 for a in A
-    # Do something with the element a
+    # 원소 a로 뭔가 한다
 end
 
 for i in eachindex(A)
-    # Do something with i and/or A[i]
+    # i 혹은 A[i] 로 뭔가 한다
 end
 ```
 
-The first construct is used when you need the value, but not index, of each element. In the second
-construct, `i` will be an `Int` if `A` is an array type with fast linear indexing; otherwise,
-it will be a `CartesianIndex`:
+첫번째 구문은 인덱스가 아니라 값이 필요할 때 사용한다.
+두번째 구문에서 `A`가 빠른 선형 인덱싱을 지원하는 배열이라면 `i`는 `Int` 타입, 그렇지 않을 경우는 `CartesianIndex` 타입이다:
 
 ```jldoctest
 julia> A = rand(4,3);
@@ -500,56 +459,49 @@ i = CartesianIndex(2, 2)
 i = CartesianIndex(3, 2)
 ```
 
-In contrast with `for i = 1:length(A)`, iterating with `eachindex` provides an efficient way to
-iterate over any array type.
+`for i = 1:length(A)`에 비해, `eachindex`는 모든 종류의 배열을 효율적으로 반복할 수 있도록 해준다.
 
-### Array traits
+### 배열 특성(trait)
 
-If you write a custom [`AbstractArray`](@ref) type, you can specify that it has fast linear indexing using
+커스텀 [`AbstractArray`](@ref) 타입을 정의하는 경우, 빠른 선형 인덱싱이 가능함을 지정할 수 있다:
 
 ```julia
 Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 ```
 
-This setting will cause `eachindex` iteration over a `MyArray` to use integers. If you don't
-specify this trait, the default value `IndexCartesian()` is used.
+이 설정은 `eachindex`가 정수를 사용하여 `MyArray`를 반복하도록 한다.
+이 특성을 지정하지 않으면, 기본값인 `IndexCartesian()`를 사용한다.
 
-### Array and Vectorized Operators and Functions
+### 배열과 벡터화된 연산자/함수
 
-The following operators are supported for arrays:
+배열은 다음의 연산자를 지원한다:
 
-1. Unary arithmetic -- `-`, `+`
-2. Binary arithmetic -- `-`, `+`, `*`, `/`, `\`, `^`
-3. Comparison -- `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
+1. 단항 산술 연산자 -- `-`, `+`
+2. 이항 산술 연산자 -- `-`, `+`, `*`, `/`, `\`, `^`
+3. 비교 연산자 -- `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
 
-Most of the binary arithmetic operators listed above also operate elementwise
-when one argument is scalar: `-`, `+`, and `*` when either argument is scalar,
-and `/` and `\` when the denominator is scalar. For example, `[1, 2] + 3 == [4, 5]`
-and `[6, 4] / 2 == [3, 2]`.
+위에 나열된 대부분의 이항 산술 연산자는 하나의 인수가 스칼라일때도 원소별 연산을 한다:
+`-`, `+`, `*`는 두 인수 중 어느 한쪽이 스칼라인 경우, 그리고 `/` 와 `\` 는 분모가 스칼라 인 경우를 지원한다.
+예를 들면 다음과 같다: `[1, 2] + 3 == [4, 5]` 그리고 `[6, 4] / 2 == [3, 2]`.
 
-Additionally, to enable convenient vectorization of mathematical and other operations,
-Julia [provides the dot syntax](@ref man-vectorized) `f.(args...)`, e.g. `sin.(x)`
-or `min.(x,y)`, for elementwise operations over arrays or mixtures of arrays and
-scalars (a [Broadcasting](@ref) operation); these have the additional advantage of
-"fusing" into a single loop when combined with other dot calls, e.g. `sin.(cos.(x))`.
+또한 배열, 혹은 배열과 스칼라의 혼합에 대한 원소별 연산에 대해
+또한, `f.(args...)` 형태의 (예: `sin.(x)`, `min.(x,y)`) [점 문법](@ref man-vectorized)을 사용하여 수학 연산과 다른 연산을 편리하게 벡터화 할 수 있다;
+배열, 혹은 배열과 스칼라의 혼합에 대해 원소별 연산을 하기 위해서 점 문법을 쓸 수 있다 ([브로드캐스팅](@ref man-broadcasting) 연산).
+추가적인 이점으로는 다른 dot call 과 같이 쓴다면 하나의 루프로 융합한다는 것이다 (예: `sin.(cos.(x))`).
 
-Also, *every* binary operator supports a [dot version](@ref man-dot-operators)
-that can be applied to arrays (and combinations of arrays and scalars) in such
-[fused broadcasting operations](@ref man-vectorized), e.g. `z .== sin.(x .* y)`.
+또한, *모든* 이항 연산자는 [점을 찍어](@ref man-dot-operators)사용할 수 있으며, 이는 [융합 브로드캐스팅 연산](@ref man-vectorized)에서 배열(그리고 배열과 스칼라의 조합)에 적용할 수 있다 (예: `z .== sin.(x .* y)`).
 
-Note that comparisons such as `==` operate on whole arrays, giving a single boolean
-answer. Use dot operators like `.==` for elementwise comparisons. (For comparison
-operations like `<`, *only* the elementwise `.<` version is applicable to arrays.)
+참고로, `==` 와 같은 연산자는 전체 배열에 적용되어, 단 하나의 부울 값을 내어놓는다.
+원소별 비교를 위해서는 점 `.==`와 같은 점 연산자를 사용하라.
+(`<`와 같은 비교 연산은, 원소별 연산 `.<`*만*이 배열에 적용 가능하다.)
 
-Also notice the difference between `max.(a,b)`, which `broadcast`s [`max`](@ref)
-elementwise over `a` and `b`, and `maximum(a)`, which finds the largest value within
-`a`. The same relationship holds for `min.(a,b)` and `minimum(a)`.
+또한,  [`max`](@ref)를 `a`와 `b`에 원소별로 `broadcast` 하는 `max.(a,b)`와 , `a`의 최대값을 찾는 `maximum(a)`의 차이에 유의하라.
+`min.(a,b)` 와 `minimum(a)` 의 관계도 마찬가지이다.
 
-### Broadcasting
+### [브로드캐스팅](@id man-broadcasting)
 
-It is sometimes useful to perform element-by-element binary operations on arrays of different
-sizes, such as adding a vector to each column of a matrix. An inefficient way to do this would
-be to replicate the vector to the size of the matrix:
+행렬의 각 배열을 더하는 것 처럼, 다른 크기의 배열들을 원소별로 이항 연산할 필요가 종종 있다.
+이를 비효율적으로 하는 방법은 벡터를 행렬과 같은 크기로 복사하는 것이다:
 
 ```julia-repl
 julia> a = rand(2,1); A = rand(2,3);
@@ -560,9 +512,8 @@ julia> repmat(a,1,3)+A
  1.56851  1.86401  1.67846
 ```
 
-This is wasteful when dimensions get large, so Julia offers [`broadcast`](@ref), which expands
-singleton dimensions in array arguments to match the corresponding dimension in the other array
-without using extra memory, and applies the given function elementwise:
+차원의 크기가 커지면 위 방법은 낭비가 심해지므로, Julia는 [`broadcast`](@ref)를 제공한다.
+`broadcast`는 추가적인 메모리를 사용하지 않으면서, 주어진 한 배열의 차원 중 크기가 1인 차원을 주어진 다른 배열의 해당 차원의 크기와 일치하도록 확장하여 주어진 함수를 원소별로 적용하는 함수이다:
 
 ```julia-repl
 julia> broadcast(+, a, A)
@@ -580,17 +531,15 @@ julia> broadcast(+, a, b)
  1.73659  0.873631
 ```
 
-[Dotted operators](@ref man-dot-operators) such as `.+` and `.*` are equivalent
-to `broadcast` calls (except that they fuse, as described below). There is also a
-[`broadcast!`](@ref) function to specify an explicit destination (which can also
-be accessed in a fusing fashion by `.=` assignment), and functions [`broadcast_getindex`](@ref)
-and [`broadcast_setindex!`](@ref) that broadcast the indices before indexing. Moreover, `f.(args...)`
-is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broadcast any function
-([dot syntax](@ref man-vectorized)). Nested "dot calls" `f.(...)` (including calls to `.+` etcetera)
-[automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
+`.+` 와 `.*` 같은 [점찍은 연산자](@ref man-dot-operators)는 `broadcast` 호출과 (아래에 설명할 융합을 제외한다면) 동일하다.
+또한 명시적으로 목적지를 지정하는 [`broadcast!`](@ref)도 있다.
+(`.=` 대입을 사용하여 융합하여서도 액세스할 수 있다.)
+그리고 [`broadcast_getindex`](@ref)와 [`broadcast_setindex!`](@ref) 함수는 인덱싱 전에 인덱스를 브로드캐스팅 한다.
+게다가, `f.(args...)`는 `broadcast(f, args...)`와 동일하며, 어떤 함수든 [점 문법](@ref man-vectorized)을 통하여 편리하게 브로드캐스팅 할 수 있는 문법을 제공한다.
+중첩된 "점 호출" `f.(...)`은 (`.+` 등의 연산자도 포함하여) 하나의 `broadcast` 호출로 [자동으로 융합](@ref man-dot-operators)한다.
 
-Additionally, [`broadcast`](@ref) is not limited to arrays (see the function documentation),
-it also handles tuples and treats any argument that is not an array, tuple or `Ref` (except for `Ptr`) as a "scalar".
+추가적으로, [`broadcast`](@ref)는 배열에 국한되지 않고 (함수 문서 참조) 투플 또한 지원하며,
+배열, 투플, `Ref`(`Ptr` 제외)가 아닌 모든 값은 "스칼라"로 취급한다.
 
 ```jldoctest
 julia> convert.(Float32, [1, 2])
@@ -610,56 +559,44 @@ julia> string.(1:3, ". ", ["First", "Second", "Third"])
  "3. Third"
 ```
 
-### Implementation
+### 구현
 
-The base array type in Julia is the abstract type [`AbstractArray{T,N}`](@ref). It is parametrized by
-the number of dimensions `N` and the element type `T`. [`AbstractVector`](@ref) and [`AbstractMatrix`](@ref) are
-aliases for the 1-d and 2-d cases. Operations on `AbstractArray` objects are defined using higher
-level operators and functions, in a way that is independent of the underlying storage. These operations
-generally work correctly as a fallback for any specific array implementation.
+Julia에서 기본 배열 타입은 추상 타입인 [`AbstractArray{T,N}`](@ref)이다.
+`AbstractArray{T,N}`는 차원수 `N`과 원소 타입 `T`로 매개변수화 되어 있다.
+[`AbstractVector`](@ref)와 [`AbstractMatrix`](@ref)는 일차원과 이차원 배열의 앨리어스(alias)이다.
+`AbstractArray` 객체에 대한 연산은 기저 스토리지에 독립적인 형태로 고수준의 연산자와 함수를 사용하여 정의된다.
+이 연산은 일반적으로 구체적 배열 구현의 폴백(fallback)으로서 정상동작한다.
 
-The `AbstractArray` type includes anything vaguely array-like, and implementations of it might
-be quite different from conventional arrays. For example, elements might be computed on request
-rather than stored. However, any concrete `AbstractArray{T,N}` type should generally implement
-at least [`size(A)`](@ref) (returning an `Int` tuple), [`getindex(A,i)`](@ref) and [`getindex(A,i1,...,iN)`](@ref getindex);
-mutable arrays should also implement [`setindex!`](@ref). It is recommended that these operations
-have nearly constant time complexity, or technically Õ(1) complexity, as otherwise some array
-functions may be unexpectedly slow. Concrete types should also typically provide a [`similar(A,T=eltype(A),dims=size(A))`](@ref)
-method, which is used to allocate a similar array for [`copy`](@ref) and other out-of-place
-operations. No matter how an `AbstractArray{T,N}` is represented internally, `T` is the type of
-object returned by *integer* indexing (`A[1, ..., 1]`, when `A` is not empty) and `N` should be
-the length of the tuple returned by [`size`](@ref).
+`AbstractArray` 타입은 배열과 비슷한 모든 것을 포함하며, 이들의 구현은 전통적인 배열과는 차이가 많이 날 수도 있다.
+예를 들어, 원소를 저장하지 않고 요청에 따라서 계산할 수도 있다.
+다만 모든 구체적인 `AbstractArray{T,N}` 타입은 일반적으로 적어도 (`Int` 투플을 리턴하는) [`size(A)`](@ref),
+[`getindex(A,i)`](@ref), 그리고 [`getindex(A,i1,...,iN)`](@ref getindex)를 구현해야 한다.
+변경 가능한 배열은 [`setindex!`](@ref)도 구현해야 한다.
+이러한 연산들은 대략 상수 시간 복잡도, 엄밀히 말해 Õ(1) 복잡도를 가지도록 구현하는 것이 좋다.
+그렇지 않으면 어떤 배열 함수는 생각 이상으로 느릴지도 모른다.
+구체적 타입은 [`copy`](@ref)등의 out-of-place 연산에서 유사한 배열을 할당하는데에 쓰일 수 있는 [`similar(A,T=eltype(A),dims=size(A))`](@ref)메소드를 제공해야 한다.
+`AbstractArray{T,N}`가 내부적으로 어떻게 표현이 되든, `T` 는 *정수* 인덱싱이 리턴하는 객체(`A` 가 빈 배열이 아닌 경우 `A[1, ..., 1]`)의 타입이며, `N`은 [`size`](@ref)가 리턴하는 투플의 길이여야 한다.
 
-`DenseArray` is an abstract subtype of `AbstractArray` intended to include all arrays that are
-laid out at regular offsets in memory, and which can therefore be passed to external C and Fortran
-functions expecting this memory layout. Subtypes should provide a method [`stride(A,k)`](@ref)
-that returns the "stride" of dimension `k`: increasing the index of dimension `k` by `1` should
-increase the index `i` of [`getindex(A,i)`](@ref) by [`stride(A,k)`](@ref). If a pointer conversion
-method [`Base.unsafe_convert(Ptr{T}, A)`](@ref) is provided, the memory layout should correspond
-in the same way to these strides.
+`DenseArray`는 `AbstractArray`의 추상 서브타입으로, 원소가 메모리에 규칙적인 오프셋으로 배치된 배열 모두를 포함하고자 만들어졌으며,
+따라서 이러한 메모리 레이아웃을 기대하는 외부의 C나 Fortran함수에 전달될 수도 있다.
+`DenseArray`의 서브 타입은 `k`차원의 스트라이드를 리턴하는 [`stride(A,k)`](@ref)를 제공해야 한다:
+`k`차원의 인덱스를 1만큼 늘리면 [`getindex(A,i)`](@ref)의 인덱스 `i`를 [`stride(A,k)`](@ref)만큼 늘리는 것과 동일하다.
+포인터 변환 메소드 [`Base.unsafe_convert(Ptr{T}, A)`](@ref)가 제공된다면, 메모리 레이아웃 또한 같은 식으로 스트라이드를 따라야 한다.
 
-The [`Array`](@ref) type is a specific instance of `DenseArray` where elements are stored in column-major
-order (see additional notes in [Performance Tips](@ref man-performance-tips)). [`Vector`](@ref) and [`Matrix`](@ref) are aliases for
-the 1-d and 2-d cases. Specific operations such as scalar indexing, assignment, and a few other
-basic storage-specific operations are all that have to be implemented for [`Array`](@ref), so
-that the rest of the array library can be implemented in a generic manner.
+[`Array`](@ref) 타입은 `DenseArray`의 구체적 인스턴스로서, 원소들은 열 우선 순서(column-major order)로 저장된다.
+([성능 향상 팁](@ref man-performance-tips) 참조)
+[`Vector`](@ref)와 [`Matrix`](@ref)는 1차원과 2차원 [`Array`](@ref)의 앨리어스이다.
+배열 라이브러리의 다른 부분이 일반적인 방식으로 구현될 수 있도록, 스칼라 인덱싱과 대입 및 몇개의 기본적인 스토리지 특정 연산이 [`Array`](@ref)에 구현되어야 한다.
 
-`SubArray` is a specialization of `AbstractArray` that performs indexing by reference rather than
-by copying. A `SubArray` is created with the [`view`](@ref) function, which is called the same
-way as [`getindex`](@ref) (with an array and a series of index arguments). The result of [`view`](@ref)
-looks the same as the result of [`getindex`](@ref), except the data is left in place. [`view`](@ref)
-stores the input index vectors in a `SubArray` object, which can later be used to index the original
-array indirectly.  By putting the [`@views`](@ref) macro in front of an expression or
-block of code, any `array[...]` slice in that expression will be converted to
-create a `SubArray` view instead.
+`SubArray`는 복사가 아닌 참조로 인덱싱을 수행하는 `AbstractArray`의 특수화이다.
+`SubArray`는 [`view`](@ref)함수로 생성되는데, 호출 방식은 [`getindex`](@ref)와 같다.
+[`view`](@ref)의 결과는 [`getindex`](@ref)와 똑같이 보이나, 데이터가 복사되지 않는다는 차이점이 있다.
+[`view`](@ref)는 입력 인덱스 벡터를 `SubArray` 객체에 저장하는데, 이는 참조되는 원 배열을 나중에 간접적으로 인덱싱 하는데에 쓰인다.
+[`@views`](@ref) 매크로를 표현식이나 코드 블록 앞에 둠으로써, 그 표현식 내의 모든 `array[...]` 슬라이스가 `SubArray` 뷰를 생성하도록 할 수 있다.
 
-`StridedVector` and `StridedMatrix` are convenient aliases defined to make it possible for Julia
-to call a wider range of BLAS and LAPACK functions by passing them either [`Array`](@ref) or
-`SubArray` objects, and thus saving inefficiencies from memory allocation and copying.
+`StridedVector`와 `StridedMatrix`는 Julia가 BLAS와 LAPACK 함수를 호출 할 때 [`Array`](@ref) 혹은 `SubArray` 객체를 전달할 수 있게 해주는 편리한 앨리어스이며, 따라서 메모리 할당과 복사에 의한 비효율성을 줄일 수 있도록 해준다.
 
-The following example computes the QR decomposition of a small section of a larger array, without
-creating any temporaries, and by calling the appropriate LAPACK function with the right leading
-dimension size and stride parameters.
+다음 예시에서는 임시 배열을 만들지 않고 적절한 LAPACK 함수를 차원 크기와 스트라이드를 사용하여 호출하여 큰 배열의 작은 섹션의 QR 분해를 계산한다.
 
 ```julia-repl
 julia> a = rand(10,10)
@@ -697,52 +634,42 @@ julia> r
   0.0       0.866567
 ```
 
-## Sparse Vectors and Matrices
+## 희소 벡터와 행렬
 
-Julia has built-in support for sparse vectors and
-[sparse matrices](https://en.wikipedia.org/wiki/Sparse_matrix). Sparse arrays are arrays
-that contain enough zeros that storing them in a special data structure leads to savings
-in space and execution time, compared to dense arrays.
+Julia는 희소 벡터와 [희소 행렬](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC)을 자체적으로 지원한다.
+희소 배열이란 0인 원소가 충분히 많아 특별한 자료구조로 저장하는 편이 밀집 배열에 비해서 공간과 실행 시간이 절약되는 배열을 말한다.
 
-### [Compressed Sparse Column (CSC) Sparse Matrix Storage](@id man-csc)
+### [Compressed Sparse Column (CSC) 희소 행렬 저장법](@id man-csc)
 
-In Julia, sparse matrices are stored in the [Compressed Sparse Column (CSC) format](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_.28CSC_or_CCS.29).
-Julia sparse matrices have the type [`SparseMatrixCSC{Tv,Ti}`](@ref), where `Tv` is the
-type of the stored values, and `Ti` is the integer type for storing column pointers and
-row indices. The internal representation of `SparseMatrixCSC` is as follows:
+Julia에서 희소 행렬은 [Compressed Sparse Column (CSC) 포맷](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC#Compressed_sparse_column_.28CSC_or_CCS.29)으로 저장된다.
+Julia에서 희소 행렬은 [`SparseMatrixCSC{Tv,Ti}`](@ref) 타입이며, `Tv`는 저장된 값의 타입, `Ti`는 행 인덱스와 열을 가리키는 포인터를 저장하는 정수의 타입이다.
+`SparseMatrixCSC`의 내부 표현은 다음과 같다:
 
 ```julia
 struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}
-    m::Int                  # Number of rows
-    n::Int                  # Number of columns
-    colptr::Vector{Ti}      # Column i is in colptr[i]:(colptr[i+1]-1)
-    rowval::Vector{Ti}      # Row indices of stored values
-    nzval::Vector{Tv}       # Stored values, typically nonzeros
+    m::Int                  # 행의 수
+    n::Int                  # 열의 수
+    colptr::Vector{Ti}      # i번째 열은 colptr[i]:(colptr[i+1]-1)에 위치한다.
+    rowval::Vector{Ti}      # 저장된 값의 열 인덱스
+    nzval::Vector{Tv}       # 저장된 값. 대체로 0이 아니다.
 end
 ```
 
-The compressed sparse column storage makes it easy and quick to access the elements in the column
-of a sparse matrix, whereas accessing the sparse matrix by rows is considerably slower. Operations
-such as insertion of previously unstored entries one at a time in the CSC structure tend to be slow. This is
-because all elements of the sparse matrix that are beyond the point of insertion have to be moved
-one place over.
+CSC 저장법은 희소 행렬의 각 열을 쉽게 엑세스 할 수 있도록 해 주지만, 반면에 행을 엑세스 하는 것은 훨씬 느리다.
+새로운 엔트리를 하나씩 삽입하는 것은 CSC 구조에서 느린데, 이는 삽입점 이후의 모든 엔트리가 한칸씩 옮겨져야 하기 때문이다.
 
-All operations on sparse matrices are carefully implemented to exploit the CSC data structure
-for performance, and to avoid expensive operations.
+희소 행렬의 모든 연산은 CSC 자료구조를 최대한 이용하면서 비싼 연산은 피하도록 신중하게 구현되었다.
 
-If you have data in CSC format from a different application or library, and wish to import it
-in Julia, make sure that you use 1-based indexing. The row indices in every column need to be
-sorted. If your `SparseMatrixCSC` object contains unsorted row indices, one quick way to sort
-them is by doing a double transpose.
+다른 애플리케이션이나 라이브러리에서 생성된 CSC 포맷의 데이터를 Julia에서 가져오려면 1기반 인덱싱을 사용하는지 확인해야 한다.
+각 열의 행 인덱스는 정렬되어야 한다.
+만약 `SparseMatrixCSC` 객체가 정렬되지 않은 행 인덱스를 가지고 있다면, 두번 전치(transpose)함으로써 빠르게 정렬할 수 있다.
 
-In some applications, it is convenient to store explicit zero values in a `SparseMatrixCSC`. These
-*are* accepted by functions in `Base` (but there is no guarantee that they will be preserved in
-mutating operations). Such explicitly stored zeros are treated as structural nonzeros by many
-routines. The [`nnz`](@ref) function returns the number of elements explicitly stored in the
-sparse data structure, including structural nonzeros. In order to count the exact number of
-numerical nonzeros, use [`count(!iszero, x)`](@ref), which inspects every stored element of a sparse
-matrix. [`dropzeros`](@ref), and the in-place [`dropzeros!`](@ref), can be used to
-remove stored zeros from the sparse matrix.
+`SparseMatrixCSC`에 0값을 명시적으로 저장하는 것이 편리한 경우도 있다.
+이렇게 하는 것 또한 `Base`의 함수들이 *허용하며* (단, 변환의 과정에서 반드시 남아있을 보장은 없다.),
+그렇게 명시적으로 저장된 0은 많은 루틴이 "구조적으로는 0이 아닌" 것으로 취급한다.
+[`nnz`](@ref) 함수는 명시적으로 저장된 0이 아닌 엔트리의 갯수(구조적으로 0이 아닌 엔트리를 포함하여)를 리턴한다.
+수치적으로 0이 아닌 엔트리의 갯수를 정확히 얻기 위해서는 저장된 모든 엔트리를 검사하는 [`count(!iszero, x)`](@ref)를 사용하라.
+희소 행렬에 저장된 0값은 [`dropzeros`](@ref) 와 in-place 함수인 [`dropzeros!`](@ref)를 이용해 삭제할 수 있다.
 
 ```jldoctest
 julia> A = sparse([1, 2, 3], [1, 2, 3], [0, 2, 0])
@@ -756,43 +683,38 @@ julia> dropzeros(A)
   [2, 2]  =  2
 ```
 
-### Sparse Vector Storage
+### 희소 벡터 스토리지
 
-Sparse vectors are stored in a close analog to compressed sparse column format for sparse
-matrices. In Julia, sparse vectors have the type [`SparseVector{Tv,Ti}`](@ref) where `Tv`
-is the type of the stored values and `Ti` the integer type for the indices. The internal
-representation is as follows:
+희소 벡터는 희소 행렬의 CSC 포맷과 매우 유사한 방식으로 저장된다.
+Julia에서 희소 행렬은 [`SparseVector{Tv,Ti}`](@ref) 타입을 가지는데 `Tv`는 저장된 값의 타입, `Ti`는 인덱스의 정수 타입이다.
+`SparseVector`의 내부 표현은 다음과 같다:
 
 ```julia
 struct SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}
-    n::Int              # Length of the sparse vector
-    nzind::Vector{Ti}   # Indices of stored values
-    nzval::Vector{Tv}   # Stored values, typically nonzeros
+    n::Int              # 희소 행렬의 길이
+    nzind::Vector{Ti}   # 저장된 값의 인덱스
+    nzval::Vector{Tv}   # 저장된 값. 대체로 0이 아니다.
 end
 ```
 
-As for [`SparseMatrixCSC`](@ref), the `SparseVector` type can also contain explicitly
-stored zeros. (See [Sparse Matrix Storage](@ref man-csc).).
+[`SparseMatrixCSC`](@ref)와 마찬가지로 `SparseVector`도 명시적으로 0을 담을 수 있다.
+([희소 행렬 저장법](@ref man-csc) 참조)
 
-### Sparse Vector and Matrix Constructors
+### 희소 벡터와 행렬 생성자
 
-The simplest way to create a sparse array is to use a function equivalent to the [`zeros`](@ref)
-function that Julia provides for working with dense arrays. To produce a
-sparse array instead, you can use the same name with an `sp` prefix:
+희소 배열을 가장 간단히 만드는 방법은, 밀집 배열의 [`zeros`](@ref)에 해당하는 함수를 사용하는 것이다.
+희소 배열을 만들 때에는 해당하는 밀집 배열의 함수명에 `sp` 접두어를 붙이면 된다:
 
 ```jldoctest
 julia> spzeros(3)
 3-element SparseVector{Float64,Int64} with 0 stored entries
 ```
 
-The [`sparse`](@ref) function is often a handy way to construct sparse arrays. For
-example, to construct a sparse matrix we can input a vector `I` of row indices, a vector
-`J` of column indices, and a vector `V` of stored values (this is also known as the
-[COO (coordinate) format](https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29)).
-`sparse(I,J,V)` then constructs a sparse matrix such that `S[I[k], J[k]] = V[k]`. The
-equivalent sparse vector constructor is [`sparsevec`](@ref), which takes the (row) index
-vector `I` and the vector `V` with the stored values and constructs a sparse vector `R`
-such that `R[I[k]] = V[k]`.
+[`sparse`](@ref) 함수를 사용하여 편리하게 희소배열을 생성할 수 있다.
+에를 들어, 희소 행열을 생성하려면 행 인덱스를 담은 벡터 `I`와, 열 인덱스를 담은 벡터 `J`와, 값을 담은 벡터 `V`를 입력하면 된다.
+(이는 [COO 포맷](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC#Coordinate_list_.28COO.29)으로도 알려져있다.)
+`sparse(I,J,V)`는 `S[I[k], J[k]] = V[k]`를 만족하는 희소행렬을 생성한다.
+이와 마찬가지로 [`sparsevec`](@ref)는 (행) 인덱스 벡터 `I`와 값 벡터 `V`를 받아  `R[I[k]] = V[k]`를 만족하는 희소 행렬을 만든다.
 
 ```jldoctest sparse_function
 julia> I = [1, 4, 3, 5]; J = [4, 7, 18, 9]; V = [1, 2, -5, 3];
@@ -812,9 +734,9 @@ julia> R = sparsevec(I,V)
   [5]  =  3
 ```
 
-The inverse of the [`sparse`](@ref) and [`sparsevec`](@ref) functions is
-[`findnz`](@ref), which retrieves the inputs used to create the sparse array.
-There is also a [`findn`](@ref) function which only returns the index vectors.
+[`sparse`](@ref) 함수와 [`sparsevec`](@ref) 함수의 역은 [`findnz`](@ref)이다.
+`findnz`는 희소 행렬의 인덱스 벡터와 값 벡터를 리턴한다.
+또한 인덱스 벡터만을 리턴하는 [`findn`](@ref)도 있다.
 
 ```jldoctest sparse_function
 julia> findnz(S)
@@ -834,8 +756,7 @@ julia> find(!iszero, R)
  5
 ```
 
-Another way to create a sparse array is to convert a dense array into a sparse array using
-the [`sparse`](@ref) function:
+[`sparse`](@ref) 함수를 사용하여 밀집 배열을 희소 배열로 바꾸는 것 또한 가능하다:
 
 ```jldoctest
 julia> sparse(Matrix(1.0I, 5, 5))
@@ -852,40 +773,36 @@ julia> sparse([1.0, 0.0, 1.0])
   [3]  =  1.0
 ```
 
-You can go in the other direction using the [`Array`](@ref) constructor. The [`issparse`](@ref)
-function can be used to query if a matrix is sparse.
+[`Array`](@ref) 생성자를 사용하여 반대방향의 변환도 가능하다.
+[`issparse`](@ref) 함수를 사용하여 희소 배열인지 확인할 수 있다.
 
 ```jldoctest
 julia> issparse(spzeros(5))
 true
 ```
 
-### Sparse matrix operations
+### 희소 행렬 연산
 
-Arithmetic operations on sparse matrices also work as they do on dense matrices. Indexing of,
-assignment into, and concatenation of sparse matrices work in the same way as dense matrices.
-Indexing operations, especially assignment, are expensive, when carried out one element at a time.
-In many cases it may be better to convert the sparse matrix into `(I,J,V)` format using [`findnz`](@ref),
-manipulate the values or the structure in the dense vectors `(I,J,V)`, and then reconstruct
-the sparse matrix.
+희소 배열에 대한 산술 연산은 밀집 배열에서처럼 동작한다.
+희소 배열의 인덱싱, 대입, 그리고 병합 모두 밀집 배열과 마찬가지로 동작한다.
+인덱싱 연산, 그리고 특히 대입 연산을 원소 하나씩 하는 것은 비싸다.
+희소 행렬을 [`findnz`](@ref)를 사용하여 `(I,J,V)` 포맷으로 변경한 후, 밀집 벡터인 `I`, `J`, `V`의 구조나 값을 변경한 다음, 다시 희소 행렬을 생성하는 편이 오히려 더 나은 경우가 많다.
 
-### Correspondence of dense and sparse methods
+### 밀집 메소드와 희소 메소드 간의 대응
 
-The following table gives a correspondence between built-in methods on sparse matrices and their
-corresponding methods on dense matrix types. In general, methods that generate sparse matrices
-differ from their dense counterparts in that the resulting matrix follows the same sparsity pattern
-as a given sparse matrix `S`, or that the resulting sparse matrix has density `d`, i.e. each matrix
-element has a probability `d` of being non-zero.
+다음의 표는 희소 행렬의 내장 메소드와 이에 대응하는 밀집 행렬의 메소드를 담고있다.
+일반적으로 희소 행렬을 생성하는 메소드가 그에 대응하는 밀집 행렬 메소드와 다른 점은,
+결과 행렬이 주어진 희소 행렬 `S`의 희소성 패턴을 따르거나, 결과 희소 행렬의 밀도가 `d`이라는 것이다.
+(즉, 행렬의 각 원소가 0이 아닐 확률이 `d`이다.)
 
-Details can be found in the [Sparse Vectors and Matrices](@ref stdlib-sparse-arrays)
-section of the standard library reference.
+자세한 내용은 표준 라이브러리 레퍼런스의 [밀집 벡터와 행렬](@ref stdlib-sparse-arrays)을 참조하기 바란다.
 
-| Sparse                     | Dense                  | Description                                                                                                                                                           |
-|:-------------------------- |:---------------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`spzeros(m,n)`](@ref)     | [`zeros(m,n)`](@ref)   | Creates a *m*-by-*n* matrix of zeros. ([`spzeros(m,n)`](@ref) is empty.)                                                                                              |
-| [`spones(S)`](@ref)        | [`ones(m,n)`](@ref)    | Creates a matrix filled with ones. Unlike the dense version, [`spones`](@ref) has the same sparsity pattern as *S*.                                                 |
-| [`sparse(I, n, n)`](@ref)  | [`Matrix(I,n,n)`](@ref)| Creates a *n*-by-*n* identity matrix.                                                                                                                                 |
-| [`Array(S)`](@ref)         | [`sparse(A)`](@ref)    | Interconverts between dense and sparse formats.                                                                                                                       |
-| [`sprand(m,n,d)`](@ref)    | [`rand(m,n)`](@ref)    | Creates a *m*-by-*n* random matrix (of density *d*) with iid non-zero elements distributed uniformly on the half-open interval ``[0, 1)``.                            |
-| [`sprandn(m,n,d)`](@ref)   | [`randn(m,n)`](@ref)   | Creates a *m*-by-*n* random matrix (of density *d*) with iid non-zero elements distributed according to the standard normal (Gaussian) distribution.                  |
-| [`sprandn(m,n,d,X)`](@ref) | [`randn(m,n,X)`](@ref) | Creates a *m*-by-*n* random matrix (of density *d*) with iid non-zero elements distributed according to the *X* distribution. (Requires the `Distributions` package.) |
+| 희소                       | 밀집                   | 설명                                                                                                                                                               |
+|:-------------------------- |:---------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`spzeros(m,n)`](@ref)     | [`zeros(m,n)`](@ref)   | 크기가 `m` × `n` 인 0의 행렬을 생성한다. ([`spzeros(m,n)`](@ref) 는 빈 행렬이다.)                                                                                  |
+| [`spones(S)`](@ref)        | [`ones(m,n)`](@ref)    | 1로 채워진 행렬을 생성한다. 밀집 행렬의 `ones`와는 달리 [`spones`](@ref) 는 `S` 와 동일한 희소성 패턴의 행렬를 리턴한다.                                           |
+| [`sparse(I, n, n)`](@ref)  | [`Matrix(I,n,n)`](@ref)| 크기가 `m` × `n` 인 단위 행렬을 생성한다.                                                                                                                          |
+| [`Array(S)`](@ref)         | [`sparse(A)`](@ref)    | 밀집 행렬과 희소 행렬을 상호 변환한다.                                                                                                                             |
+| [`sprand(m,n,d)`](@ref)    | [`rand(m,n)`](@ref)    | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 반열린구간 ``[0, 1)``에서의 연속 균등 분포를 따른다.       |
+| [`sprandn(m,n,d)`](@ref)   | [`randn(m,n)`](@ref)   | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 표준 정규 분포를 따른다.                                   |
+| [`sprandn(m,n,d,X)`](@ref) | [`randn(m,n,X)`](@ref) | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 `X` 분포를 따른다. (`Distributions` 패키지를 필요로 한다.) |
