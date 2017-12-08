@@ -1,0 +1,12 @@
+p {
+    font-family: serif;
+    line-height: 1.9em;
+    margin: 0em;
+}
+li p {
+    line-height: 1.8em;
+    margin: 0em;
+}
+article footer {
+    padding: 0em 0em 2em 0em;
+}

@@ -45,21 +45,7 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
         # Custom user-provided assets.
         asset_links(src, ctx.local_assets),
 
-        # juliakorea custom.css
-        style[:type => "text/css"]("""
-        p {
-            font-family: serif;
-            line-height: 1.9em;
-            margin: 0.8em;
-        }
-        li p {
-            line-height: 1.8em;
-            margin: 0em;
-        }
-        article footer {
-            margin: 1em;
-        }
-        """),
+        link[:href => relhref(src, "assets/custom.css"), :rel => "stylesheet", :type => "text/css"],
 
         # juliakorea 단어 word break
         script[:src => "/js/jquery-1.8.3.min.js"],
