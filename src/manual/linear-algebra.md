@@ -1,8 +1,7 @@
-# Linear algebra
+# [선형 대수](@id Linear-algebra)
 
-In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations
-of many common and useful linear algebra operations. Basic operations, such as [`trace`](@ref), [`det`](@ref),
-and [`inv`](@ref) are all supported:
+다차원 배열 지원에 더불어, Julia는 자주 쓰이고 유용한 여러 선형 대수 연산의 네이티브 구현을 제공한다.
+[`trace`](@ref), [`det`](@ref), [`inv`](@ref) 등의 기초적 연산을 모두 지원한다:
 
 ```jldoctest
 julia> A = [1 2 3; 4 1 6; 7 8 1]
@@ -24,7 +23,7 @@ julia> inv(A)
   0.240385   0.0576923  -0.0673077
 ```
 
-As well as other useful operations, such as finding eigenvalues or eigenvectors:
+또한 고윳값과 고유 벡터 찾기 등의 다른 유용한 연산들도 지원한다:
 
 ```jldoctest
 julia> A = [-4. -17.; 2. 2.]
@@ -43,10 +42,10 @@ julia> eigvecs(A)
  -0.166924-0.278207im  -0.166924+0.278207im
 ```
 
-In addition, Julia provides many [factorizations](@ref man-linalg-factorizations) which can be used to
-speed up problems such as linear solve or matrix exponentiation by pre-factorizing a matrix into a form
-more amenable (for performance or memory reasons) to the problem. See the documentation on [`factorize`](@ref)
-for more information. As an example:
+이에 더불어, Julia는 여러 [분해](@ref man-linalg-factorizations)를 제공한다: 
+선형 방정식 풀이나 행렬 지수 함수 계산 등을 할 때, 행렬을 (성능이나 메모리 등의 이유로) 더 용이한 형태로 사전 분해 함으로써 속도를 높여줄 수 있다.
+자세한 내용은 [`factorize`](@ref) 문서를 참조하라.
+예를 들어:
 
 ```jldoctest
 julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]
@@ -61,8 +60,8 @@ Base.LinAlg.LU{Float64,Array{Float64,2}} with factors L and U:
 [-10.0 2.3 4.0; 0.0 2.345 -3.4; 0.0 0.0 -5.24947]
 ```
 
-Since `A` is not Hermitian, symmetric, triangular, tridiagonal, or bidiagonal, an LU factorization may be the
-best we can do. Compare with:
+`A`가 에르미트, 대칭, 삼각, 3중 대각 또는 2중 대각이 아니므로, LU 분해가 가장 좋은 방법일 것이다.
+이를 다음과 비교해보자:
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -90,10 +89,10 @@ permutation:
  3
 ```
 
-Here, Julia was able to detect that `B` is in fact symmetric, and used a more appropriate factorization.
-Often it's possible to write more efficient code for a matrix that is known to have certain properties e.g.
-it is symmetric, or tridiagonal. Julia provides some special types so that you can "tag" matrices as having
-these properties. For instance:
+여기서는 Julia가 `B`가 대칭임을 감지하여 더 적절한 분해를 사용하였다.
+행렬의 특성(예를 들어 대칭, 3중 대각 등)을 알고 있는 경우 더 효율적인 코드를 작성할 수 있는 경우가 많이 있다.
+Julia는 행렬에 태그를 붙여 이러한 특성들을 표기할 수 있도록 해주는 특수 타입들을 제공한다.
+예를 들어:
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -109,9 +108,9 @@ julia> sB = Symmetric(B)
  -4.0  -3.0   5.0
 ```
 
-`sB` has been tagged as a matrix that's (real) symmetric, so for later operations we might perform on it,
-such as eigenfactorization or computing matrix-vector products, efficiencies can be found by only referencing
-half of it. For example:
+`sB`는 (실)대칭인 행렬로 태그되었다.
+따라서 이후에 고윳값 분해나 벡터와의 곱 등을 할 때, 참조하는 데이터를 반으로 줄임으로써 계산을 효율적으로 할 수 있다.
+예를 들어:
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -138,39 +137,35 @@ julia> sB\x
  -1.1086956521739126
  -1.4565217391304346
 ```
-The `\` operation here performs the linear solution. Julia's parser provides convenient dispatch
-to specialized methods for the *transpose* of a matrix left-divided by a vector, or for the various combinations
-of transpose operations in matrix-matrix solutions. Many of these are further specialized for certain special
-matrix types. For example, `A\B` will end up calling [`Base.LinAlg.A_ldiv_B!`](@ref) while `A'\B` will end up calling
-[`Base.LinAlg.Ac_ldiv_B`](@ref), even though we used the same left-division operator. This works for matrices too: `A.'\B.'`
-would call [`Base.LinAlg.At_ldiv_Bt`](@ref). The left-division operator is pretty powerful and it's easy to write compact,
-readable code that is flexible enough to solve all sorts of systems of linear equations.
 
-## Special matrices
+여기서 `\` (왼쪽나누기) 연산은 선형 해법을 계산한다.
+행렬의 *전치*를 벡터로 왼쪽나누기 하거나, 행렬간의 선형 해법에서 전치가 있는 경우 등에 대해 Julia의 파서는 특수화된 함수를 배정하며, 이는 행렬 타입에 따라 더 특수화 되는 경우가 많다.
+예를 들어, 똑같은 왼쪽나누기 연산자를 사용했음에도 불구하고, `A\B`는 [`Base.LinAlg.A_ldiv_B!`](@ref)를 호출하는 반면 `A'\B`는 [`Base.LinAlg.Ac_ldiv_B`](@ref)를 호출한다.
+행렬에 대해서도 마찬가지이다: `A.'\B.'`는 [`Base.LinAlg.At_ldiv_Bt`](@ref)를 호출한다.
+왼쪽나누기 연산자는 강력하여 간소하고 읽기 쉬우면서도 모든 종류의 선형 방정식의 풀이할 수 있을 정도로 충분히 유연한 코드를 작성하기 쉽게 해 준다.
 
-[Matrices with special symmetries and structures](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)
-arise often in linear algebra and are frequently associated with various matrix factorizations.
-Julia features a rich collection of special matrix types, which allow for fast computation with
-specialized routines that are specially developed for particular matrix types.
+## 특수 행렬
 
-The following tables summarize the types of special matrices that have been implemented in Julia,
-as well as whether hooks to various optimized methods for them in LAPACK are available.
+선형대수에서는 [특수한 대칭성과 구조를 가진 행렬](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)이 종종 등장하는데, 행렬의 종류에 따라 여러가지 행렬 분해와 연관지을 수 있다.
+Julia는 특수 행렬 타입의 풍부한 컬렉션을 제공하며, 이를 통해 특정 행렬 타입에 특수화된 루틴으로 계산을 빠르게 할 수 있도록 해준다.
 
-| Type                      | Description                                                                      |
-|:------------------------- |:-------------------------------------------------------------------------------- |
-| [`Symmetric`](@ref)       | [Symmetric matrix](https://en.wikipedia.org/wiki/Symmetric_matrix)               |
-| [`Hermitian`](@ref)       | [Hermitian matrix](https://en.wikipedia.org/wiki/Hermitian_matrix)               |
-| [`UpperTriangular`](@ref) | Upper [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix)       |
-| [`LowerTriangular`](@ref) | Lower [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix)       |
-| [`Tridiagonal`](@ref)     | [Tridiagonal matrix](https://en.wikipedia.org/wiki/Tridiagonal_matrix)           |
-| [`SymTridiagonal`](@ref)  | Symmetric tridiagonal matrix                                                     |
-| [`Bidiagonal`](@ref)      | Upper/lower [bidiagonal matrix](https://en.wikipedia.org/wiki/Bidiagonal_matrix) |
-| [`Diagonal`](@ref)        | [Diagonal matrix](https://en.wikipedia.org/wiki/Diagonal_matrix)                 |
-| [`UniformScaling`](@ref)  | [Uniform scaling operator](https://en.wikipedia.org/wiki/Uniform_scaling)        |
+다음은 Julia에 구현된 특수 행렬의 종류와, 이들에 대해 최적화 된 LAPACK 메소드로의 후크 여부를 요약한 표이다.
 
-### Elementary operations
+| 행렬 타입                 | 설명                                                                                                   |
+|:------------------------- |:------------------------------------------------------------------------------------------------------ |
+| [`Symmetric`](@ref)       | [대칭 행렬](https://ko.wikipedia.org/wiki/%EB%8C%80%EC%B9%AD%ED%96%89%EB%A0%AC)                        |
+| [`Hermitian`](@ref)       | [에르미트 행렬](https://ko.wikipedia.org/wiki/%EC%97%90%EB%A5%B4%EB%AF%B8%ED%8A%B8_%ED%96%89%EB%A0%AC) |
+| [`UpperTriangular`](@ref) | 상 [삼각 행렬](https://ko.wikipedia.org/wiki/%EC%82%BC%EA%B0%81%ED%96%89%EB%A0%AC)                     |
+| [`LowerTriangular`](@ref) | 하 [삼각 행렬](https://ko.wikipedia.org/wiki/%EC%82%BC%EA%B0%81%ED%96%89%EB%A0%AC)                     |
+| [`Tridiagonal`](@ref)     | [3중 대각 행렬](https://ko.wikipedia.org/wiki/3%EC%A4%91%EB%8C%80%EA%B0%81%ED%96%89%EB%A0%AC)          |
+| [`SymTridiagonal`](@ref)  | 대칭 3중 삼각 행렬                                                                                     |
+| [`Bidiagonal`](@ref)      | 상/하 [2중 대각 행렬](https://en.wikipedia.org/wiki/Bidiagonal_matrix)                                 |
+| [`Diagonal`](@ref)        | [대각 행렬](https://ko.wikipedia.org/wiki/%EB%8C%80%EA%B0%81%ED%96%89%EB%A0%AC)                        |
+| [`UniformScaling`](@ref)  | [균일 스케일링 연산자](https://en.wikipedia.org/wiki/Uniform_scaling)                                  |
 
-| Matrix type               | `+` | `-` | `*` | `\` | Other functions with optimized methods                      |
+### 기초 연산
+
+| 행렬 타입                 | `+` | `-` | `*` | `\` | 그 외 최적화된 함수                                         |
 |:------------------------- |:--- |:--- |:--- |:--- |:----------------------------------------------------------- |
 | [`Symmetric`](@ref)       |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
 | [`Hermitian`](@ref)       |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
@@ -182,17 +177,17 @@ as well as whether hooks to various optimized methods for them in LAPACK are ava
 | [`Diagonal`](@ref)        | M   | M   | MV  | MV  | [`inv`](@ref), [`det`](@ref), [`logdet`](@ref), [`/`](@ref) |
 | [`UniformScaling`](@ref)  | M   | M   | MVS | MVS | [`/`](@ref)                                                 |
 
-Legend:
+범례:
 
-| Key        | Description                                                   |
-|:---------- |:------------------------------------------------------------- |
-| M (matrix) | An optimized method for matrix-matrix operations is available |
-| V (vector) | An optimized method for matrix-vector operations is available |
-| S (scalar) | An optimized method for matrix-scalar operations is available |
+| 기호               | 설명                                       |
+|:------------------ |:------------------------------------------ |
+| M (matrix, 행뎔)   | 최적화된 행렬-행렬 연산을 사용할 수 있음   |
+| V (vector, 벡터)   | 최적화된 행렬-벡터 연산을 사용할 수 있음   |
+| S (scalar, 스칼라) | 최적화된 행렬-스칼라 연산을 사용할 수 있음 |
 
-### Matrix factorizations
+### 행렬 분해
 
-| Matrix type               | LAPACK | [`eig`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
+| 행렬 타입                 | LAPACK | [`eig`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
 |:------------------------- |:------ |:------------- |:----------------- |:----------------- |:------------- |:----------------- |
 | [`Symmetric`](@ref)       | SY     |               | ARI               |                   |               |                   |
 | [`Hermitian`](@ref)       | HE     |               | ARI               |                   |               |                   |
@@ -203,25 +198,24 @@ Legend:
 | [`Bidiagonal`](@ref)      | BD     |               |                   |                   | A             | A                 |
 | [`Diagonal`](@ref)        | DI     |               | A                 |                   |               |                   |
 
-Legend:
+범례:
 
-| Key          | Description                                                                                                                     | Example              |
-|:------------ |:------------------------------------------------------------------------------------------------------------------------------- |:-------------------- |
-| A (all)      | An optimized method to find all the characteristic values and/or vectors is available                                           | e.g. `eigvals(M)`    |
-| R (range)    | An optimized method to find the `il`th through the `ih`th characteristic values are available                                   | `eigvals(M, il, ih)` |
-| I (interval) | An optimized method to find the characteristic values in the interval [`vl`, `vh`] is available                                 | `eigvals(M, vl, vh)` |
-| V (vectors)  | An optimized method to find the characteristic vectors corresponding to the characteristic values `x=[x1, x2,...]` is available | `eigvecs(M, x)`      |
+| 기호               | 설명                                                                                      | 예시                 |
+|:------------------ |:----------------------------------------------------------------------------------------- |:-------------------- |
+| A (all, 모두)      | 모든 특성 값 및 특성 벡터를 찾는 최적화된 메소드를 사용할 수 있음                         | 예) `eigvals(M)`    |
+| R (range, 범위)    | `il`번째에서 `ih`번째 사이의 특성 값을 찾는 최적화된 메소드를 사용할 수 있음              | `eigvals(M, il, ih)` |
+| I (interval, 구간) | 구간 [`vl`, `vh`] 사이의 특성 값을 찾는 최적화된 메소드를 사용할 수 있음                  | `eigvals(M, vl, vh)` |
+| V (vectors, 벡터)  | 특성 값들 `x=[x1, x2,...]`에 해당하는 특성 벡터들을 찾는 최적화된 메소드를 사용할 수 있음 | `eigvecs(M, x)`      |
 
-### The uniform scaling operator
+### 균일 스케일링 연산자
 
-A [`UniformScaling`](@ref) operator represents a scalar times the identity operator, `λ*I`. The identity
-operator `I` is defined as a constant and is an instance of `UniformScaling`. The size of these
-operators are generic and match the other matrix in the binary operations [`+`](@ref), [`-`](@ref),
-[`*`](@ref) and [`\`](@ref). For `A+I` and `A-I` this means that `A` must be square. Multiplication
-with the identity operator `I` is a noop (except for checking that the scaling factor is one)
-and therefore almost without overhead.
+[`UniformScaling`](@ref) 연산자는 스칼라와 단위 행렬의 곱 `λ*I`를 나타낸다.
+항등 연산자 `I` 는 상수로 정의되며 `UniformScaling` 의 인스턴스이다.
+`UniformScaling` 연산자의 크기는 제네릭하며 이항 연산자 [`+`](@ref), [`-`](@ref), [`*`](@ref), [`\`](@ref) 에서 다른 행렬과 일치하도록 결정된다.
+`A+I` and `A-I` 는 `A` 가 정사각 행렬임을 의미한다.
+항등 연산자 `I`를 곱하는 것은 (스케일링 비율이 1임을 체크하는 것을 제외하면) noop이며 따라서 오버헤드가 거의 없다.
 
-To see the `UniformScaling` operator in action:
+`UniformScaling` 연산자가 어떻게 사용되는지 살펴보자:
 
 ```jldoctest
 julia> U = UniformScaling(2);
@@ -259,26 +253,23 @@ Stacktrace:
  [3] top-level scope
 ```
 
-## [Matrix factorizations](@id man-linalg-factorizations)
+## [행렬 분해](@id man-linalg-factorizations)
 
-[Matrix factorizations (a.k.a. matrix decompositions)](https://en.wikipedia.org/wiki/Matrix_decomposition)
-compute the factorization of a matrix into a product of matrices, and are one of the central concepts
-in linear algebra.
+[행렬 분해](https://en.wikipedia.org/wiki/Matrix_decomposition)는 주어진 행렬을 여러 행렬의 곱으로 분해하는 것이며, 선형 대수의 중심이 되는 개념 중 하나이다.
 
-The following table summarizes the types of matrix factorizations that have been implemented in
-Julia. Details of their associated methods can be found in the [Linear Algebra](@ref) section
-of the standard library documentation.
+아래는 Julia에 구현된 행렬 분해를 요약한 표이다.
+각 분해와 연관된 메소드에 관한 자세한 내용은 표준 라이브러리 문서의 [선형 대수](@ref Linear-Algebra) 섹션을 참조하기 바란다.
 
-| Type              | Description                                                                                                    |
-|:----------------- |:-------------------------------------------------------------------------------------------------------------- |
-| `Cholesky`        | [Cholesky factorization](https://en.wikipedia.org/wiki/Cholesky_decomposition)                                 |
-| `CholeskyPivoted` | [Pivoted](https://en.wikipedia.org/wiki/Pivot_element) Cholesky factorization                                  |
-| `LU`              | [LU factorization](https://en.wikipedia.org/wiki/LU_decomposition)                                             |
-| `LUTridiagonal`   | LU factorization for [`Tridiagonal`](@ref) matrices                                                            |
-| `QR`              | [QR factorization](https://en.wikipedia.org/wiki/QR_decomposition)                                             |
-| `QRCompactWY`     | Compact WY form of the QR factorization                                                                        |
-| `QRPivoted`       | Pivoted [QR factorization](https://en.wikipedia.org/wiki/QR_decomposition)                                     |
-| `Hessenberg`      | [Hessenberg decomposition](http://mathworld.wolfram.com/HessenbergDecomposition.html)                          |
-| `Eigen`           | [Spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_(matrix))                            |
-| `SVD`             | [Singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition)                     |
-| `GeneralizedSVD`  | [Generalized SVD](https://en.wikipedia.org/wiki/Generalized_singular_value_decomposition#Higher_order_version) |
+| 종류              | 설명                                                                                                                |
+|:----------------- |:------------------------------------------------------------------------------------------------------------------- |
+| `Cholesky`        | [숄레스키 분해](https://ko.wikipedia.org/wiki/%EC%88%84%EB%A0%88%EC%8A%A4%ED%82%A4_%EB%B6%84%ED%95%B4)              |
+| `CholeskyPivoted` | [피벗](https://ko.wikipedia.org/wiki/%ED%94%BC%EB%B2%97) 숄레스키 분해                                              |
+| `LU`              | [LU 분해](https://ko.wikipedia.org/wiki/LU_%EB%B6%84%ED%95%B4)                                                      |
+| `LUTridiagonal`   | [`Tridiagonal`](@ref) 행렬에 대한 LU 분해                                                                           |
+| `QR`              | [QR 분해](https://ko.wikipedia.org/wiki/QR_%EB%B6%84%ED%95%B4)                                                      |
+| `QRCompactWY`     | QR 분해의 컴팩트 WY 폼                                                                                              |
+| `QRPivoted`       | 피벗 QR 분해                                                                                                        |
+| `Hessenberg`      | [헤센베르크 분해](http://mathworld.wolfram.com/HessenbergDecomposition.html)                                        |
+| `Eigen`           | [고윳값 분해](https://en.wikipedia.org/wiki/Eigendecomposition_(matrix))                                            |
+| `SVD`             | [특이값 분해](https://ko.wikipedia.org/wiki/%ED%8A%B9%EC%9E%87%EA%B0%92)                                            |
+| `GeneralizedSVD`  | [일반화된 특이값 분해](https://en.wikipedia.org/wiki/Generalized_singular_value_decomposition#Higher_order_version) |
