@@ -600,25 +600,6 @@ Stacktrace:
  [2] verbose_fussy_sqrt(::Int64) at ./none:3
 ```
 
-### 경고 및 정보 메시지
-
-또한 Julia는 표준 오류 입출력에 메시지를 쓰지만 `Exception`을 throw하지도 않고, 때문에 실행을 중단하지도 않는 다른 함수를 제공합니다.
-
-```jldoctest
-julia> info("Hi"); 1+1
-INFO: Hi
-2
-
-julia> warn("Hi"); 1+1
-WARNING: Hi
-2
-
-julia> error("Hi"); 1+1
-ERROR: Hi
-Stacktrace:
- [1] error(::String) at ./error.jl:33
-```
-
 ### `try/catch`문
 
 `try/catch`문은 `Exception`을 테스트할 수 있습니다. 예를 들어, 사용자 정의 제곱근 함수를 `Exception`을 사용하여 필요에 따라 실수 또는 복소수 제곱근 방법을 자동으로 호출하도록 작성할 수 있습니다.

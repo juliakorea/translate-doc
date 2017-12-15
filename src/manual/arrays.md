@@ -32,8 +32,8 @@ Julia 배열 라이브러리의 어떤 코드도 입력 배열을 변경하지 �
 | [`ndims(A)`](@ref)     | `A` 의 차원수                                                  |
 | [`size(A)`](@ref)      | `A` 의 크기 투플                                               |
 | [`size(A,n)`](@ref)    | `A` 의 `n` 차원의 크기                                         |
-| [`indices(A)`](@ref)   | `A` 의 유효한 인덱스 투플                                      |
-| [`indices(A,n)`](@ref) | `A` 의 유효 인덱스 `n`차원 범위(range)                         |
+| [`axes(A)`](@ref)      | `A` 의 유효한 인덱스 투플                                      |
+| [`axes(A,n)`](@ref)    | `A` 의 유효 인덱스 `n`차원 범위(range)                         |
 | [`eachindex(A)`](@ref) | `A` 의 모든 위치를 방문하는 효율적인 반복자(iterator)          |
 | [`stride(A,k)`](@ref)  | `k` 차원 방향의 스트라이드 (연속한 원소 간의 선형 인덱스 거리) |
 | [`strides(A)`](@ref)   | 모든 차원의 스트라이드 투플                                    |
@@ -370,14 +370,14 @@ julia> page[[CartesianIndex(1,1),
 뿐만 아니라 `:`와 결합하여 두 페이지의 대각원소들을 한번에 추출할 수도 있다:
 
 ```jldoctest cartesianindex
-julia> A[CartesianIndex.(indices(A, 1), indices(A, 2)), 1]
+julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), 1]
 4-element Array{Int64,1}:
   1
   6
  11
  16
 
-julia> A[CartesianIndex.(indices(A, 1), indices(A, 2)), :]
+julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]
 4×2 Array{Int64,2}:
   1  17
   6  22
