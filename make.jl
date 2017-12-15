@@ -18,7 +18,6 @@ baremodule GenStdLib end
     include(joinpath(@__DIR__, "contrib", "build_sysimg.jl"))
 end
 
-
 const PAGES = [
     "Home" => "index.md",
     "Manual" => [
@@ -70,6 +69,8 @@ const PAGES = [
         "stdlib/strings.md",
         "stdlib/arrays.md",
         "stdlib/parallel.md",
+        "stdlib/distributed.md",
+        "stdlib/multi-threading.md",
         "stdlib/linalg.md",
         "stdlib/constants.md",
         "stdlib/file.md",
@@ -93,6 +94,7 @@ const PAGES = [
         "stdlib/filewatching.md",
         "stdlib/crc32c.md",
         "stdlib/iterativeeigensolvers.md",
+        "stdlib/unicode.md",
     ],
     "Developer Documentation" => [
         "devdocs/reflection.md",
@@ -127,11 +129,11 @@ const PAGES = [
     ],
 ]
 
-using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c, Dates, IterativeEigenSolvers
+using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c, Dates, IterativeEigenSolvers, Unicode, Distributed
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
-    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, Dates, IterativeEigenSolvers],
+    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, Dates, IterativeEigenSolvers, Unicode, Distributed],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
