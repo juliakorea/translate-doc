@@ -667,13 +667,10 @@ ERROR: MethodError: 메소드 일치 bar(::Int64, ::Int64, ::Int64, ::Int64, ::I
 보다 유용하게 파라미터에 의해 varargs 메소드를 제한하는 것이 가능합니다. 예 :
 
 ```julia
-function getindex(A::AbstractArray{T,N}, indexes::Vararg{Number,N}) where {T,N}
++function getindex(A::AbstractArray{T,N}, indices::Vararg{Number,N}) where {T,N}
 ```
 
-`인덱스` 의 수가 배열의 차원과 일치 할 때만 호출됩니다.
-
-When only the type of supplied arguments needs to be constrained `Vararg{T}` can be equivalently
-written as `T...`. For instance `f(x::Int...) = x` is a shorthand for `f(x::Vararg{Int}) = x`.
+`indices` 의 수가 배열의 차원과 일치 할 때만 호출됩니다.
 
 오직 제공된 인자의 타입만이 제약을 받아야 할 때 `Vararg{T}` 는 `T...` 와 같이 쓰일 수 있습니다. 예를 들어, `f(x::Int ...) = x` 는 `f(x::Vararg{Int}) = x` 의 속기입니다.
 

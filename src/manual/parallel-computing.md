@@ -57,10 +57,10 @@ argument implicitly loads module `Distributed`.
 $ ./julia -p 2
 
 julia> r = remotecall(rand, 2, 2, 2)
-Future(2, 1, 4, Nullable{Any}())
+Future(2, 1, 4, nothing)
 
 julia> s = @spawnat 2 1 .+ fetch(r)
-Future(2, 1, 5, Nullable{Any}())
+Future(2, 1, 5, nothing)
 
 julia> fetch(s)
 2×2 Array{Float64,2}:
@@ -98,10 +98,10 @@ the operation for you:
 
 ```julia-repl
 julia> r = @spawn rand(2,2)
-Future(2, 1, 4, Nullable{Any}())
+Future(2, 1, 4, nothing)
 
 julia> s = @spawn 1 .+ fetch(r)
-Future(3, 1, 5, Nullable{Any}())
+Future(3, 1, 5, nothing)
 
 julia> fetch(s)
 2×2 Array{Float64,2}:
@@ -374,10 +374,10 @@ trials on two machines, and add together the results:
 julia> @everywhere include_string(Main, $(read("count_heads.jl", String)), "count_heads.jl")
 
 julia> a = @spawn count_heads(100000000)
-Future(2, 1, 6, Nullable{Any}())
+Future(2, 1, 6, nothing)
 
 julia> b = @spawn count_heads(100000000)
-Future(3, 1, 7, Nullable{Any}())
+Future(3, 1, 7, nothing)
 
 julia> fetch(a)+fetch(b)
 100001564
@@ -525,7 +525,7 @@ end
 
 [`@async`](@ref) is similar to [`@spawn`](@ref), but only runs tasks on the local process. We
 use it to create a "feeder" task for each process. Each task picks the next index that needs to
-be computed, then waits for its process to finish, then repeats until we run out of indexes. Note
+be computed, then waits for its process to finish, then repeats until we run out of indices. Note
 that the feeder tasks do not begin to execute until the main task reaches the end of the [`@sync`](@ref)
 block, at which point it surrenders control and waits for all the local tasks to complete before
 returning from the function. The feeder tasks are able to share state via `nextidx` because
@@ -894,7 +894,7 @@ julia> addprocs(3)
 
 julia> @everywhere using SharedArrays
 
-julia> S = SharedArray{Int,2}((3,4), init = S -> S[localindexes(S)] = myid())
+julia> S = SharedArray{Int,2}((3,4), init = S -> S[localindices(S)] = myid())
 3×4 SharedArray{Int64,2}:
  2  2  3  4
  2  3  3  4
@@ -910,7 +910,7 @@ julia> S
  2  7  4  4
 ```
 
-[`SharedArrays.localindexes`](@ref) provides disjoint one-dimensional ranges of indexes, and is sometimes
+[`SharedArrays.localindices`](@ref) provides disjoint one-dimensional ranges of indices, and is sometimes
 convenient for splitting up tasks among processes. You can, of course, divide the work any way
 you wish:
 
@@ -950,7 +950,7 @@ into trouble: if `q[i,j,t]` is near the end of the block assigned to one worker 
 is near the beginning of the block assigned to another, it's very likely that `q[i,j,t]` will
 not be ready at the time it's needed for computing `q[i,j,t+1]`. In such cases, one is better
 off chunking the array manually. Let's split along the second dimension.
-Define a function that returns the `(irange, jrange)` indexes assigned to this worker:
+Define a function that returns the `(irange, jrange)` indices assigned to this worker:
 
 ```julia-repl
 julia> @everywhere function myrange(q::SharedArray)
@@ -1164,26 +1164,27 @@ appropriate fields initialized) to `launched`
 ```julia
 mutable struct WorkerConfig
     # Common fields relevant to all cluster managers
-    io::Nullable{IO}
-    host::Nullable{AbstractString}
-    port::Nullable{Integer}
+    io::Union{IO, Void}
+    host::Union{AbstractString, Void}
+    port::Union{Integer, Void}
 
     # Used when launching additional workers at a host
-    count::Nullable{Union{Int, Symbol}}
-    exename::Nullable{AbstractString}
-    exeflags::Nullable{Cmd}
+    count::Union{Int, Symbol, Void}
+    exename::Union{AbstractString, Cmd, Void}
+    exeflags::Union{Cmd, Void}
 
     # External cluster managers can use this to store information at a per-worker level
     # Can be a dict if multiple fields need to be stored.
-    userdata::Nullable{Any}
+    userdata::Any
 
     # SSHManager / SSH tunnel connections to workers
-    tunnel::Nullable{Bool}
-    bind_addr::Nullable{AbstractString}
-    sshflags::Nullable{Cmd}
-    max_parallel::Nullable{Integer}
+    tunnel::Union{Bool, Void}
+    bind_addr::Union{AbstractString, Void}
+    sshflags::Union{Cmd, Void}
+    max_parallel::Union{Integer, Void}
 
-    connect_at::Nullable{Any}
+    # Used by Local/SSH managers
+    connect_at::Any
 
     [...]
 end

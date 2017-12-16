@@ -7,15 +7,19 @@ Core.AbstractArray
 Base.AbstractVector
 Base.AbstractMatrix
 Core.Array
-Core.Array(::Any)
-Core.Array(::Any, ::Any)
+Core.Array(::Uninitialized, ::Any)
+Core.Array(::Void, ::Any)
+Core.Array(::Missing, ::Any)
 Core.Uninitialized
 Core.uninitialized
 Base.Vector
-Base.Vector(::Any)
-Base.Vector(::Any, ::Any)
+Base.Vector(::Uninitialized, ::Any)
+Base.Vector(::Void, ::Any)
+Base.Vector(::Missing, ::Any)
 Base.Matrix
-Base.Matrix(::Any, ::Any, ::Any)
+Base.Matrix(::Uninitialized, ::Any, ::Any)
+Base.Matrix(::Void, ::Any, ::Any)
+Base.Matrix(::Missing, ::Any, ::Any)
 Base.getindex(::Type, ::Any...)
 Base.zeros
 Base.ones
@@ -101,7 +105,7 @@ Base.view
 Base.@view
 Base.@views
 Base.parent
-Base.parentindexes
+Base.parentindices
 Base.slicedim
 Base.reinterpret
 Base.reshape
@@ -198,7 +202,6 @@ Base.SparseArrays.sparsevec
 Base.SparseArrays.issparse
 Base.SparseArrays.nnz
 Base.SparseArrays.spzeros
-Base.SparseArrays.spones
 Base.SparseArrays.spdiagm
 Base.SparseArrays.sprand
 Base.SparseArrays.sprandn

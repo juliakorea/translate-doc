@@ -129,11 +129,13 @@ const PAGES = [
     ],
 ]
 
-using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c, Dates, IterativeEigenSolvers, Unicode, Distributed
+using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c,
+      Dates, IterativeEigensolvers, Unicode, Distributed
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
-    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, Dates, IterativeEigenSolvers, Unicode, Distributed],
+    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile,
+                 Base64, FileWatching, Dates, IterativeEigensolvers, Unicode, Distributed],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
