@@ -95,6 +95,7 @@ const PAGES = [
         "stdlib/crc32c.md",
         "stdlib/iterativeeigensolvers.md",
         "stdlib/unicode.md",
+        "stdlib/printf.md",
     ],
     "Developer Documentation" => [
         "devdocs/reflection.md",
@@ -130,12 +131,12 @@ const PAGES = [
 ]
 
 using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c,
-      Dates, IterativeEigensolvers, Unicode, Distributed
+      Dates, IterativeEigensolvers, Unicode, Distributed, Printf
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
     modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile,
-                 Base64, FileWatching, Dates, IterativeEigensolvers, Unicode, Distributed],
+                 Base64, FileWatching, Dates, IterativeEigensolvers, Unicode, Distributed, Printf],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
