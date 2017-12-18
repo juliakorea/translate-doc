@@ -508,11 +508,11 @@ output = similar(input, Eltype)
 ```
 
 이를 확장하기 위해 알고리즘에 입력배열의 복사본이 필요한경우 반환값이 원래입력의 별칭일 수 있으므로 [`convert`](@ref) 는 충분하지 않습니다.
-출력배열을 만들기 위해 [`similar`](@ref)와 입력데이터로 채우기 위해 [`copy!`](@ref) 를 결합하는 것은 변경가능한
+출력배열을 만들기 위해 [`similar`](@ref)와 입력데이터로 채우기 위해 [`copyto!`](@ref) 를 결합하는 것은 변경가능한
 입력인수 복사본에 대한 요구사항을 표현하는 일반적인 방법입니다.:
 
 ```julia
-copy_with_eltype(input, Eltype) = copy!(similar(input, Eltype), input)
+copy_with_eltype(input, Eltype) = copyto!(similar(input, Eltype), input)
 ```
 
 ### 반복 디스패치
