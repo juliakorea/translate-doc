@@ -4,7 +4,7 @@
 대부분의 기술 계산 언어는 다른 컨테이너를 희생해 가면서도 배열의 구현에 많은 신경을 쓴다. 
 Julia는 배열을 특별하게 취급하지는 않는다.
 배열 라이브러리는 거의 전부 Julia로 작성되었으며, Julia로 쓰여진 다른 코드와 마찬가지로 컴파일러가 퍼포먼스를 결정한다.
-따라서 `AbstractArray`로 부터 상속하여 커스텀 배열 타입을 정의하는 것도 가능하다.
+따라서 [`AbstractArray`](@ref)로 부터 상속하여 커스텀 배열 타입을 정의하는 것도 가능하다.
 커스텀 배열 타입을 구현하는 것의 세부사항은 [manual section on the AbstractArray interface](@ref man-interface-array) 를 참조하기 바란다.
 
 배열은 다차원 그리드에 저장된 객체들의 모음이다.
@@ -65,7 +65,7 @@ Julia 배열 라이브러리의 어떤 코드도 입력 배열을 변경하지 �
 | [`fill(x, dims...)`](@ref)                 | `x` 값으로 차 있는 `Array`                                                                                                                                         |
 
 `[A, B, C, ...]` 문법은 주어진 인수들의 일차원 배열(벡터)을 생성한다.
-만약 모든 인수가 공통의 [확장 타입(promotion type)](@ref conversion-and-promotion)을 가진다면, 이들은 `convert`를 통해 공통의 확장 타입으로 변환된다.
+만약 모든 인수가 공통의 [확장 타입(promotion type)](@ref conversion-and-promotion)을 가진다면, 이들은 [`convert`](@ref)를 통해 공통의 확장 타입으로 변환된다.
 
 ### 병합(Concatenation)
 
@@ -171,7 +171,7 @@ julia> map(tuple, 1/(i+j) for i=1:2, j=1:2, [1:4;])
 ERROR: syntax: invalid iteration specification
 ```
 
-`for` 다음에 나오는 쉼표로 구분된 모든 표현식은 범위로 해석되므로, 여기에 괄호를 추가함으로써 `map`에 세번째 인수를 추가할 수 있다.
+`for` 다음에 나오는 쉼표로 구분된 모든 표현식은 범위로 해석되므로, 여기에 괄호를 추가함으로써 [`map`](@ref)에 세번째 인수를 추가할 수 있다.
 
 ```jldoctest
 julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
@@ -219,8 +219,73 @@ X = A[I_1, I_2, ..., I_n]
 그렇지 않을 경우 `X`는 배열이며, 모든 인덱스의 차원 수의 합이 `X`의 차원수가 된다.
 
 예를들어 만약 모든 인덱스가 벡터라면 `X`의 크기는 `(length(I_1), length(I_2), ..., length(I_n))`가 되고, `X`의 `(i_1, i_2, ..., i_n)` 위치는  `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]` 값을 가지게 된다.
+
+Example:
+
+```jldoctest
+julia> A = reshape(collect(1:16), (2, 2, 2, 2))
+2×2×2×2 Array{Int64,4}:
+[:, :, 1, 1] =
+ 1  3
+ 2  4
+
+[:, :, 2, 1] =
+ 5  7
+ 6  8
+
+[:, :, 1, 2] =
+  9  11
+ 10  12
+
+[:, :, 2, 2] =
+ 13  15
+ 14  16
+
+julia> A[1, 2, 1, 1] # all scalar indices
+3
+
+julia> A[[1, 2], [1], [1, 2], [1]] # all vector indices
+2×1×2×1 Array{Int64,4}:
+[:, :, 1, 1] =
+ 1
+ 2
+
+[:, :, 2, 1] =
+ 5
+ 6
+
+julia> A[[1, 2], [1], [1, 2], 1] # a mix of index types
+2×1×2 Array{Int64,3}:
+[:, :, 1] =
+ 1
+ 2
+
+[:, :, 2] =
+ 5
+ 6
+```
+
+Note how the size of the resulting array is different in the last two cases.
+
 만약 `I_1`이 2차원 행렬로 바뀐다면, `X`는 크기가 `(size(I_1, 1), size(I_1, 2), length(I_2), ..., length(I_n))`인 `n+1`차원 배열이 된다.
 행렬이 차원을 하나 추가하는 것이다.
+
+Example:
+
+```jldoctest
+julia> A = reshape(collect(1:16), (2, 2, 2, 2));
+
+julia> A[[1 2; 1 2]]
+2×2 Array{Int64,2}:
+ 1  2
+ 1  2
+
+julia> A[[1 2; 1 2], 1, 2, 1]
+2×2 Array{Int64,2}:
+ 5  6
+ 5  6
+```
+
 `X`의 `(i_1, i_2, i_3, ..., i_{n+1})` 위치는 `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]` 값을 가진다.
 스칼라 인덱스를 가진 모든 차원은 결과에서 빠진다.
 예를 들어, `A[2, I, 3]`의 결과는 크기가 `size(I)`인 배열이며, `i`번째 원소의 값은 `A[2, I[i], 3]`이다.
