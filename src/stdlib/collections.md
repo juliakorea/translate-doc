@@ -133,6 +133,10 @@ Base.collect(::Type, ::Any)
 Base.issubset(::Any, ::Any)
 Base.filter
 Base.filter!
+Base.replace(::Any, ::Pair...)
+Base.replace(::Base.Callable, ::Any, ::Any)
+Base.replace(::Base.Callable, ::Any)
+Base.replace!
 ```
 
 ## Indexable Collections
@@ -253,8 +257,8 @@ Partially implemented by:
 ```@docs
 Base.push!
 Base.pop!
-Base.unshift!
-Base.shift!
+Base.pushfirst!
+Base.popfirst!
 Base.insert!
 Base.deleteat!
 Base.splice!
