@@ -1,13 +1,20 @@
-# [정수와 부동소수점으로 표현되는 실수](@id Integers-and-Floating-Point-Numbers)
+# [정수와 부동 소수점 수](@id Integers-and-Floating-Point-Numbers)
 
-정수와 부동소수점(floating-point)으로 표현되는 실수는 수치 연산에 있어서 가장 기본적인 구성 요소이다.
-이와 같은 값들의 Julia 내부에서의 내장 표현은 숫자 프라미티브(numberic primitives)이라고 하고, 실수나 부동소수점처럼 코드상에서 즉각적으로 표현되는 값을은 수치형 리터럴(numeric literal)이라고 알려져있다. 
-예를들어, `1`은 정수형 리터럴이지만, `1.0`은 부동소수점 리터럴이다; 그리고 위 리터럴들이 바이너리 형태로 메모리상에서 표현되는 객체(object)를 숫자 프리미티브(numeric primitives)라고 한다.
+정수와 부동 소수점 수는 수치 연산에 있어 기본적인 구성 요소이다.
+줄리아 내에서 이와 같은 값의 표현은 숫자 프리미티브(numeric primitives)로 불리운다.
+정수와 부동 소수점 표현은 코드에서 바로 그 값을 가지며 수치형 리터럴(numeric literals)로 알려 있다.
+예를 들어, `1`은 정수형 리터럴이고, `1.0`은 부동 소수점 수인 리터럴이다; 이들의
+메모리 상 바이너리를 객체(object)로 표현하면 숫자 프리미티브이다.
 
-Julia는 넓은 범위의 기본 수치 타입과 수치연산자, 그리고 비트연산자를 모두 제공한다.
-현대의 컴퓨터에서 기본으로 제공되는 Julia에 내장된 표준 수학 함수들은 Julia로 하여금 연산 자원을 최대한 활용 수 있도록 한다. 게다가 Julia는 하드웨어에서 기본적으로 표현하지 못하는 자들을 표현할 수 있게 만든 [] Additionally, Julia provides [Arbitrary Precision Arithmetic](@ref)를 지원한다. 그러나 [Arbitrary Precision Arithmetic](@ref) 사용하면 성능상으로 느려질 수 있다
+줄리아는 표준 수학 함수에 쓰이는 기본 수치 타입과 완전한 산술 비트 연산자를 폭넓게 제공한다.
+이들을 컴퓨터가 지원하는 숫자 타입과 연산에 직접 매핑하여
+줄리아가 최적의 연산 자원을 활용할 수 있도록 한다.
+추가로 줄리아는 [임의 정밀도 산술(Arbitrary Precision Arithmetic)](@ref Arbitrary-Precision-Arithmetic)을
+소프트웨어적으로 지원하는데,
+하드웨어적 표현으로는 효율적으로 구성하기 힘든 아주 정밀한 숫자를 다루며
+상대적으로 성능은 다소 줄게 된다.
 
-다음은 Julia에서 기본적으로 지원하는 타입니다:
+다음은 줄리아에서 기본적으로 지원하는 타입이다:
 
   * **정수형 타입:**
 
@@ -33,7 +40,7 @@ Julia는 넓은 범위의 기본 수치 타입과 수치연산자, 그리고 비
 | [`Float32`](@ref) | [single](https://en.wikipedia.org/wiki/Single_precision_floating-point_format) | 32             |
 | [`Float64`](@ref) | [double](https://en.wikipedia.org/wiki/Double_precision_floating-point_format) | 64             |
 
-추가적으로 [Complex and Rational Numbers](@ref)는 위ㅔ어서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
+추가적으로 [Complex and Rational Numbers](@ref)는 위에서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
 
 ## 정수
 
@@ -59,7 +66,7 @@ julia> typeof(1)
 Int64
 ```
 
-Julia의 내부변수 [`Sys.WORD_SIZE`](@ref)는 해당 시스템이 32비트인지 64비트인지 알려주는 역할을 한다:
+줄리아의 내부변수 [`Sys.WORD_SIZE`](@ref)는 해당 시스템이 32비트인지 64비트인지 알려주는 역할을 한다:
 
 ```julia-repl
 # 32-bit system:
@@ -71,7 +78,7 @@ julia> Sys.WORD_SIZE
 64
 ```
 
-Julia는 부호가 있는 정수형과 부호가 없는 정수형을 위해 `Int`와 `UInt`라는 타입 또한 정의하고 있다:
+줄리아는 부호가 있는 정수형과 부호가 없는 정수형을 위해 `Int`와 `UInt`라는 타입 또한 정의하고 있다:
 
 ```julia-repl
 # 32-bit system:
@@ -121,13 +128,19 @@ julia> 0x123456789abcdef
 
 julia> typeof(ans)
 UInt64
+
+julia> 0x11112222333344445555666677778888
+0x11112222333344445555666677778888
+
+julia> typeof(ans)
+UInt128
 ```
 
 일반적으로 부호가 없는 16진수 정수 리터럴을 쓸 때, 단순히 정수를 표현사기 보다는 사람들은 고정된 바이트 시퀀스(fixed numeric byte sequence)를 표현하기 위해 16진수를 쓰는 경향이 있기 때문에, 위와 같이 부호가 없는 정수형에 16진수 형태를 결합시키도록 하였다.
 
-[`ans`](@ref) 가 대화형 실행 환경에서 가장 최근에 실행된 표현식의 결과를 나타내었다는 것을 떠올려보면, 위의 Julia 코드는 다른 환경에서는 제대로 실행이 안될 것이라는 것을 알 수 있다. 
+[`ans`](@ref) 가 대화형 실행 환경에서 가장 최근에 실행된 표현식의 결과를 나타내었다는 것을 떠올려보면, 위의 줄리아 코드는 다른 환경에서는 제대로 실행이 안될 것이라는 것을 알 수 있다. 
 
-Julia는 2진수와 8진수 리터럴 또한 지원한다:
+줄리아는 2진수와 8진수 리터럴 또한 지원한다:
 
 ```jldoctest
 julia> 0b10
@@ -136,11 +149,36 @@ julia> 0b10
 julia> typeof(ans)
 UInt8
 
-julia> 0o10
+julia> 0o010
 0x08
 
 julia> typeof(ans)
 UInt8
+
+julia> 0x00000000000000001111222233334444
+0x00000000000000001111222233334444
+
+julia> typeof(ans)
+UInt128
+```
+
+As for hexadecimal literals, binary and octal literals produce unsigned integer types. The size
+of the binary data item is the minimal needed size, if the leading digit of the literal is not
+`0`. In the case of leading zeros, the size is determined by the minimal needed size for a
+literal, which has the same length but leading digit `1`. That allows the user to control
+the size.
+Values, which cannot be stored in `UInt128` cannot be written as such literals.
+
+Binary, octal, and hexadecimal literals may be signed by a `-` immediately preceding the
+unsigned literal. They produce an unsigned integer of the same size as the unsigned literal
+would do, with the two's complement of the value:
+
+```jldoctest
+julia> -0x2
+0xfe
+
+julia> -0x0002
+0xfffe
 ```
 
 정수형과 같은 기본 수치 타입의 최소값과 최대값은 [`typemin`](@ref)과 [`typemax`](@ref) 함수를 통해 알 수 있다:
@@ -169,7 +207,7 @@ UInt128: [0,340282366920938463463374607431768211455]
 
 ### 오버플로우(Overflow) 동작
 
-Julia에서는 주어진 타입에서 표현할 수 있는 값을 넘어서게 되면 다음과 같이 주어진 범위를 벗어나지 않는(wraparound) 동작을 보여준다:
+줄리아에서는 주어진 타입에서 표현할 수 있는 값을 넘어서게 되면 다음과 같이 주어진 범위를 벗어나지 않는(wraparound) 동작을 보여준다:
 
 ```jldoctest
 julia> x = typemax(Int64)
@@ -353,7 +391,7 @@ julia> (typemin(Float64),typemax(Float64))
 
 대부분 실수들은 부동 소수점 형태로는 정확하게 표현할 수 없다. 그리고 현재로서는 많은 경우 두 인접한 부동 소수점으로 표현 가능한 실수가 얼만큼 떨어져 있는지 알 필요가 있다. 따라서 이를 위해 계산기 입실론([machine epsilon](https://en.wikipedia.org/wiki/Machine_epsilon))이라는 개념이 도입하게 되었다.
 
-Julia는 [`eps`](@ref)라는 것을 제공한다. 이는 `1.0`과  `1.0` 다음으로 큰 표현 가능한 부동 소수점 값과의 거리를 말한다:
+줄리아는 [`eps`](@ref)라는 것을 제공한다. 이는 `1.0`과  `1.0` 다음으로 큰 표현 가능한 부동 소수점 값과의 거리를 말한다:
 
 ```jldoctest
 julia> eps(Float32)
@@ -384,7 +422,7 @@ julia> eps(0.0)
 
 두 인접하면서 표현 가능한 부동 소수점 실수들은 상수가 아니지만, 작은 값에서는 작은 값을 지니고, 큰 값들에서는 큰 값을 나타낸다. 다른 말로 하면, 표현 가능한 부동 소수점 실수들은 실수축 상에서 0에 근접할 때 가장 밀집되어있고, 0에서 멀어질수록 점점 드물다. 정의에 의하면, `eps(1,0)`은 `eps(Float64)`와 같은데, 그 이유는 `1.0`은 64비트 부동 소수점 실수이기 때문이다.
 
-또한 Julia는 [`nextfloat`](@ref)과 [`prevfloat`](@ref) 함수를 제공하는데, 이는 표현 가능한 부동 소수점 실수 중에서 주어진 실수 바로 옆에있는 크거나 작은 수를 반환한다:
+또한 줄리아는 [`nextfloat`](@ref)과 [`prevfloat`](@ref) 함수를 제공하는데, 이는 표현 가능한 부동 소수점 실수 중에서 주어진 실수 바로 옆에있는 크거나 작은 수를 반환한다:
 
 ```jldoctest
 julia> x = 1.25f0
@@ -442,7 +480,7 @@ julia> setrounding(Float64,RoundDown) do
 
 ## [임의 정밀도 연산](@id Arbitrary-Precision-Arithmetic)
 
-임의 정밀도의 정수와 부동 소수점들의 연산을 위해, Julia는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 Julia에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
+임의 정밀도의 정수와 부동 소수점들의 연산을 위해, 줄리아는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 줄리아에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
 
 기본 수치 타입으로부터 임의 정밀도 정수와 부동 소수점 타입을 만들기 위해 생성자가 존재하며, [`parse`](@ref)는 `AbstractString`들로 부터 임의 정밀도 타입을 만들 수 있게 해준다. 한번 임의 정밀도 타입이 만들어지면, [type promotion and conversion mechanism](@ref conversion-and-promotion)덕분에 자유롭게 다른 수치타입과 연산을 수행할 수 있다:
 
@@ -506,7 +544,7 @@ julia> setprecision(40) do
 
 ## [수치형 리터럴 계수](@id man-numeric-literal-coefficients)
 
-보통의 수학 식과 표현식을 깔끔하게 표현하기 위해서, Julia는 변수가 수치형 리터럴 바로 다음에 있으면 둘 사이의 관계가 곱셈임을 가정한다. 이는 다항식의 표현을 더욱 깔끔하게 만든다:
+보통의 수학 식과 표현식을 깔끔하게 표현하기 위해서, 줄리아는 변수가 수치형 리터럴 바로 다음에 있으면 둘 사이의 관계가 곱셈임을 가정한다. 이는 다항식의 표현을 더욱 깔끔하게 만든다:
 
 ```jldoctest numeric-coefficients
 julia> x = 3
@@ -572,7 +610,7 @@ ERROR: MethodError: objects of type Int64 are not callable
 
 ## 리터럴 0과 1
 
-Julia는 어떤 특정한 타입이나 주어진 변수의 타입에 따라 리터럴 0이나 1을 리턴하는 함수를 제공한다.
+줄리아는 어떤 특정한 타입이나 주어진 변수의 타입에 따라 리터럴 0이나 1을 리턴하는 함수를 제공한다.
 
 | 함수          | 설명                                     |
 |:----------------- |:------------------------------------------------ |
