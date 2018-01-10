@@ -124,19 +124,6 @@ end
 const src_stdlib_path = abspath(src_path, "stdlib")
 const codex_stdlib_path = abspath(codex_path, "stdlib")
 const julia_doc_src_stdlib_path = abspath(JULIA_PATH, "doc", "src", "stdlib")
-const julia_doc_src_stdlib_gitignore_path = abspath(julia_doc_src_stdlib_path, ".gitignore")
-const stdlib_ignored_files = readlines(julia_doc_src_stdlib_gitignore_path)
-for filename in stdlib_ignored_files
-    path1 = abspath(src_stdlib_path, filename)
-    path2 = abspath(codex_stdlib_path, filename)
-    check_src_and_codex(path1, path2)
-end
-
-for filename in stdlib_ignored_files
-    path1 = abspath(julia_doc_src_stdlib_path, filename)
-    path2 = abspath(codex_stdlib_path, filename)
-    check_julia_doc_src_and_codex(path1, path2)
-end
 
 check_src_and_codex(src_path, codex_path)
 check_julia_doc_src_and_codex(julia_doc_src_path, codex_path)

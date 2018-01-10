@@ -18,7 +18,20 @@ baremodule GenStdLib end
     include(joinpath(@__DIR__, "contrib", "build_sysimg.jl"))
 end
 
-const PAGES = [
+# make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
+using Unicode: lowercase
+const STDLIB_DIR = normpath(@__DIR__, "..", "julia", "stdlib")
+const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
+    sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src", "index.md")
+    if isfile(sourcefile)
+        targetfile = joinpath("stdlib", lowercase(dir) * ".md")
+        (stdlib = Symbol(dir), targetfile = targetfile,)
+    else
+        missing
+    end
+end)
+
+ PAGES = [
     "Home" => "index.md",
     "Manual" => [
         "manual/introduction.md",
@@ -61,42 +74,31 @@ const PAGES = [
         "manual/noteworthy-differences.md",
         "manual/unicode-input.md",
     ],
-    "Standard Library" => [
-        "stdlib/base.md",
-        "stdlib/collections.md",
-        "stdlib/math.md",
-        "stdlib/numbers.md",
-        "stdlib/strings.md",
-        "stdlib/arrays.md",
-        "stdlib/parallel.md",
-        "stdlib/distributed.md",
-        "stdlib/multi-threading.md",
-        "stdlib/linalg.md",
-        "stdlib/constants.md",
-        "stdlib/file.md",
-        "stdlib/delimitedfiles.md",
-        "stdlib/io-network.md",
-        "stdlib/punctuation.md",
-        "stdlib/sort.md",
-        "stdlib/pkg.md",
-        "stdlib/dates.md",
-        "stdlib/iterators.md",
-        "stdlib/test.md",
-        "stdlib/c.md",
-        "stdlib/libc.md",
-        "stdlib/libdl.md",
-        "stdlib/profile.md",
-        "stdlib/stacktraces.md",
-        "stdlib/simd-types.md",
-        "stdlib/base64.md",
-        "stdlib/mmap.md",
-        "stdlib/sharedarrays.md",
-        "stdlib/filewatching.md",
-        "stdlib/crc32c.md",
-        "stdlib/iterativeeigensolvers.md",
-        "stdlib/unicode.md",
-        "stdlib/printf.md",
+    "Base" => [
+        "base/base.md",
+        "base/collections.md",
+        "base/math.md",
+        "base/numbers.md",
+        "base/strings.md",
+        "base/arrays.md",
+        "base/parallel.md",
+        "base/multi-threading.md",
+        "base/linalg.md",
+        "base/constants.md",
+        "base/file.md",
+        "base/io-network.md",
+        "base/punctuation.md",
+        "base/sort.md",
+        "base/pkg.md",
+        "base/iterators.md",
+        "base/c.md",
+        "base/libc.md",
+        "base/libdl.md",
+        "base/stacktraces.md",
+        "base/simd-types.md",
     ],
+    "Standard Library" =>
+        [stdlib.targetfile for stdlib in STDLIB_DOCS],
     "Developer Documentation" => [
         "devdocs/reflection.md",
         "Documentation of Julia's Internals" => [
@@ -130,13 +132,13 @@ const PAGES = [
     ],
 ]
 
-using DelimitedFiles, Test, Mmap, SharedArrays, Profile, Base64, FileWatching, CRC32c,
-      Dates, IterativeEigensolvers, Unicode, Distributed, Printf
+for stdlib in STDLIB_DOCS
+    @eval using $(stdlib.stdlib)
+end
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
-    modules   = [Base, Core, BuildSysImg, DelimitedFiles, Test, Mmap, SharedArrays, Profile,
-                 Base64, FileWatching, Dates, IterativeEigensolvers, Unicode, Distributed, Printf],
+    modules   = [Base, Core, BuildSysImg, [Base.root_module(stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
@@ -144,7 +146,7 @@ makedocs(
     strict    = false,
     checkdocs = :none,
     format    = "pdf" in ARGS ? :latex : :html,
-    sitename  = "The Julia Language",
+    sitename  = "줄리아 언어",
     authors   = "The Julia Project",
     analytics = "UA-110655381-2", # juliakorea 추척 ID
     pages     = PAGES,
