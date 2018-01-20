@@ -19,7 +19,6 @@ baremodule GenStdLib end
 end
 
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
-using Unicode: lowercase
 const STDLIB_DIR = normpath(@__DIR__, "..", "julia", "stdlib")
 const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
     sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src", "index.md")
@@ -31,8 +30,9 @@ const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
     end
 end)
 
- PAGES = [
+const PAGES = [
     "Home" => "index.md",
+    hide("NEWS.md"),
     "Manual" => [
         "manual/introduction.md",
         "manual/getting-started.md",
@@ -53,7 +53,6 @@ end)
         "manual/documentation.md",
         "manual/metaprogramming.md",
         "manual/arrays.md",
-        "manual/linear-algebra.md",
         "manual/missing.md",
         "manual/networking-and-streams.md",
         "manual/parallel-computing.md",
@@ -83,7 +82,6 @@ end)
         "base/arrays.md",
         "base/parallel.md",
         "base/multi-threading.md",
-        "base/linalg.md",
         "base/constants.md",
         "base/file.md",
         "base/io-network.md",
@@ -93,7 +91,6 @@ end)
         "base/iterators.md",
         "base/c.md",
         "base/libc.md",
-        "base/libdl.md",
         "base/stacktraces.md",
         "base/simd-types.md",
     ],

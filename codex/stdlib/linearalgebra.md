@@ -1,4 +1,4 @@
-# Linear algebra
+# Linear Algebra
 
 In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations
 of many common and useful linear algebra operations. Basic operations, such as [`trace`](@ref), [`det`](@ref),
@@ -56,7 +56,7 @@ julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]
  -10.0   2.3   4.0
 
 julia> factorize(A)
-Base.LinAlg.LU{Float64,Array{Float64,2}} with factors L and U:
+LinearAlgebra.LU{Float64,Array{Float64,2}} with factors L and U:
 [1.0 0.0 0.0; -0.15 1.0 0.0; -0.3 -0.132196 1.0]
 [-10.0 2.3 4.0; 0.0 2.345 -3.4; 0.0 0.0 -5.24947]
 ```
@@ -72,14 +72,14 @@ julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
  -4.0  -3.0   5.0
 
 julia> factorize(B)
-Base.LinAlg.BunchKaufman{Float64,Array{Float64,2}}
+LinearAlgebra.BunchKaufman{Float64,Array{Float64,2}}
 D factor:
 3×3 Tridiagonal{Float64,Array{Float64,1}}:
  -1.64286   0.0   ⋅
   0.0      -2.8  0.0
    ⋅        0.0  5.0
 U factor:
-3×3 Base.LinAlg.UnitUpperTriangular{Float64,Array{Float64,2}}:
+3×3 LinearAlgebra.UnitUpperTriangular{Float64,Array{Float64,2}}:
  1.0  0.142857  -0.8
  0.0  1.0       -0.6
  0.0  0.0        1.0
@@ -260,8 +260,8 @@ compute the factorization of a matrix into a product of matrices, and are one of
 in linear algebra.
 
 The following table summarizes the types of matrix factorizations that have been implemented in
-Julia. Details of their associated methods can be found in the [Linear Algebra](@ref) section
-of the Julia Base documentation.
+Julia. Details of their associated methods can be found in the [Standard Functions](@ref) section
+of the Linear Algebra documentation.
 
 | Type              | Description                                                                                                    |
 |:----------------- |:-------------------------------------------------------------------------------------------------------------- |
@@ -276,3 +276,348 @@ of the Julia Base documentation.
 | `Eigen`           | [Spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_(matrix))                            |
 | `SVD`             | [Singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition)                     |
 | `GeneralizedSVD`  | [Generalized SVD](https://en.wikipedia.org/wiki/Generalized_singular_value_decomposition#Higher_order_version) |
+
+
+
+
+## Standard Functions
+
+Linear algebra functions in Julia are largely implemented by calling functions from [LAPACK](http://www.netlib.org/lapack/).
+ Sparse factorizations call functions from [SuiteSparse](http://faculty.cse.tamu.edu/davis/suitesparse.html).
+
+```@docs
+Base.:*(::AbstractMatrix, ::AbstractMatrix)
+Base.:\(::AbstractMatrix, ::AbstractVecOrMat)
+LinearAlgebra.dot
+LinearAlgebra.vecdot
+LinearAlgebra.cross
+LinearAlgebra.factorize
+LinearAlgebra.Diagonal
+LinearAlgebra.Bidiagonal
+LinearAlgebra.SymTridiagonal
+LinearAlgebra.Tridiagonal
+LinearAlgebra.Symmetric
+LinearAlgebra.Hermitian
+LinearAlgebra.LowerTriangular
+LinearAlgebra.UpperTriangular
+LinearAlgebra.UniformScaling
+LinearAlgebra.lu
+LinearAlgebra.lufact
+LinearAlgebra.lufact!
+LinearAlgebra.chol
+LinearAlgebra.cholfact
+LinearAlgebra.cholfact!
+LinearAlgebra.lowrankupdate
+LinearAlgebra.lowrankdowndate
+LinearAlgebra.lowrankupdate!
+LinearAlgebra.lowrankdowndate!
+LinearAlgebra.ldltfact
+LinearAlgebra.ldltfact!
+LinearAlgebra.qr
+LinearAlgebra.qr!
+LinearAlgebra.qrfact
+LinearAlgebra.qrfact!
+LinearAlgebra.QR
+LinearAlgebra.QRCompactWY
+LinearAlgebra.QRPivoted
+LinearAlgebra.lqfact!
+LinearAlgebra.lqfact
+LinearAlgebra.lq
+LinearAlgebra.bkfact
+LinearAlgebra.bkfact!
+LinearAlgebra.eig
+LinearAlgebra.eigvals
+LinearAlgebra.eigvals!
+LinearAlgebra.eigmax
+LinearAlgebra.eigmin
+LinearAlgebra.eigvecs
+LinearAlgebra.eigfact
+LinearAlgebra.eigfact!
+LinearAlgebra.hessfact
+LinearAlgebra.hessfact!
+LinearAlgebra.schurfact
+LinearAlgebra.schurfact!
+LinearAlgebra.schur
+LinearAlgebra.ordschur
+LinearAlgebra.ordschur!
+LinearAlgebra.svdfact
+LinearAlgebra.svdfact!
+LinearAlgebra.svd
+LinearAlgebra.svdvals
+LinearAlgebra.svdvals!
+LinearAlgebra.Givens
+LinearAlgebra.givens
+LinearAlgebra.triu
+LinearAlgebra.triu!
+LinearAlgebra.tril
+LinearAlgebra.tril!
+LinearAlgebra.diagind
+LinearAlgebra.diag
+LinearAlgebra.diagm
+LinearAlgebra.scale!
+LinearAlgebra.rank
+LinearAlgebra.norm
+LinearAlgebra.vecnorm
+LinearAlgebra.normalize!
+LinearAlgebra.normalize
+LinearAlgebra.cond
+LinearAlgebra.condskeel
+LinearAlgebra.trace
+LinearAlgebra.det
+LinearAlgebra.logdet
+LinearAlgebra.logabsdet
+Base.inv(::AbstractMatrix)
+LinearAlgebra.pinv
+LinearAlgebra.nullspace
+Base.repmat
+Base.kron
+LinearAlgebra.linreg
+LinearAlgebra.exp(::StridedMatrix{<:LinearAlgebra.BlasFloat})
+LinearAlgebra.log(::StridedMatrix)
+LinearAlgebra.sqrt(::StridedMatrix{<:Real})
+LinearAlgebra.cos(::StridedMatrix{<:Real})
+LinearAlgebra.sin(::StridedMatrix{<:Real})
+LinearAlgebra.sincos(::StridedMatrix{<:Real})
+LinearAlgebra.tan(::StridedMatrix{<:Real})
+LinearAlgebra.sec(::StridedMatrix)
+LinearAlgebra.csc(::StridedMatrix)
+LinearAlgebra.cot(::StridedMatrix)
+LinearAlgebra.cosh(::StridedMatrix)
+LinearAlgebra.sinh(::StridedMatrix)
+LinearAlgebra.tanh(::StridedMatrix)
+LinearAlgebra.sech(::StridedMatrix)
+LinearAlgebra.csch(::StridedMatrix)
+LinearAlgebra.coth(::StridedMatrix)
+LinearAlgebra.acos(::StridedMatrix)
+LinearAlgebra.asin(::StridedMatrix)
+LinearAlgebra.atan(::StridedMatrix)
+LinearAlgebra.asec(::StridedMatrix)
+LinearAlgebra.acsc(::StridedMatrix)
+LinearAlgebra.acot(::StridedMatrix)
+LinearAlgebra.acosh(::StridedMatrix)
+LinearAlgebra.asinh(::StridedMatrix)
+LinearAlgebra.atanh(::StridedMatrix)
+LinearAlgebra.asech(::StridedMatrix)
+LinearAlgebra.acsch(::StridedMatrix)
+LinearAlgebra.acoth(::StridedMatrix)
+LinearAlgebra.lyap
+LinearAlgebra.sylvester
+LinearAlgebra.issuccess
+LinearAlgebra.issymmetric
+LinearAlgebra.isposdef
+LinearAlgebra.isposdef!
+LinearAlgebra.istril
+LinearAlgebra.istriu
+LinearAlgebra.isdiag
+LinearAlgebra.ishermitian
+LinearAlgebra.RowVector
+LinearAlgebra.ConjArray
+Base.transpose
+LinearAlgebra.transpose!
+Base.adjoint
+LinearAlgebra.adjoint!
+LinearAlgebra.peakflops
+LinearAlgebra.stride1
+LinearAlgebra.checksquare
+```
+
+## Low-level matrix operations
+
+In many cases there are in-place versions of matrix operations that allow you to supply
+a pre-allocated output vector or matrix.  This is useful when optimizing critical code in order
+to avoid the overhead of repeated allocations. These in-place operations are suffixed with `!`
+below (e.g. `mul!`) according to the usual Julia convention.
+
+```@docs
+LinearAlgebra.mul!
+LinearAlgebra.ldiv!
+LinearAlgebra.rdiv!
+```
+
+## BLAS Functions
+
+In Julia (as in much of scientific computation), dense linear-algebra operations are based on
+the [LAPACK library](http://www.netlib.org/lapack/), which in turn is built on top of basic linear-algebra
+building-blocks known as the [BLAS](http://www.netlib.org/blas/). There are highly optimized
+implementations of BLAS available for every computer architecture, and sometimes in high-performance
+linear algebra routines it is useful to call the BLAS functions directly.
+
+`LinearAlgebra.BLAS` provides wrappers for some of the BLAS functions. Those BLAS functions
+that overwrite one of the input arrays have names ending in `'!'`.  Usually, a BLAS function has
+four methods defined, for [`Float64`](@ref), [`Float32`](@ref), `ComplexF64`, and `ComplexF32` arrays.
+
+### [BLAS Character Arguments](@id stdlib-blas-chars)
+Many BLAS functions accept arguments that determine whether to transpose an argument (`trans`),
+which triangle of a matrix to reference (`uplo` or `ul`),
+whether the diagonal of a triangular matrix can be assumed to
+be all ones (`dA`) or which side of a matrix multiplication
+the input argument belongs on (`side`). The possiblities are:
+
+#### [Multplication Order](@id stdlib-blas-side)
+| `side` | Meaning                                                             |
+|:-------|:--------------------------------------------------------------------|
+| `'L'`  | The argument goes on the *left* side of a matrix-matrix operation.  |
+| `'R'`  | The argument goes on the *right* side of a matrix-matrix operation. |
+
+#### [Triangle Referencing](@id stdlib-blas-uplo)
+| `uplo`/`ul` | Meaning                                               |
+|:------------|:------------------------------------------------------|
+| `'U'`       | Only the *upper* triangle of the matrix will be used. |
+| `'L'`       | Only the *lower* triangle of the matrix will be used. |
+
+#### [Transposition Operation](@id stdlib-blas-trans)
+| `trans`/`tX` | Meaning                                                 |
+|:-------------|:--------------------------------------------------------|
+| `'N'`        | The input matrix `X` is not transposed or conjugated.   |
+| `'T'`        | The input matrix `X` will be transposed.                |
+| `'C'`        | The input matrix `X` will be conjugated and transposed. |
+
+#### [Unit Diagonal](@id stdlib-blas-diag)
+| `diag`/`dX` | Meaning                                                   |
+|:------------|:----------------------------------------------------------|
+| `'N'`       | The diagonal values of the matrix `X` will be read.       |
+| `'U'`       | The diagonal of the matrix `X` is assumed to be all ones. |
+
+```@docs
+LinearAlgebra.BLAS
+LinearAlgebra.BLAS.dotu
+LinearAlgebra.BLAS.dotc
+LinearAlgebra.BLAS.blascopy!
+LinearAlgebra.BLAS.nrm2
+LinearAlgebra.BLAS.asum
+LinearAlgebra.axpy!
+LinearAlgebra.BLAS.scal!
+LinearAlgebra.BLAS.scal
+LinearAlgebra.BLAS.ger!
+LinearAlgebra.BLAS.syr!
+LinearAlgebra.BLAS.syrk!
+LinearAlgebra.BLAS.syrk
+LinearAlgebra.BLAS.her!
+LinearAlgebra.BLAS.herk!
+LinearAlgebra.BLAS.herk
+LinearAlgebra.BLAS.gbmv!
+LinearAlgebra.BLAS.gbmv
+LinearAlgebra.BLAS.sbmv!
+LinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.gemm!
+LinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.gemv!
+LinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.symm!
+LinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.symv!
+LinearAlgebra.BLAS.symv(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.symv(::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.trmm!
+LinearAlgebra.BLAS.trmm
+LinearAlgebra.BLAS.trsm!
+LinearAlgebra.BLAS.trsm
+LinearAlgebra.BLAS.trmv!
+LinearAlgebra.BLAS.trmv
+LinearAlgebra.BLAS.trsv!
+LinearAlgebra.BLAS.trsv
+LinearAlgebra.BLAS.set_num_threads
+LinearAlgebra.I
+```
+
+## LAPACK Functions
+
+`LinearAlgebra.LAPACK` provides wrappers for some of the LAPACK functions for linear algebra.
+ Those functions that overwrite one of the input arrays have names ending in `'!'`.
+
+Usually a function has 4 methods defined, one each for [`Float64`](@ref), [`Float32`](@ref),
+`ComplexF64` and `ComplexF32` arrays.
+
+Note that the LAPACK API provided by Julia can and will change in the future. Since this API is
+not user-facing, there is no commitment to support/deprecate this specific set of functions in
+future releases.
+
+```@docs
+LinearAlgebra.LAPACK
+LinearAlgebra.LAPACK.gbtrf!
+LinearAlgebra.LAPACK.gbtrs!
+LinearAlgebra.LAPACK.gebal!
+LinearAlgebra.LAPACK.gebak!
+LinearAlgebra.LAPACK.gebrd!
+LinearAlgebra.LAPACK.gelqf!
+LinearAlgebra.LAPACK.geqlf!
+LinearAlgebra.LAPACK.geqrf!
+LinearAlgebra.LAPACK.geqp3!
+LinearAlgebra.LAPACK.gerqf!
+LinearAlgebra.LAPACK.geqrt!
+LinearAlgebra.LAPACK.geqrt3!
+LinearAlgebra.LAPACK.getrf!
+LinearAlgebra.LAPACK.tzrzf!
+LinearAlgebra.LAPACK.ormrz!
+LinearAlgebra.LAPACK.gels!
+LinearAlgebra.LAPACK.gesv!
+LinearAlgebra.LAPACK.getrs!
+LinearAlgebra.LAPACK.getri!
+LinearAlgebra.LAPACK.gesvx!
+LinearAlgebra.LAPACK.gelsd!
+LinearAlgebra.LAPACK.gelsy!
+LinearAlgebra.LAPACK.gglse!
+LinearAlgebra.LAPACK.geev!
+LinearAlgebra.LAPACK.gesdd!
+LinearAlgebra.LAPACK.gesvd!
+LinearAlgebra.LAPACK.ggsvd!
+LinearAlgebra.LAPACK.ggsvd3!
+LinearAlgebra.LAPACK.geevx!
+LinearAlgebra.LAPACK.ggev!
+LinearAlgebra.LAPACK.gtsv!
+LinearAlgebra.LAPACK.gttrf!
+LinearAlgebra.LAPACK.gttrs!
+LinearAlgebra.LAPACK.orglq!
+LinearAlgebra.LAPACK.orgqr!
+LinearAlgebra.LAPACK.orgql!
+LinearAlgebra.LAPACK.orgrq!
+LinearAlgebra.LAPACK.ormlq!
+LinearAlgebra.LAPACK.ormqr!
+LinearAlgebra.LAPACK.ormql!
+LinearAlgebra.LAPACK.ormrq!
+LinearAlgebra.LAPACK.gemqrt!
+LinearAlgebra.LAPACK.posv!
+LinearAlgebra.LAPACK.potrf!
+LinearAlgebra.LAPACK.potri!
+LinearAlgebra.LAPACK.potrs!
+LinearAlgebra.LAPACK.pstrf!
+LinearAlgebra.LAPACK.ptsv!
+LinearAlgebra.LAPACK.pttrf!
+LinearAlgebra.LAPACK.pttrs!
+LinearAlgebra.LAPACK.trtri!
+LinearAlgebra.LAPACK.trtrs!
+LinearAlgebra.LAPACK.trcon!
+LinearAlgebra.LAPACK.trevc!
+LinearAlgebra.LAPACK.trrfs!
+LinearAlgebra.LAPACK.stev!
+LinearAlgebra.LAPACK.stebz!
+LinearAlgebra.LAPACK.stegr!
+LinearAlgebra.LAPACK.stein!
+LinearAlgebra.LAPACK.syconv!
+LinearAlgebra.LAPACK.sysv!
+LinearAlgebra.LAPACK.sytrf!
+LinearAlgebra.LAPACK.sytri!
+LinearAlgebra.LAPACK.sytrs!
+LinearAlgebra.LAPACK.hesv!
+LinearAlgebra.LAPACK.hetrf!
+LinearAlgebra.LAPACK.hetri!
+LinearAlgebra.LAPACK.hetrs!
+LinearAlgebra.LAPACK.syev!
+LinearAlgebra.LAPACK.syevr!
+LinearAlgebra.LAPACK.sygvd!
+LinearAlgebra.LAPACK.bdsqr!
+LinearAlgebra.LAPACK.bdsdc!
+LinearAlgebra.LAPACK.gecon!
+LinearAlgebra.LAPACK.gehrd!
+LinearAlgebra.LAPACK.orghr!
+LinearAlgebra.LAPACK.gees!
+LinearAlgebra.LAPACK.gges!
+LinearAlgebra.LAPACK.trexc!
+LinearAlgebra.LAPACK.trsen!
+LinearAlgebra.LAPACK.tgsen!
+LinearAlgebra.LAPACK.trsyl!
+```

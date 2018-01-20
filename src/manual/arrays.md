@@ -457,10 +457,10 @@ julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]
 #### 논리적 인덱싱
 
 부울 배열을 이용한 인덱싱은 값이 `true`인 곳의 인덱스를 선택한다.
-주로 논리적 인덱싱, 혹은 논리적 마스크를 사용한 인덱싱이라고 부르며, 부울 벡터 `B`를 통한 인덱싱은 [`find(B)`](@ref)가 리턴하는 정수의 벡터를 통한 인덱싱과 동일하다.
+주로 논리적 인덱싱, 혹은 논리적 마스크를 사용한 인덱싱이라고 부르며, 부울 벡터 `B`를 통한 인덱싱은 [`findall(B)`](@ref)가 리턴하는 정수의 벡터를 통한 인덱싱과 동일하다.
 이와 마찬가지로, `N`차원 부울 배열을 통한 인덱싱은, `true` 값의 위치를 나타내는 `CartesianIndex{N}`들의 배열을 통한 인덱싱과 동일하다.
 논리적 인덱스는, 인덱스의 크기와 인덱스하는 배열의 해당 차원의 크기가 일치하거나, 혹은 배열과 크기 및 차원이 일치하는 단 하나의 인덱스이어야 한다.
-부울 배열을 사용하여 바로 인덱싱 하는 것이 [`find`](@ref)를 먼저 호출하는 것보다 일반적으로 더 효율적이다.
+부울 배열을 사용하여 바로 인덱싱 하는 것이 [`findall`](@ref)를 먼저 호출하는 것보다 일반적으로 더 효율적이다.
 
 ```jldoctest
 julia> x = reshape(1:16, 4, 4)
@@ -641,12 +641,17 @@ Julia에서 기본 배열 타입은 추상 타입인 [`AbstractArray{T,N}`](@ref
 그렇지 않으면 어떤 배열 함수는 생각 이상으로 느릴지도 모른다.
 구체적 타입은 [`copy`](@ref)등의 out-of-place 연산에서 유사한 배열을 할당하는데에 쓰일 수 있는 [`similar(A,T=eltype(A),dims=size(A))`](@ref)메소드를 제공해야 한다.
 `AbstractArray{T,N}`가 내부적으로 어떻게 표현이 되든, `T` 는 *정수* 인덱싱이 리턴하는 객체(`A` 가 빈 배열이 아닌 경우 `A[1, ..., 1]`)의 타입이며, `N`은 [`size`](@ref)가 리턴하는 투플의 길이여야 한다.
+For more details on defining custom
+`AbstractArray` implementations, see the [array interface guide in the interfaces chapter](@ref man-interface-array).
 
 `DenseArray`는 `AbstractArray`의 추상 서브타입으로, 원소가 메모리에 규칙적인 오프셋으로 배치된 배열 모두를 포함하고자 만들어졌으며,
 따라서 이러한 메모리 레이아웃을 기대하는 외부의 C나 Fortran함수에 전달될 수도 있다.
-`DenseArray`의 서브 타입은 `k`차원의 스트라이드를 리턴하는 [`stride(A,k)`](@ref)를 제공해야 한다:
+Subtypes should provide a [`strides(A)`](@ref) method
+that returns a tuple of "strides" for each dimension; a provided [`stride(A,k)`](@ref) method accesses
+the `k`th element within this tuple.
 `k`차원의 인덱스를 1만큼 늘리면 [`getindex(A,i)`](@ref)의 인덱스 `i`를 [`stride(A,k)`](@ref)만큼 늘리는 것과 동일하다.
 포인터 변환 메소드 [`Base.unsafe_convert(Ptr{T}, A)`](@ref)가 제공된다면, 메모리 레이아웃 또한 같은 식으로 스트라이드를 따라야 한다.
+More concrete examples can be found within the [interface guide for strided arrays](@ref man-interface-strided-arrays).
 
 [`Array`](@ref) 타입은 `DenseArray`의 구체적 인스턴스로서, 원소들은 열 우선 순서(column-major order)로 저장된다.
 ([성능 향상 팁](@ref man-performance-tips) 참조)
@@ -698,175 +703,3 @@ julia> r
  -1.58553  -0.921517
   0.0       0.866567
 ```
-
-## 희소 벡터와 행렬
-
-Julia는 희소 벡터와 [희소 행렬](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC)을 자체적으로 지원한다.
-희소 배열이란 0인 원소가 충분히 많아 특별한 자료구조로 저장하는 편이 밀집 배열에 비해서 공간과 실행 시간이 절약되는 배열을 말한다.
-
-### [Compressed Sparse Column (CSC) 희소 행렬 저장법](@id man-csc)
-
-Julia에서 희소 행렬은 [Compressed Sparse Column (CSC) 포맷](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC#Compressed_sparse_column_.28CSC_or_CCS.29)으로 저장된다.
-Julia에서 희소 행렬은 [`SparseMatrixCSC{Tv,Ti}`](@ref) 타입이며, `Tv`는 저장된 값의 타입, `Ti`는 행 인덱스와 열을 가리키는 포인터를 저장하는 정수의 타입이다.
-`SparseMatrixCSC`의 내부 표현은 다음과 같다:
-
-```julia
-struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}
-    m::Int                  # 행의 수
-    n::Int                  # 열의 수
-    colptr::Vector{Ti}      # i번째 열은 colptr[i]:(colptr[i+1]-1)에 위치한다.
-    rowval::Vector{Ti}      # 저장된 값의 열 인덱스
-    nzval::Vector{Tv}       # 저장된 값. 대체로 0이 아니다.
-end
-```
-
-CSC 저장법은 희소 행렬의 각 열을 쉽게 엑세스 할 수 있도록 해 주지만, 반면에 행을 엑세스 하는 것은 훨씬 느리다.
-새로운 엔트리를 하나씩 삽입하는 것은 CSC 구조에서 느린데, 이는 삽입점 이후의 모든 엔트리가 한칸씩 옮겨져야 하기 때문이다.
-
-희소 행렬의 모든 연산은 CSC 자료구조를 최대한 이용하면서 비싼 연산은 피하도록 신중하게 구현되었다.
-
-다른 애플리케이션이나 라이브러리에서 생성된 CSC 포맷의 데이터를 Julia에서 가져오려면 1기반 인덱싱을 사용하는지 확인해야 한다.
-각 열의 행 인덱스는 정렬되어야 한다.
-만약 `SparseMatrixCSC` 객체가 정렬되지 않은 행 인덱스를 가지고 있다면, 두번 전치(transpose)함으로써 빠르게 정렬할 수 있다.
-
-`SparseMatrixCSC`에 0값을 명시적으로 저장하는 것이 편리한 경우도 있다.
-이렇게 하는 것 또한 `Base`의 함수들이 *허용하며* (단, 변환의 과정에서 반드시 남아있을 보장은 없다.),
-그렇게 명시적으로 저장된 0은 많은 루틴이 "구조적으로는 0이 아닌" 것으로 취급한다.
-[`nnz`](@ref) 함수는 명시적으로 저장된 0이 아닌 엔트리의 갯수(구조적으로 0이 아닌 엔트리를 포함하여)를 리턴한다.
-수치적으로 0이 아닌 엔트리의 갯수를 정확히 얻기 위해서는 저장된 모든 엔트리를 검사하는 [`count(!iszero, x)`](@ref)를 사용하라.
-희소 행렬에 저장된 0값은 [`dropzeros`](@ref) 와 in-place 함수인 [`dropzeros!`](@ref)를 이용해 삭제할 수 있다.
-
-```jldoctest
-julia> A = sparse([1, 2, 3], [1, 2, 3], [0, 2, 0])
-3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:
-  [1, 1]  =  0
-  [2, 2]  =  2
-  [3, 3]  =  0
-
-julia> dropzeros(A)
-3×3 SparseMatrixCSC{Int64,Int64} with 1 stored entry:
-  [2, 2]  =  2
-```
-
-### 희소 벡터 스토리지
-
-희소 벡터는 희소 행렬의 CSC 포맷과 매우 유사한 방식으로 저장된다.
-Julia에서 희소 행렬은 [`SparseVector{Tv,Ti}`](@ref) 타입을 가지는데 `Tv`는 저장된 값의 타입, `Ti`는 인덱스의 정수 타입이다.
-`SparseVector`의 내부 표현은 다음과 같다:
-
-```julia
-struct SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}
-    n::Int              # 희소 행렬의 길이
-    nzind::Vector{Ti}   # 저장된 값의 인덱스
-    nzval::Vector{Tv}   # 저장된 값. 대체로 0이 아니다.
-end
-```
-
-[`SparseMatrixCSC`](@ref)와 마찬가지로 `SparseVector`도 명시적으로 0을 담을 수 있다.
-([희소 행렬 저장법](@ref man-csc) 참조)
-
-### 희소 벡터와 행렬 생성자
-
-희소 배열을 가장 간단히 만드는 방법은, 밀집 배열의 [`zeros`](@ref)에 해당하는 함수를 사용하는 것이다.
-희소 배열을 만들 때에는 해당하는 밀집 배열의 함수명에 `sp` 접두어를 붙이면 된다:
-
-```jldoctest
-julia> spzeros(3)
-3-element SparseVector{Float64,Int64} with 0 stored entries
-```
-
-[`sparse`](@ref) 함수를 사용하여 편리하게 희소배열을 생성할 수 있다.
-에를 들어, 희소 행열을 생성하려면 행 인덱스를 담은 벡터 `I`와, 열 인덱스를 담은 벡터 `J`와, 값을 담은 벡터 `V`를 입력하면 된다.
-(이는 [COO 포맷](https://ko.wikipedia.org/wiki/%ED%9D%AC%EC%86%8C%ED%96%89%EB%A0%AC#Coordinate_list_.28COO.29)으로도 알려져있다.)
-`sparse(I,J,V)`는 `S[I[k], J[k]] = V[k]`를 만족하는 희소행렬을 생성한다.
-이와 마찬가지로 [`sparsevec`](@ref)는 (행) 인덱스 벡터 `I`와 값 벡터 `V`를 받아  `R[I[k]] = V[k]`를 만족하는 희소 행렬을 만든다.
-
-```jldoctest sparse_function
-julia> I = [1, 4, 3, 5]; J = [4, 7, 18, 9]; V = [1, 2, -5, 3];
-
-julia> S = sparse(I,J,V)
-5×18 SparseMatrixCSC{Int64,Int64} with 4 stored entries:
-  [1 ,  4]  =  1
-  [4 ,  7]  =  2
-  [5 ,  9]  =  3
-  [3 , 18]  =  -5
-
-julia> R = sparsevec(I,V)
-5-element SparseVector{Int64,Int64} with 4 stored entries:
-  [1]  =  1
-  [3]  =  -5
-  [4]  =  2
-  [5]  =  3
-```
-
-[`sparse`](@ref) 함수와 [`sparsevec`](@ref) 함수의 역은 [`findnz`](@ref)이다.
-`findnz`는 희소 행렬의 인덱스 벡터와 값 벡터를 리턴한다.
-또한 인덱스 벡터만을 리턴하는 [`findn`](@ref)도 있다.
-
-```jldoctest sparse_function
-julia> findnz(S)
-([1, 4, 5, 3], [4, 7, 9, 18], [1, 2, 3, -5])
-
-julia> findn(S)
-([1, 4, 5, 3], [4, 7, 9, 18])
-
-julia> findnz(R)
-([1, 3, 4, 5], [1, -5, 2, 3])
-
-julia> find(!iszero, R)
-4-element Array{Int64,1}:
- 1
- 3
- 4
- 5
-```
-
-[`sparse`](@ref) 함수를 사용하여 밀집 배열을 희소 배열로 바꾸는 것 또한 가능하다:
-
-```jldoctest
-julia> sparse(Matrix(1.0I, 5, 5))
-5×5 SparseMatrixCSC{Float64,Int64} with 5 stored entries:
-  [1, 1]  =  1.0
-  [2, 2]  =  1.0
-  [3, 3]  =  1.0
-  [4, 4]  =  1.0
-  [5, 5]  =  1.0
-
-julia> sparse([1.0, 0.0, 1.0])
-3-element SparseVector{Float64,Int64} with 2 stored entries:
-  [1]  =  1.0
-  [3]  =  1.0
-```
-
-[`Array`](@ref) 생성자를 사용하여 반대방향의 변환도 가능하다.
-[`issparse`](@ref) 함수를 사용하여 희소 배열인지 확인할 수 있다.
-
-```jldoctest
-julia> issparse(spzeros(5))
-true
-```
-
-### 희소 행렬 연산
-
-희소 배열에 대한 산술 연산은 밀집 배열에서처럼 동작한다.
-희소 배열의 인덱싱, 대입, 그리고 병합 모두 밀집 배열과 마찬가지로 동작한다.
-인덱싱 연산, 그리고 특히 대입 연산을 원소 하나씩 하는 것은 비싸다.
-희소 행렬을 [`findnz`](@ref)를 사용하여 `(I,J,V)` 포맷으로 변경한 후, 밀집 벡터인 `I`, `J`, `V`의 구조나 값을 변경한 다음, 다시 희소 행렬을 생성하는 편이 오히려 더 나은 경우가 많다.
-
-### 밀집 메소드와 희소 메소드 간의 대응
-
-다음의 표는 희소 행렬의 내장 메소드와 이에 대응하는 밀집 행렬의 메소드를 담고있다.
-일반적으로 희소 행렬을 생성하는 메소드가 그에 대응하는 밀집 행렬 메소드와 다른 점은,
-결과 행렬이 주어진 희소 행렬 `S`의 희소성 패턴을 따르거나, 결과 희소 행렬의 밀도가 `d`이라는 것이다.
-(즉, 행렬의 각 원소가 0이 아닐 확률이 `d`이다.)
-
-자세한 내용은 줄리아 Base 레퍼런스의 [밀집 벡터와 행렬](@ref stdlib-sparse-arrays)을 참조하기 바란다.
-
-| 희소                       | 밀집                   | 설명                                                                                                                                                               |
-|:-------------------------- |:---------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`spzeros(m,n)`](@ref)     | [`zeros(m,n)`](@ref)   | 크기가 `m` × `n` 인 0의 행렬을 생성한다. ([`spzeros(m,n)`](@ref) 는 빈 행렬이다.)                                                                                  |
-| [`sparse(I, n, n)`](@ref)  | [`Matrix(I,n,n)`](@ref)| 크기가 `m` × `n` 인 단위 행렬을 생성한다.                                                                                                                          |
-| [`Array(S)`](@ref)         | [`sparse(A)`](@ref)    | 밀집 행렬과 희소 행렬을 상호 변환한다.                                                                                                                             |
-| [`sprand(m,n,d)`](@ref)    | [`rand(m,n)`](@ref)    | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 반열린구간 ``[0, 1)``에서의 연속 균등 분포를 따른다.       |
-| [`sprandn(m,n,d)`](@ref)   | [`randn(m,n)`](@ref)   | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 표준 정규 분포를 따른다.                                   |
-| [`sprandn(m,n,d,X)`](@ref) | [`randn(m,n,X)`](@ref) | 크기가 `m` × `n` 인 랜덤 행렬을 생성한다. 생성되는 행렬의 밀도는 `d`이며, 0이 아닌 원소는 독립 동일하게 `X` 분포를 따른다. (`Distributions` 패키지를 필요로 한다.) |
