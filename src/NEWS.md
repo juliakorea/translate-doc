@@ -1,5 +1,37 @@
-Julia v0.7.0 Release Notes
-==========================
+Julia v0.7.0 릴리즈 노트
+========================
+
+새로 추가된 기능
+----------------
+
+  * 지역 변수가 정의되었는지 알아볼 때 `@isdefined 변수이름` 매크로를 사용합니다 ([#22281](https://github.com/JuliaLang/julia/pull/22281)).
+
+  * 함수 인자에서 터플 배분(destructuring): `(x, y)`와 같은 표현을 함수 인자 이름에 사용하면,
+    `x`와 `y`라는 지역 변수로 인자를 배분합니다. 할당문 `(x, y) = arg` 처럼요 ([#6614](https://github.com/JuliaLang/julia/issues/6614)).
+
+  * 네임드 터플(이름을 갖는 터플, named tuples). 문법은 `(a=1, b=2)` 이런 식입니다. 터플처럼 쓰면 되는데
+    .이름 `t.a` 이런 식으로 해당 요소에 접근할 수 있습니다 ([#22194](https://github.com/JuliaLang/julia/issues/22194)).
+
+  * 키워드 인자 컨테이너(`f(; kw...)` 에서 `kw`)는 네임드 터플입니다. `haskey`와 같은 딕셔너리 함수로 인덱싱할 수 있고,
+    이름-값 쌍은 `pairs(kw)`를 사용하여 차례대로 접근할 수 있습니다. `kw`는 더 이상 같은 인자 이름을 중복하여 쓸 수 없습니다 ([#4916](https://github.com/JuliaLang/julia/issues/4916)).
+
+  * 사용자 정의 infix 연산자를 유니코드 결합 기호, 부호, 윗/아래 첨자로 정의할 수 있습니다.
+    예를 들어 `+̂ₐ″`는 `+`와 같은 우선순위의 infix 연산자로 파싱 됩니다 ([#22089](https://github.com/JuliaLang/julia/issues/22089)).
+
+  * 매크로 호출 문법 `@macroname[args]`은 이제 `@macroname([args])`로 파싱 합니다 ([#23519](https://github.com/JuliaLang/julia/issues/23519)).
+
+  * `if @generated ...; else ...; end` 문은 `@generated` 처리한 것과 보통 구현을 모두 제공합니다.
+    둘러 싼 코드는 공통으로 이들에 적용됩니다 ([#23168](https://github.com/JuliaLang/julia/issues/23168)).
+
+  * `⟂` (`\perp`) 연산자가 비교 우위를 갖습니다 ([#24404](https://github.com/JuliaLang/julia/issues/24404)).
+
+  * `missing` 싱글턴 객체(`Missing` 타입)는 누락된 값을 표현하는데 씁니다 ([#24653](https://github.com/JuliaLang/julia/issues/24653)).
+    표준 연산자와 수학 함수를 통해 전달되며 세개의 상태를 갖는 로직을 구현합니다.
+    SQL의 `NULL`과 R의 `NA`와 비슷합니다.
+
+  * 점(.)을 사용한 필드 접근은 `Base.getproperty`와 `Base.setproperty!`를 오버로딩하여 확장할 수 있습니다 ([#1974](https://github.com/JuliaLang/julia/issues/1974)).
+
+  * `@enum` 매크로를 쓸 때 `begin` 블럭으로 `Enum` 값을 특정할 수 있습니다 ([#25424](https://github.com/JuliaLang/julia/issues/25424)).
 
 New language features
 ---------------------
