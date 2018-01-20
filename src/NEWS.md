@@ -1,4 +1,4 @@
-Julia v0.7.0 릴리즈 노트
+줄리아 v0.7.0 릴리즈 노트
 ========================
 
 새로 추가된 기능
@@ -26,55 +26,11 @@ Julia v0.7.0 릴리즈 노트
   * `⟂` (`\perp`) 연산자가 비교 우위를 갖습니다 ([#24404](https://github.com/JuliaLang/julia/issues/24404)).
 
   * `missing` 싱글턴 객체(`Missing` 타입)는 누락된 값을 표현하는데 씁니다 ([#24653](https://github.com/JuliaLang/julia/issues/24653)).
-    표준 연산자와 수학 함수를 통해 전달되며 세개의 상태를 갖는 로직을 구현합니다.
-    SQL의 `NULL`과 R의 `NA`와 비슷합니다.
+    표준 연산자와 수학 함수를 통해 전달되며, 이를 통해 SQL의 `NULL`이나 R의 `NA`와 같은 세개의 상태를 갖는 로직을 구현합니다.
 
   * 점(.)을 사용한 필드 접근은 `Base.getproperty`와 `Base.setproperty!`를 오버로딩하여 확장할 수 있습니다 ([#1974](https://github.com/JuliaLang/julia/issues/1974)).
 
   * `@enum` 매크로를 쓸 때 `begin` 블럭으로 `Enum` 값을 특정할 수 있습니다 ([#25424](https://github.com/JuliaLang/julia/issues/25424)).
-
-New language features
----------------------
-
-  * Local variables can be tested for being defined
-    using the new `@isdefined variable` macro ([#22281](https://github.com/JuliaLang/julia/issues/22281)).
-
-  * Destructuring in function arguments: when an expression such as `(x, y)` is used as
-    a function argument name, the argument is unpacked into local variables `x` and `y`
-    as in the assignment `(x, y) = arg` ([#6614](https://github.com/JuliaLang/julia/issues/6614)).
-
-  * Named tuples, with the syntax `(a=1, b=2)`. These behave very similarly to tuples,
-    except components can also be accessed by name using dot syntax `t.a` ([#22194](https://github.com/JuliaLang/julia/issues/22194)).
-
-  * Keyword argument containers (`kw` in `f(; kw...)`) are now named tuples. Dictionary
-    functions like `haskey` and indexing can be used on them, and name-value pairs can be
-    iterated using `pairs(kw)`. `kw` can no longer contain multiple entries for the same
-    argument name ([#4916](https://github.com/JuliaLang/julia/issues/4916)).
-
-  * Custom infix operators can now be defined by appending Unicode
-    combining marks, primes, and sub/superscripts to other operators.
-    For example, `+̂ₐ″` is parsed as an infix operator with the same
-    precedence as `+` ([#22089](https://github.com/JuliaLang/julia/issues/22089)).
-
-  * The macro call syntax `@macroname[args]` is now available and is parsed
-    as `@macroname([args])` ([#23519](https://github.com/JuliaLang/julia/issues/23519)).
-
-  * The construct `if @generated ...; else ...; end` can be used to provide both
-    `@generated` and normal implementations of part of a function. Surrounding code
-    will be common to both versions ([#23168](https://github.com/JuliaLang/julia/issues/23168)).
-
-  * Added `⟂` (`\perp`) operator with comparison precedence ([#24404](https://github.com/JuliaLang/julia/issues/24404)).
-
-  * The `missing` singleton object (of type `Missing`) has been added to represent
-    missing values ([#24653](https://github.com/JuliaLang/julia/issues/24653)). It propagates through standard operators and mathematical functions,
-    and implements three-valued logic, similar to SQLs `NULL` and R's `NA`.
-
-  * Field access via dot-syntax can now be overloaded by adding methods to
-    `Base.getproperty` and `Base.setproperty!` ([#1974](https://github.com/JuliaLang/julia/issues/1974)), optionally along with
-    a corresponding `Base.propertynames` method for reflection ([#25311](https://github.com/JuliaLang/julia/issues/25311)).
-
-  * Values for `Enum`s can now be specified inside of a `begin` block when using the
-    `@enum` macro ([#25424](https://github.com/JuliaLang/julia/issues/25424)).
 
 Language changes
 ----------------
