@@ -678,6 +678,11 @@ Deprecated or removed
 
   * `read(::IO, ::Ref)` is now a method of `read!`, since it mutates its `Ref` argument ([#21592](https://github.com/JuliaLang/julia/issues/21592)).
 
+  * `nb_available` is now `bytesavailable` ([#25634](https://github.com/JuliaLang/julia/issues/25634)).
+
+  * `skipchars(io::IO, predicate; linecomment=nothing)` is deprecated in favor of
+    `skipchars(predicate, io::IO; linecomment=nothing)` ([#25667](https://github.com/JuliaLang/julia/issues/25667)).
+
   * `Bidiagonal` constructors now use a `Symbol` (`:U` or `:L`) for the upper/lower
     argument, instead of a `Bool` or a `Char` ([#22703](https://github.com/JuliaLang/julia/issues/22703)).
 
@@ -894,6 +899,8 @@ Deprecated or removed
     `LinearAlgebra` standard library module ([#25571](https://github.com/JuliaLang/julia/issues/25571)).
 
   * `@printf` and `@sprintf` have been moved to the `Printf` standard library ([#23929](https://github.com/JuliaLang/julia/issues/23929),[#25056](https://github.com/JuliaLang/julia/issues/25056)).
+
+  * The `Libdl` module has moved to the `Libdl` standard library module ([#25459](https://github.com/JuliaLang/julia/issues/25459)).
 
   * The aliases `Complex32`, `Complex64` and `Complex128` have been deprecated in favor of `ComplexF16`,
     `ComplexF32` and `ComplexF64` respectively ([#24647](https://github.com/JuliaLang/julia/issues/24647)).

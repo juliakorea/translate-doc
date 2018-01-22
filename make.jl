@@ -23,7 +23,7 @@ const STDLIB_DIR = normpath(@__DIR__, "..", "julia", "stdlib")
 const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
     sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src", "index.md")
     if isfile(sourcefile)
-        targetfile = joinpath("stdlib", lowercase(dir) * ".md")
+        targetfile = joinpath("stdlib", dir * ".md")
         (stdlib = Symbol(dir), targetfile = targetfile,)
     else
         missing
@@ -57,7 +57,6 @@ const PAGES = [
         "manual/networking-and-streams.md",
         "manual/parallel-computing.md",
         "manual/dates.md",
-        "manual/interacting-with-julia.md",
         "manual/running-external-programs.md",
         "manual/calling-c-and-fortran-code.md",
         "manual/handling-operating-system-variation.md",
@@ -135,7 +134,7 @@ end
 
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
-    modules   = [Base, Core, BuildSysImg, [Base.root_module(stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+    modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false,
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
