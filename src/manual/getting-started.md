@@ -61,7 +61,7 @@ bar
 $ julia --color=yes -O -- foo.jl arg1 arg2..
 ```
 
-Julia는 `-p` 옵션이나 `--machinefile` 옵션을 이용하여 병렬 환경에서 실행시킬 수 있다. `-p n` 옵션은 n개의 worker 프로세스를 생성하지만, `--machinefile file` 옵션은 file의 각 행에 지정된 노드마다 worker를 생성한다. `file` 에 지정된 노드(machine)들은 `ssh` 로그인을 통해 패스워드가 필요없이 실행할 수 있어야 하며, Julia는 현재 호스트와 같은 경로에 설치가 되어 있어야 한다. `file` 에 작성되는 노드는 `[count*][user@]host[:port] [bind_addr[:port]]` 와 같은 형식으로 작성한다. `user` 는 현재 user id를 나타내고, `port` 는 기본 ssh port, `count` 는 각 노드당 생성하는 worker의 개수 (기본값 : 1) `bin-to bind_addr[:port]` 은 선택적인 옵션으로 다른 worker들이 현재의 worker로 연결하기 위해 필요한 특정 ip 주소와 포트를 지정한다.
+Julia는 `-p` 옵션이나 `--machine-file` 옵션을 이용하여 병렬 환경에서 실행시킬 수 있다. `-p n` 옵션은 n개의 worker 프로세스를 생성하지만, `--machine-file file` 옵션은 file의 각 행에 지정된 노드마다 worker를 생성한다. `file` 에 지정된 노드(machine)들은 `ssh` 로그인을 통해 패스워드가 필요없이 실행할 수 있어야 하며, Julia는 현재 호스트와 같은 경로에 설치가 되어 있어야 한다. `file` 에 작성되는 노드는 `[count*][user@]host[:port] [bind_addr[:port]]` 와 같은 형식으로 작성한다. `user` 는 현재 user id를 나타내고, `port` 는 기본 ssh port, `count` 는 각 노드당 생성하는 worker의 개수 (기본값 : 1) `bin-to bind_addr[:port]` 은 선택적인 옵션으로 다른 worker들이 현재의 worker로 연결하기 위해 필요한 특정 ip 주소와 포트를 지정한다.
 
 만약 Julia가 실행할 때마다 실행되는 코드가 있다면, 그 코드를 `~/.juliarc.ji` 에 넣으면 된다.
 
@@ -95,7 +95,7 @@ julia [switches] -- [programfile] [args...]
 
  -p, --procs {N|auto}      N개의 worker 프로세스를 추가로 생성한다. "auto"는 현재 Julia를 실행하는 컴퓨터의 최대 코어수만큼 worker 프로세스를 생성한다.
                            
- --machinefile <file>      <file>에 나열된 호스트에서 worker 프로세스를 실행한다.
+ --machine-file <file>      <file>에 나열된 호스트에서 worker 프로세스를 실행한다.
 
  -i                        대화형 모드; PEPL을 돌리며 ininteractive()는 true이다.
  -q, --quiet               시작할 때 배너, REPL 경고를 제거한다.
