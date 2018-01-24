@@ -31,9 +31,9 @@ const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
 end)
 
 const PAGES = [
-    "Home" => "index.md",
+    "홈" => "index.md",
     hide("NEWS.md"),
-    "Manual" => [
+    "매뉴얼" => [
         "manual/introduction.md",
         "manual/getting-started.md",
         "manual/variables.md",
