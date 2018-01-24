@@ -1,20 +1,22 @@
-# Julia 0.7 Documentation
+# 줄리아 0.7 문서
 
-Welcome to the documentation for Julia 0.7.
+환영합니다. 줄리아 0.7 문서입니다.
 
-Please read the [release notes](NEWS.md) to see what has changed since the last release.
+지난 버전에 이어, 새롭게 바뀐 점은 [릴리즈 노트](NEWS.md)에서 확인하세요.
 
-* [Manual](#Manual-1)
+한글 문서 번역은 [깃헙](https://github.com/juliakorea/translate-doc)에서 누구나 참여하실 수 있습니다.
+
+* [매뉴얼](#Manual-1)
 * [Base](#Base-1)
 * [Standard Library](#Standard-Library-1)
 * [Developer Documentation](#Developer-Documentation-1)
 
-## Manual
+## 매뉴얼
 
-  * [Introduction](@ref man-introduction)
-  * [Getting Started](@ref)
-  * [Variables](@ref)
-  * [Integers and Floating-Point Numbers](@ref)
+  * [소개글](@ref man-introduction)
+  * [시작하기](@ref Getting-Started)
+  * [변수](@ref Variables)
+  * [정수와 부동 소수점 수](@ref Integers-and-Floating-Point-Numbers)
   * [Mathematical Operations and Elementary Functions](@ref)
   * [Complex and Rational Numbers](@ref)
   * [Strings](@ref man-strings)
@@ -22,7 +24,7 @@ Please read the [release notes](NEWS.md) to see what has changed since the last 
   * [Control Flow](@ref)
   * [Scope of Variables](@ref scope-of-variables)
   * [Types](@ref man-types)
-  * [Methods](@ref)
+  * [메서드](@ref Methods)
   * [Constructors](@ref man-constructors)
   * [Conversion and Promotion](@ref conversion-and-promotion)
   * [Interfaces](@ref)
