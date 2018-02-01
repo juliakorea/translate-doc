@@ -32,7 +32,7 @@ function tab_completions(symbols...)
 end
 
 function unicode_data()
-    file = normpath(@__DIR__, "..", "..", "..", "..", "UnicodeData.txt")
+    file = normpath(@__DIR__, "..", "..", "..", "..", "..", "UnicodeData.txt")
     names = Dict{UInt32, String}()
     open(file) do unidata
         for line in readlines(unidata)

@@ -133,7 +133,7 @@ for stdlib in STDLIB_DOCS
 end
 
 makedocs(
-    build     = joinpath(pwd(), "_build/html/ko"),
+    build     = joinpath(pwd(), "_build/html/ko/latest"),
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false, # true
     doctest   = "doctest" in ARGS,
@@ -146,6 +146,6 @@ makedocs(
     authors   = "The Julia Project",
     analytics = "UA-110655381-2", # juliakorea 추척 ID
     pages     = PAGES,
-    html_prettyurls = ("deploy" in ARGS),
-    html_canonical = ("deploy" in ARGS) ? "http://juliakorea.github.io/ko/" : nothing, # juliakorea 주소 (TODO: stable 버전 추가)
+    html_prettyurls = true,
+    html_canonical = "https://juliakorea.github.io/ko/latest/"
 )
