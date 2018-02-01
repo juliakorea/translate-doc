@@ -95,12 +95,12 @@ julia [switches] -- [programfile] [args...]
 
  -p, --procs {N|auto}      N개의 worker 프로세스를 추가로 생성한다. "auto"는 현재 Julia를 실행하는 컴퓨터의 최대 코어수만큼 worker 프로세스를 생성한다.
                            
- --machine-file <file>      <file>에 나열된 호스트에서 worker 프로세스를 실행한다.
+ --machine-file <file>     <file>에 나열된 호스트에서 worker 프로세스를 실행한다.
 
  -i                        대화형 모드; PEPL을 돌리며 ininteractive()는 true이다.
  -q, --quiet               시작할 때 배너, REPL 경고를 제거한다.
- --banner={yes|no}         시작 배너 사용/사용하지 않는다.
- --color={yes|no}          모든 텍스트에 색상을 표시하거나 표시하지 않는다.
+ --banner={yes|no|auto}    시작 배너 사용/사용하지 않는다.
+ --color={yes|no|auto}     모든 텍스트에 색상을 표시하거나 표시하지 않는다.
  --history-file={yes|no}   작업내역을 저장하거나 로드한다.
 
  --depwarn={yes|no|error}  문법과 함수가 폐기됐다는 경고를 활성화/비활성화 한다.("error"는 경고를 에러로 바꾼다.)

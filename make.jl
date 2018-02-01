@@ -2,6 +2,7 @@
 ENV["JULIA_PKGDIR"] = joinpath(@__DIR__, "deps")
 
 if "deps" in ARGS
+using Pkg
 Pkg.init()
 cp(joinpath(@__DIR__, "REQUIRE"), Pkg.dir("REQUIRE"); remove_destination = true)
 Pkg.update()
@@ -86,7 +87,6 @@ const PAGES = [
         "base/io-network.md",
         "base/punctuation.md",
         "base/sort.md",
-        "base/pkg.md",
         "base/iterators.md",
         "base/c.md",
         "base/libc.md",
@@ -135,11 +135,11 @@ end
 makedocs(
     build     = joinpath(pwd(), "_build/html/ko"),
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
-    clean     = false,
+    clean     = false, # true
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
-    strict    = false,
+    strict    = false, # true
     checkdocs = :none,
     format    = "pdf" in ARGS ? :latex : :html,
     sitename  = "줄리아 언어",
@@ -147,4 +147,5 @@ makedocs(
     analytics = "UA-110655381-2", # juliakorea 추척 ID
     pages     = PAGES,
     html_prettyurls = ("deploy" in ARGS),
+    html_canonical = ("deploy" in ARGS) ? "http://juliakorea.github.io/ko/" : nothing, # juliakorea 주소 (TODO: stable 버전 추가)
 )

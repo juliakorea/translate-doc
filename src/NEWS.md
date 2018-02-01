@@ -184,6 +184,9 @@ Breaking changes
 
 This section lists changes that do not have deprecation warnings.
 
+  * `readuntil` now does *not* include the delimiter in its result, matching the
+    behavior of `readline`. Pass `keep=true` to get the old behavior ([#25633](https://github.com/JuliaLang/julia/issues/25633)).
+
   * `getindex(s::String, r::UnitRange{Int})` now throws `UnicodeError` if `last(r)`
     is not a valid index into `s` ([#22572](https://github.com/JuliaLang/julia/issues/22572)).
 
@@ -293,7 +296,9 @@ This section lists changes that do not have deprecation warnings.
     This avoids stack overflows in the common case of definitions like
     `f(x, y) = f(promote(x, y)...)` ([#22801](https://github.com/JuliaLang/julia/issues/22801)).
 
-  * `findmin`, `findmax`, `indmin`, and `indmax` used to always return linear indices.
+  * `indmin` and `indmax` have been renamed to `argmin` and `argmax`, respectively ([#25654](https://github.com/JuliaLang/julia/issues/25654)).
+
+  * `findmin`, `findmax`, `argmin`, and `argmax` used to always return linear indices.
     They now return `CartesianIndex`es for all but 1-d arrays, and in general return
     the `keys` of indexed collections (e.g. dictionaries) ([#22907](https://github.com/JuliaLang/julia/issues/22907)).
 
@@ -370,6 +375,10 @@ This section lists changes that do not have deprecation warnings.
     In particular, this means that they use `CartesianIndex` objects for matrices
     and higher-dimensional arrays insted of linear indices as was previously the case.
     Use `LinearIndices(a)[findall(f, a)]` and similar constructs to compute linear indices.
+
+  * The `Base.HasShape` iterator trait has gained a type parameter `N` indicating the
+    number of dimensions, which must correspond to the length of the tuple returned by
+    `size` ([#25655](https://github.com/JuliaLang/julia/issues/25655)).
 
  * `AbstractSet` objects are now considered equal by `==` and `isequal` if all of their
     elements are equal ([#25368](https://github.com/JuliaLang/julia/issues/25368)). This has required changing the hashing algorithm
@@ -499,7 +508,7 @@ Library improvements
     has been changed to `KeySet{K, <:Associative{K}} <: AbstractSet{K}` ([#24580](https://github.com/JuliaLang/julia/issues/24580)).
 
   * New function `ncodeunits(s::AbstractString)` gives the number of code units in a string.
-    The generic definition is constant time but calls `endof(s)` which may be inefficient.
+    The generic definition is constant time but calls `lastindex(s)` which may be inefficient.
     Therefore custom string types may want to define direct `ncodeunits` methods.
 
   * `reverseind(s::AbstractString, i::Integer)` now has an efficient generic fallback, so
@@ -947,7 +956,14 @@ Deprecated or removed
 
   * `findin(a, b)` has been deprecated in favor of `findall(occursin(b), a)` ([#24673](https://github.com/JuliaLang/julia/issues/24673)).
 
+  * `module_name` has been deprecated in favor of a new, general `nameof` function. Similarly,
+    the unexported `Base.function_name` and `Base.datatype_name` have been deprecated in favor
+    of `nameof` methods ([#25622](https://github.com/JuliaLang/julia/issues/25622)).
+
   * The module `Random.dSFMT` is renamed `Random.DSFMT` ([#25567](https://github.com/JuliaLang/julia/issues/25567)).
+
+  * `Random.RandomDevice(unlimited::Bool)` (on non-Windows systems) is deprecated in favor of
+    `Random.RandomDevice(; unlimited=unlimited)` ([#25668](https://github.com/JuliaLang/julia/issues/25668)).
 
   * The generic implementations of `strides(::AbstractArray)` and `stride(::AbstractArray, ::Int)`
      have been deprecated. Subtypes of `AbstractArray` that implement the newly introduced strided
@@ -959,11 +975,22 @@ Deprecated or removed
   * `rand(t::Tuple{Vararg{Int}})` is deprecated in favor of `rand(Float64, t)` or `rand(t...)`;
     `rand(::Tuple)` will have another meaning in the future ([#25429](https://github.com/JuliaLang/julia/issues/25429), [#25278](https://github.com/JuliaLang/julia/issues/25278)).
 
+  * The `assert` function (and `@assert` macro) have been documented that they are not guaranteed to run under various optimization levels and should therefore not be used to e.g. verify passwords.
+
   * `ObjectIdDict` has been deprecated in favor of `IdDict{Any,Any}` ([#25210](https://github.com/JuliaLang/julia/issues/25210)).
 
   * `gc` and `gc_enable` have been deprecated in favor of `GC.gc` and `GC.enable` ([#25616](https://github.com/JuliaLang/julia/issues/25616)).
 
   * `Base.@gc_preserve` has been deprecated in favor of `GC.@preserve` ([#25616](https://github.com/JuliaLang/julia/issues/25616)).
+
+  * `scale!` has been deprecated in favor of `mul!`, `lmul!`, and `rmul!` ([#25701](https://github.com/JuliaLang/julia/issues/25701), [#25812](https://github.com/JuliaLang/julia/issues/25812)).
+
+  * `endof(a)` has been renamed to `lastindex(a)`, and the `end` keyword in indexing expressions now
+    lowers to either `lastindex(a)` (in the case with only one index) or `lastindex(a, d)` (in cases
+    where there is more than one index and `end` appears at dimension `d`) ([#23554](https://github.com/JuliaLang/julia/issues/23554), [#25763](https://github.com/JuliaLang/julia/issues/25763)).
+
+  * `DateTime()`, `Date()`, and `Time()` have been deprecated, instead use `DateTime(1)`, `Date(1)`
+    and `Time(0)` respectively ([#23724](https://github.com/JuliaLang/julia/issues/23724)).
 
 Command-line option changes
 ---------------------------
