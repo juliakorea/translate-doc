@@ -44,6 +44,9 @@ New language features
   * Values for `Enum`s can now be specified inside of a `begin` block when using the
     `@enum` macro ([#25424](https://github.com/JuliaLang/julia/issues/25424)).
 
+  * Keyword arguments can be required: if a default value is omitted, then an
+    exception is thrown if the caller does not assign the keyword a value ([#25830](https://github.com/JuliaLang/julia/issues/25830)).
+
 Language changes
 ----------------
 
@@ -56,6 +59,10 @@ Language changes
 
   * The syntax `1.+2` is deprecated, since it is ambiguous: it could mean either
     `1 .+ 2` (the current meaning) or `1. + 2` ([#19089](https://github.com/JuliaLang/julia/issues/19089)).
+
+  * Mutable structs with no fields are no longer singletons; it is now possible to make
+    multiple instances of them that can be distinguished by `===` ([#25854](https://github.com/JuliaLang/julia/issues/25854)).
+    Zero-size immutable structs are still singletons.
 
   * In string and character literals, backslash `\` may no longer
     precede unrecognized escape characters ([#22800](https://github.com/JuliaLang/julia/issues/22800)).
@@ -198,6 +205,9 @@ This section lists changes that do not have deprecation warnings.
 
   * `readuntil` now does *not* include the delimiter in its result, matching the
     behavior of `readline`. Pass `keep=true` to get the old behavior ([#25633](https://github.com/JuliaLang/julia/issues/25633)).
+
+  * `countlines` now always counts the last non-empty line even if it does not
+    end with EOL, matching the behavior of `eachline` and `readlines` ([#25845](https://github.com/JuliaLang/julia/issues/25845)).
 
   * `getindex(s::String, r::UnitRange{Int})` now throws `UnicodeError` if `last(r)`
     is not a valid index into `s` ([#22572](https://github.com/JuliaLang/julia/issues/22572)).
@@ -404,6 +414,9 @@ This section lists changes that do not have deprecation warnings.
       to get the old behavior (only "space" characters are considered as
       word separators), use the keyword `wordsep=isspace`.
 
+  * `writedlm` in the standard library module DelimitedFiles now writes numeric values
+    using `print` rather than `print_shortest` ([#25745](https://github.com/JuliaLang/julia/issues/25745)).
+
   * The `tempname` function used to create a file on Windows but not on other
     platforms. It now never creates a file ([#9053](https://github.com/JuliaLang/julia/issues/9053)).
 
@@ -451,7 +464,7 @@ Library improvements
   * The function `randn` now accepts complex arguments (`Complex{T <: AbstractFloat}`)
     ([#21973](https://github.com/JuliaLang/julia/issues/21973)).
 
-  * `parse(Complex{T}, string)` can parse complex numbers in common formats ([#24713](https://github.com/JuliaLang/julia/issues/24713)).
+  * `parse(Complex{T}, string)` can parse complex numbers in some common formats ([#24713](https://github.com/JuliaLang/julia/issues/24713)).
 
   * The function `rand` can now pick up random elements from strings, associatives
     and sets ([#22228](https://github.com/JuliaLang/julia/issues/22228), [#21960](https://github.com/JuliaLang/julia/issues/21960), [#18155](https://github.com/JuliaLang/julia/issues/18155), [#22224](https://github.com/JuliaLang/julia/issues/22224)).
@@ -695,7 +708,7 @@ Deprecated or removed
     in favor of `replace(s::AbstractString, pat => r; [count])` ([#25165](https://github.com/JuliaLang/julia/issues/25165)).
     Moreover, `count` cannot be negative anymore (use `typemax(Int)` instead ([#22325](https://github.com/JuliaLang/julia/issues/22325)).
 
-  * `read(io, type, dims)` is deprecated to `read!(io, Array{type}(dims))` ([#21450](https://github.com/JuliaLang/julia/issues/21450)).
+  * `read(io, type, dims)` is deprecated to `read!(io, Array{type}(uninitialized, dims))` ([#21450](https://github.com/JuliaLang/julia/issues/21450)).
 
   * `read(::IO, ::Ref)` is now a method of `read!`, since it mutates its `Ref` argument ([#21592](https://github.com/JuliaLang/julia/issues/21592)).
 
@@ -994,6 +1007,9 @@ Deprecated or removed
   * `gc` and `gc_enable` have been deprecated in favor of `GC.gc` and `GC.enable` ([#25616](https://github.com/JuliaLang/julia/issues/25616)).
 
   * `Base.@gc_preserve` has been deprecated in favor of `GC.@preserve` ([#25616](https://github.com/JuliaLang/julia/issues/25616)).
+
+  * `print_shortest` has been discontinued, but is still available in the `Base.Grisu`
+    submodule ([#25745](https://github.com/JuliaLang/julia/issues/25745)).
 
   * `scale!` has been deprecated in favor of `mul!`, `lmul!`, and `rmul!` ([#25701](https://github.com/JuliaLang/julia/issues/25701), [#25812](https://github.com/JuliaLang/julia/issues/25812)).
 
