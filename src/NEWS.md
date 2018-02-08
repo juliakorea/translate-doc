@@ -734,6 +734,10 @@ Deprecated or removed
 
   * The unexported type `AbstractIOBuffer` has been renamed to `GenericIOBuffer` ([#17360](https://github.com/JuliaLang/julia/issues/17360) [#22796](https://github.com/JuliaLang/julia/issues/22796)).
 
+  * `IOBuffer(data::AbstractVector{UInt8}, read::Bool, write::Bool, maxsize::Integer)`,
+    `IOBuffer(read::Bool, write::Bool)`, and `IOBuffer(maxsize::Integer)` are
+    deprecated in favor of constructors taking keyword arguments ([#25872](https://github.com/JuliaLang/julia/issues/25872)).
+
   * `Display` has been renamed to `AbstractDisplay` ([#24831](https://github.com/JuliaLang/julia/issues/24831)).
 
   * Remaining vectorized methods over `SparseVector`s, particularly `floor`, `ceil`,
@@ -1007,6 +1011,9 @@ Deprecated or removed
 
   * `DateTime()`, `Date()`, and `Time()` have been deprecated, instead use `DateTime(1)`, `Date(1)`
     and `Time(0)` respectively ([#23724](https://github.com/JuliaLang/julia/issues/23724)).
+
+  * The fallback method `^(x, p::Integer)` is deprecated. If your type relied on this definition,
+    add a method such as `^(x::MyType, p::Integer) = Base.power_by_squaring(x, p)` ([#23332](https://github.com/JuliaLang/julia/issues/23332)).
 
 Command-line option changes
 ---------------------------
