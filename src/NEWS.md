@@ -257,6 +257,9 @@ This section lists changes that do not have deprecation warnings.
     `Tridiagonal{T,V<:AbstractVector{T}}` and `SymTridiagonal{T,V<:AbstractVector{T}}`
     respectively ([#22718](https://github.com/JuliaLang/julia/issues/22718), [#22925](https://github.com/JuliaLang/julia/issues/22925), [#23035](https://github.com/JuliaLang/julia/issues/23035), [#23154](https://github.com/JuliaLang/julia/issues/23154)).
 
+  * The immediate supertype of `BitArray` is now simply `AbstractArray`. `BitArray` is no longer
+    considered a subtype of `DenseArray` and `StridedArray` ([#25858](https://github.com/JuliaLang/julia/issues/25858)).
+
   * When called with an argument that contains `NaN` elements, `findmin` and `findmax` now return the
     first `NaN` found and its corresponding index. Previously, `NaN` elements were ignored.
     The new behavior matches that of `min`, `max`, `minimum`, and `maximum`.
@@ -408,6 +411,9 @@ This section lists changes that do not have deprecation warnings.
   * The `tempname` function used to create a file on Windows but not on other
     platforms. It now never creates a file ([#9053](https://github.com/JuliaLang/julia/issues/9053)).
 
+  * The `fieldnames` and `propertynames` functions now return a tuple rather than
+    an array ([#25725](https://github.com/JuliaLang/julia/issues/25725)).
+
 Library improvements
 --------------------
 
@@ -420,6 +426,9 @@ Library improvements
     empty container ([#24390](https://github.com/JuliaLang/julia/issues/24390)).
 
   * Jump to first/last history entries in the REPL via "Alt-<" and "Alt->" ([#22829](https://github.com/JuliaLang/julia/issues/22829)).
+
+  * REPL LaTeX-like tab completions have been simplified for several Unicode characters,
+    e.g. `𝔸` is now `\bbA` rather than `\BbbA` ([#25980](https://github.com/JuliaLang/julia/issues/25980)).
 
   * The function `chop` now accepts two arguments `head` and `tail` allowing to specify
     number of characters to remove from the head and tail of the string ([#24126](https://github.com/JuliaLang/julia/issues/24126)).
@@ -568,6 +577,9 @@ Library improvements
   * `IdDict{K,V}` replaces `ObjectIdDict`.  It has type parameters
     like other `AbstractDict` subtypes and its constructors mirror the
     ones of `Dict`. ([#25210](https://github.com/JuliaLang/julia/issues/25210))
+
+  * `IOBuffer` can take the `sizehint` keyword argument to suggest a capacity of
+    the buffer ([#25944](https://github.com/JuliaLang/julia/issues/25944)).
 
 Compiler/Runtime improvements
 -----------------------------
@@ -1014,6 +1026,8 @@ Deprecated or removed
 
   * The fallback method `^(x, p::Integer)` is deprecated. If your type relied on this definition,
     add a method such as `^(x::MyType, p::Integer) = Base.power_by_squaring(x, p)` ([#23332](https://github.com/JuliaLang/julia/issues/23332)).
+
+  * `wait` and `fetch` on `Task` now resemble the interface of `Future`
 
 Command-line option changes
 ---------------------------
