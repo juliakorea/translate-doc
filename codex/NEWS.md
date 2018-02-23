@@ -165,7 +165,7 @@ Language changes
     expressions) ([#23885](https://github.com/JuliaLang/julia/issues/23885)).
 
   * The `+` and `-` methods for `Number` and `UniformScaling` are not ambiguous anymore since `+`
-    and `-` no longer do automatic broadcasting. Hence the methods for `UniformScaling` and `Number` are
+    and `-` no longer do automatic broadcasting. Hence, the methods for `UniformScaling` and `Number` are
     no longer deprecated ([#23923](https://github.com/JuliaLang/julia/issues/23923)).
 
   * The keyword `importall` is deprecated. Use `using` and/or individual `import` statements
@@ -210,6 +210,11 @@ Breaking changes
 
 This section lists changes that do not have deprecation warnings.
 
+  * `replace(s::AbstractString, pat=>repl)` for function `repl` arguments formerly
+    passed a substring to `repl` in all cases.  It now passes substrings for
+    string patterns `pat`, but a `Char` for character patterns (when `pat` is a
+    `Char`, collection of `Char`, or a character predicate) ([#25815](https://github.com/JuliaLang/julia/issues/25815)).
+
   * `readuntil` now does *not* include the delimiter in its result, matching the
     behavior of `readline`. Pass `keep=true` to get the old behavior ([#25633](https://github.com/JuliaLang/julia/issues/25633)).
 
@@ -226,7 +231,7 @@ This section lists changes that do not have deprecation warnings.
 
   * `finalizer(function, object)` now returns `object` rather than `nothing` ([#24679](https://github.com/JuliaLang/julia/issues/24679)).
 
-  * The constructor of `SubString` now checks if the requsted view range
+  * The constructor of `SubString` now checks if the requested view range
     is defined by valid indices in the parent `AbstractString` ([#22511](https://github.com/JuliaLang/julia/issues/22511)).
 
   * Macro calls with `for` expressions are now parsed as generators inside
@@ -259,7 +264,7 @@ This section lists changes that do not have deprecation warnings.
     returned ([#21825](https://github.com/JuliaLang/julia/issues/21825)).
 
   * Using `ARGS` within the ~/.juliarc.jl or within a .jl file loaded with `--load` will no
-    longer contain the script name as the first argument. Instead the script name will be
+    longer contain the script name as the first argument. Instead, the script name will be
     assigned to `PROGRAM_FILE`. ([#22092](https://github.com/JuliaLang/julia/issues/22092))
 
   * The format for a `ClusterManager` specifying the cookie on the command line is now
@@ -337,7 +342,7 @@ This section lists changes that do not have deprecation warnings.
   * The `openspecfun` library is no longer built and shipped with Julia, as it is no longer
     used internally ([#22390](https://github.com/JuliaLang/julia/issues/22390)).
 
-  * All loaded packges used to have bindings in `Main` (e.g. `Main.Package`). This is no
+  * All loaded packages used to have bindings in `Main` (e.g. `Main.Package`). This is no
     longer the case; now bindings will only exist for packages brought into scope by
     typing `using Package` or `import Package` ([#17997](https://github.com/JuliaLang/julia/issues/17997)).
 
@@ -401,7 +406,7 @@ This section lists changes that do not have deprecation warnings.
     now take and/or return the same type of indices as `keys`/`pairs` for `AbstractArray`,
     `AbstractDict`, `AbstractString`, `Tuple` and `NamedTuple` objects ([#24774](https://github.com/JuliaLang/julia/issues/24774), [#25545](https://github.com/JuliaLang/julia/issues/25545)).
     In particular, this means that they use `CartesianIndex` objects for matrices
-    and higher-dimensional arrays insted of linear indices as was previously the case.
+    and higher-dimensional arrays instead of linear indices as was previously the case.
     Use `LinearIndices(a)[findall(f, a)]` and similar constructs to compute linear indices.
 
   * The `find*` functions which return scalars, i.e. `findnext`, `findprev`, `findfirst`,
@@ -508,9 +513,6 @@ Library improvements
     git repo. Additionally, the argument order was changed to be consistent with the git
     command line tool ([#22062](https://github.com/JuliaLang/julia/issues/22062)).
 
-  * `logspace` now accepts a `base` keyword argument to specify the base of the logarithmic
-    range. The base defaults to 10 ([#22310](https://github.com/JuliaLang/julia/issues/22310)).
-
   * Added `unique!` which is an inplace version of `unique` ([#20549](https://github.com/JuliaLang/julia/issues/20549)).
 
   * `@test isequal(x, y)` and `@test isapprox(x, y)` now prints an evaluated expression when
@@ -593,7 +595,7 @@ Library improvements
       Use `unique` to get the old behavior.
 
   * The type `LinearIndices` has been added, providing conversion from
-    cartesian incices to linear indices using the normal indexing operation. ([#24715](https://github.com/JuliaLang/julia/issues/24715))
+    cartesian indices to linear indices using the normal indexing operation. ([#24715](https://github.com/JuliaLang/julia/issues/24715))
 
   * `IdDict{K,V}` replaces `ObjectIdDict`.  It has type parameters
     like other `AbstractDict` subtypes and its constructors mirror the
@@ -601,6 +603,9 @@ Library improvements
 
   * `IOBuffer` can take the `sizehint` keyword argument to suggest a capacity of
     the buffer ([#25944](https://github.com/JuliaLang/julia/issues/25944)).
+
+  * `trunc`, `floor`, `ceil`, `round`, and `signif` specify `base` using a
+    keyword argument. ([#26156](https://github.com/JuliaLang/julia/issues/26156))
 
 Compiler/Runtime improvements
 -----------------------------
@@ -1004,8 +1009,7 @@ Deprecated or removed
 
   * `ismatch(regex, str)` has been deprecated in favor of `contains(str, regex)` ([#24673](https://github.com/JuliaLang/julia/issues/24673)).
 
-  * `linspace` and `logspace` now require an explicit number of elements to be
-    supplied rather than defaulting to `50`([#24794](https://github.com/JuliaLang/julia/issues/24794), [#24805](https://github.com/JuliaLang/julia/issues/24805)).
+  * `matchall` has been deprecated in favor of `collect(m.match for m in eachmatch(r, s))` ([#26071](https://github.com/JuliaLang/julia/issues/26071)).
 
   * `similar(::Associative)` has been deprecated in favor of `empty(::Associative)`, and
     `similar(::Associative, ::Pair{K, V})` has been deprecated in favour of

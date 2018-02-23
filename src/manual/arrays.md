@@ -644,19 +644,13 @@ Julia에서 기본 배열 타입은 추상 타입인 [`AbstractArray{T,N}`](@ref
 For more details on defining custom
 `AbstractArray` implementations, see the [array interface guide in the interfaces chapter](@ref man-interface-array).
 
-`DenseArray`는 `AbstractArray`의 추상 서브타입으로, 원소가 메모리에 규칙적인 오프셋으로 배치된 배열 모두를 포함하고자 만들어졌으며,
-따라서 이러한 메모리 레이아웃을 기대하는 외부의 C나 Fortran함수에 전달될 수도 있다.
-Subtypes should provide a [`strides(A)`](@ref) method
-that returns a tuple of "strides" for each dimension; a provided [`stride(A,k)`](@ref) method accesses
-the `k`th element within this tuple.
-`k`차원의 인덱스를 1만큼 늘리면 [`getindex(A,i)`](@ref)의 인덱스 `i`를 [`stride(A,k)`](@ref)만큼 늘리는 것과 동일하다.
-포인터 변환 메소드 [`Base.unsafe_convert(Ptr{T}, A)`](@ref)가 제공된다면, 메모리 레이아웃 또한 같은 식으로 스트라이드를 따라야 한다.
-More concrete examples can be found within the [interface guide for strided arrays](@ref man-interface-strided-arrays).
-
-[`Array`](@ref) 타입은 `DenseArray`의 구체적 인스턴스로서, 원소들은 열 우선 순서(column-major order)로 저장된다.
-([성능 향상 팁](@ref man-performance-tips) 참조)
-[`Vector`](@ref)와 [`Matrix`](@ref)는 1차원과 2차원 [`Array`](@ref)의 앨리어스이다.
-배열 라이브러리의 다른 부분이 일반적인 방식으로 구현될 수 있도록, 스칼라 인덱싱과 대입 및 몇개의 기본적인 스토리지 특정 연산이 [`Array`](@ref)에 구현되어야 한다.
+`DenseArray` is an abstract subtype of `AbstractArray` intended to include all arrays where
+elements are stored contiguously in column-major order (see additional notes in
+[Performance Tips](@ref man-performance-tips)). The [`Array`](@ref) type is a specific instance
+of `DenseArray`  [`Vector`](@ref) and [`Matrix`](@ref) are aliases for the 1-d and 2-d cases.
+Very few operations are implemented specifically for `Array` beyond those that are required
+for all `AbstractArrays`s; much of the array library is implemented in a generic
+manner that allows all custom arrays to behave similarly.
 
 `SubArray`는 복사가 아닌 참조로 인덱싱을 수행하는 `AbstractArray`의 특수화이다.
 `SubArray`는 [`view`](@ref)함수로 생성되는데, 호출 방식은 [`getindex`](@ref)와 같다.
@@ -664,7 +658,20 @@ More concrete examples can be found within the [interface guide for strided arra
 [`view`](@ref)는 입력 인덱스 벡터를 `SubArray` 객체에 저장하는데, 이는 참조되는 원 배열을 나중에 간접적으로 인덱싱 하는데에 쓰인다.
 [`@views`](@ref) 매크로를 표현식이나 코드 블록 앞에 둠으로써, 그 표현식 내의 모든 `array[...]` 슬라이스가 `SubArray` 뷰를 생성하도록 할 수 있다.
 
-`StridedVector`와 `StridedMatrix`는 Julia가 BLAS와 LAPACK 함수를 호출 할 때 [`Array`](@ref) 혹은 `SubArray` 객체를 전달할 수 있게 해주는 편리한 앨리어스이며, 따라서 메모리 할당과 복사에 의한 비효율성을 줄일 수 있도록 해준다.
+A "strided" array is stored in memory with elements laid out in regular offsets such that
+an instance with a supported `isbits` element type can be passed to
+external C and Fortran functions that expect this memory layout. Strided arrays
+must define a [`strides(A)`](@ref) method that returns a tuple of "strides" for each dimension; a
+provided [`stride(A,k)`](@ref) method accesses the `k`th element within this tuple. Increasing the
+index of dimension `k` by `1` should increase the index `i` of [`getindex(A,i)`](@ref) by
+[`stride(A,k)`](@ref). If a pointer conversion method [`Base.unsafe_convert(Ptr{T}, A)`](@ref) is
+provided, the memory layout must correspond in the same way to these strides. `DenseArray` is a
+very specific example of a strided array where the elements are arranged contiguously, thus it
+provides its subtypes with the approporiate definition of `strides`. More concrete examples
+can be found within the [interface guide for strided arrays](@ref man-interface-strided-arrays).
+`StridedVector` and `StridedMatrix` are convenient aliases for many of the builtin array types that
+are considered strided arrays, allowing them to dispatch to select specialized implementations that
+call highly tuned and optimized BLAS and LAPACK functions using just the pointer and strides.
 
 다음 예시에서는 임시 배열을 만들지 않고 적절한 LAPACK 함수를 차원 크기와 스트라이드를 사용하여 호출하여 큰 배열의 작은 섹션의 QR 분해를 계산한다.
 

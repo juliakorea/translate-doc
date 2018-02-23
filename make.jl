@@ -145,6 +145,6 @@ makedocs(
     authors   = "The Julia Project",
     analytics = "UA-110655381-2", # juliakorea 추척 ID
     pages     = PAGES,
-    html_prettyurls = true,
+    html_prettyurls = !("local" in ARGS),
     html_canonical = "https://juliakorea.github.io/ko/latest/"
 )
