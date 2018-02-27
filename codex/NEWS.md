@@ -199,6 +199,9 @@ Language changes
   * `=>` now has its own precedence level, giving it strictly higher precedence than
     `=` and `,` ([#25391](https://github.com/JuliaLang/julia/issues/25391)).
 
+  * The conditions under which unary operators followed by `(` are parsed as prefix function
+    calls have changed ([#26154](https://github.com/JuliaLang/julia/issues/26154)).
+
   * `begin` is disallowed inside indexing expressions, in order to enable the syntax
     `a[begin]` (for selecting the first element) in the future ([#23354](https://github.com/JuliaLang/julia/issues/23354)).
 
@@ -263,7 +266,10 @@ This section lists changes that do not have deprecation warnings.
     of the socket. Previously the address of the remote endpoint was being
     returned ([#21825](https://github.com/JuliaLang/julia/issues/21825)).
 
-  * Using `ARGS` within the ~/.juliarc.jl or within a .jl file loaded with `--load` will no
+  * The `~/.juliarc.jl` file has been moved to `~/.julia/config/startup.jl` and
+    `/etc/julia/juliarc.jl` file has been renamed to `/etc/julia/startup.jl` ([#26161](https://github.com/JuliaLang/julia/issues/26161)).
+
+  * Using `ARGS` within `startup.jl` files or within a .jl file loaded with `--load` will no
     longer contain the script name as the first argument. Instead, the script name will be
     assigned to `PROGRAM_FILE`. ([#22092](https://github.com/JuliaLang/julia/issues/22092))
 
@@ -801,7 +807,7 @@ Deprecated or removed
   * Calling `write` on non-isbits arrays is deprecated in favor of explicit loops or
     `serialize` ([#6466](https://github.com/JuliaLang/julia/issues/6466)).
 
-  * The default `juliarc.jl` file on Windows has been removed. Now must explicitly include the
+  * The default `startup.jl` file on Windows has been removed. Now must explicitly include the
     full path if you need access to executables or libraries in the `Sys.BINDIR` directory, e.g.
     `joinpath(Sys.BINDIR, "7z.exe")` for `7z.exe` ([#21540](https://github.com/JuliaLang/julia/issues/21540)).
 
@@ -1071,6 +1077,9 @@ Deprecated or removed
 
   * The fallback method `^(x, p::Integer)` is deprecated. If your type relied on this definition,
     add a method such as `^(x::MyType, p::Integer) = Base.power_by_squaring(x, p)` ([#23332](https://github.com/JuliaLang/julia/issues/23332)).
+
+  * `DevNull`, `STDIN`, `STDOUT`, and `STDERR` have been renamed to `devnull`, `stdin`, `stdout`,
+    and `stderr`, respectively ([#25786](https://github.com/JuliaLang/julia/issues/25786)).
 
   * `wait` and `fetch` on `Task` now resemble the interface of `Future`
 

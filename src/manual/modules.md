@@ -191,8 +191,9 @@ The global variable [`LOAD_PATH`](@ref) contains the directories Julia searches 
 push!(LOAD_PATH, "/Path/To/My/Module/")
 ```
 
-Putting this statement in the file `~/.juliarc.jl` will extend [`LOAD_PATH`](@ref) on every Julia startup.
-Alternatively, the module load path can be extended by defining the environment variable `JULIA_LOAD_PATH`.
+Putting this statement in the file `~/.julia/config/startup.jl` will extend [`LOAD_PATH`](@ref) on
+every Julia startup. Alternatively, the module load path can be extended by defining the environment
+variable `JULIA_LOAD_PATH`.
 
 ### Namespace miscellanea
 
@@ -342,11 +343,11 @@ Other known potential failure scenarios include:
    of via its lookup path. For example, (in global scope):
 
    ```julia
-   #mystdout = Base.STDOUT #= will not work correctly, since this will copy Base.STDOUT into this module =#
+   #mystdout = Base.stdout #= will not work correctly, since this will copy Base.stdout into this module =#
    # instead use accessor functions:
-   getstdout() = Base.STDOUT #= best option =#
+   getstdout() = Base.stdout #= best option =#
    # or move the assignment into the runtime:
-   __init__() = global mystdout = Base.STDOUT #= also works =#
+   __init__() = global mystdout = Base.stdout #= also works =#
    ```
 
 Several additional restrictions are placed on the operations that can be done while precompiling

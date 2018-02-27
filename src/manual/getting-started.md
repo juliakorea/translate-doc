@@ -66,7 +66,7 @@ Julia는 `-p` 옵션이나 `--machine-file` 옵션을 이용하여 병렬 환경
 만약 Julia가 실행할 때마다 실행되는 코드가 있다면, 그 코드를 `~/.juliarc.ji` 에 넣으면 된다.
 
 ```
-$ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.juliarc.jl
+$ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.julia/config/startup.jl
 $ julia
 Greetings! 你好! 안녕하세요?
 
@@ -82,7 +82,7 @@ julia [switches] -- [programfile] [args...]
 
  -J, --sysimage <file>     <file>이라는 시스템 이미지 파일을 로드한 뒤 실행한다.
  -H, --home <dir>          julia 실행파일의 위치를 지정한다.
- --startup-file={yes|no}   ~/.juliarc.jl를 불러온다.
+ --startup-file={yes|no}   `~/.julia/config/startup.jl` 를 불러온다.
  --handle-signals={yes|no} Julia의 기본 시그널 핸들러를 켜거나 끈다.
  --sysimage-native-code={yes|no}
                            시스템 이미지의 기존 코드 사용/사용하지 않는다.
