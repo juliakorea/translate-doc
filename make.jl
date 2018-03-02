@@ -116,6 +116,7 @@ const PAGES = [
             "devdocs/offset-arrays.md",
             "devdocs/require.md",
             "devdocs/inference.md",
+            "devdocs/ssair.md", # Julia SSA-form IR
         ],
         "Developing/debugging Julia's C code" => [
             "devdocs/backtraces.md",

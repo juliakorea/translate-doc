@@ -196,6 +196,8 @@ Language changes
   * Underscores for `_italics_` and `__bold__` are now supported by the Base Markdown
     parser. ([#25564](https://github.com/JuliaLang/julia/issues/25564))
 
+  * `…` (`\dots`) and `⁝` (`\tricolon`) are now parsed as binary operators ([#26262](https://github.com/JuliaLang/julia/issues/26262)).
+
 Breaking changes
 ----------------
 
@@ -217,6 +219,10 @@ This section lists changes that do not have deprecation warnings.
 
   * `ntuple(f, n::Integer)` throws `ArgumentError` if `n` is negative.
     Previously an empty tuple was returned ([#21697](https://github.com/JuliaLang/julia/issues/21697)).
+
+  * `⋮`, `⋱`, `⋰`, and `⋯` are now parsed as binary operators, not ordinary
+    identifiers.  `≔`, `≕`, and `⩴` now parse with assignment rather than comparison
+    precedence ([#26262](https://github.com/JuliaLang/julia/issues/26262)).
 
   * Juxtaposing string literals (e.g. `"x"y`) is now a syntax error ([#20575](https://github.com/JuliaLang/julia/issues/20575)).
 
