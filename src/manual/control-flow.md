@@ -85,7 +85,7 @@ x is equal to y
 
 `if` 블록은 지역 범위를 만들지 않기 때문에 한 마디로 "구멍이 났다"고 할 수 있습니다. 이는 `if` 절 안에서 정의된 새로운 변수가 `if` 블록 다음에도 사용될 수 있음을 의미합니다. 따라서, 위에서 정의한 `test` 함수를 다음과 같이 정의할 수도 있습니다.
 
-```jldoctest
+```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function test(x,y)
            if x < y
                relation = "less than"
@@ -266,7 +266,7 @@ false
 
 예제로 재귀적 팩토리얼 함수를 다음과 같이 선언할 수 있습니다.
 
-```jldoctest
+```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function fact(n::Int)
            n >= 0 || error("n must be non-negative")
            n == 0 && return 1
@@ -283,7 +283,9 @@ julia> fact(0)
 julia> fact(-1)
 ERROR: n must be non-negative
 Stacktrace:
- [1] fact(::Int64) at ./none:2
+ [1] error at ./error.jl:33 [inlined]
+ [2] fact(::Int64) at ./none:2
+ [3] top-level scope
 ```
 
 Mathematical Operations and Elementary Functions: `&` 및 `|`에서 소개한 비트 논리 연산자로 단락 평가가 없는 논리 연산을 할 수 있습니다. 그것들은 이항연산자 구문을 지원하지만, 항상 인수를 평가하는 일반적인 함수라고 할 수 있습니다.
@@ -506,7 +508,7 @@ julia> struct MyCustomException <: Exception end
 
 예외는 `throw`를 사용하여 명시적으로 만들 수 있습니다. 예를 들어, 인수가 음수이면 인수가 음수가 아닌 숫자로만 정의된 함수를 작성하여 `DomainError`를 `throw`할 수 있습니다.
 
-```jldoctest
+```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, "argument must be nonnegative"))
 f (generic function with 1 method)
 
@@ -563,7 +565,7 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
 
 음수의 제곱근을 취하면 즉시 실행을 멈추고 싶다고 합시다. 이것을 하기 위해 인수가 음수이면 오류가 발생하는 `sqrt` 함수의 까다로운 버전을 정의할 수 있습니다.
 
-```jldoctest fussy_sqrt
+```jldoctest fussy_sqrt; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> fussy_sqrt(x) = x >= 0 ? sqrt(x) : error("negative x not allowed")
 fussy_sqrt (generic function with 1 method)
 
@@ -573,12 +575,14 @@ julia> fussy_sqrt(2)
 julia> fussy_sqrt(-1)
 ERROR: negative x not allowed
 Stacktrace:
- [1] fussy_sqrt(::Int64) at ./none:1
+ [1] error at ./error.jl:33 [inlined]
+ [2] fussy_sqrt(::Int64) at ./none:1
+ [3] top-level scope
 ```
 
 `fussy_sqrt`가 호출 함수의 실행을 계속하려 하는 것이 아니라 다른 함수에서 음수 값으로 호출되면, 즉시 반환되어 대화식 세션에 오류 메시지를 표시합니다.
 
-```jldoctest fussy_sqrt
+```jldoctest fussy_sqrt; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function verbose_fussy_sqrt(x)
            println("before fussy_sqrt")
            r = fussy_sqrt(x)
@@ -596,8 +600,10 @@ julia> verbose_fussy_sqrt(-1)
 before fussy_sqrt
 ERROR: negative x not allowed
 Stacktrace:
- [1] fussy_sqrt at ./none:1 [inlined]
- [2] verbose_fussy_sqrt(::Int64) at ./none:3
+ [1] error at ./error.jl:33 [inlined]
+ [2] fussy_sqrt at ./none:1 [inlined]
+ [3] verbose_fussy_sqrt(::Int64) at ./none:3
+ [4] top-level scope
 ```
 
 ### `try/catch`문

@@ -609,8 +609,8 @@ julia> broadcast(+, a, b)
 ```jldoctest
 julia> convert.(Float32, [1, 2])
 2-element Array{Float32,1}:
- 1.0f0
- 2.0f0
+ 1.0
+ 2.0
 
 julia> ceil.((UInt8,), [1.2 3.4; 5.6 6.7])
 2×2 Array{UInt8,2}:

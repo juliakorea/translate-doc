@@ -1,4 +1,8 @@
-## Sockets
+# Sockets
+
+```@meta
+DocTestSetup = :(using Sockets)
+```
 
 ```@docs
 Sockets.connect(::TCPSocket, ::Integer)
@@ -22,4 +26,8 @@ Sockets.send
 Sockets.recv
 Sockets.recvfrom
 Sockets.setopt
+```
+
+```@meta
+DocTestSetup = nothing
 ```
