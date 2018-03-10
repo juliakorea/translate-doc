@@ -409,9 +409,9 @@ This section lists changes that do not have deprecation warnings.
     and higher-dimensional arrays instead of linear indices as was previously the case.
     Use `LinearIndices(a)[findall(f, a)]` and similar constructs to compute linear indices.
 
-  * The `find*` functions which return scalars, i.e. `findnext`, `findprev`, `findfirst`,
+  * The `find*` functions, i.e. `findnext`, `findprev`, `findfirst`,
     and `findlast`, as well as `indexin`, now return `nothing` when no match is found rather
-    than 0 ([#25472](https://github.com/JuliaLang/julia/issues/25472), [#25662](https://github.com/JuliaLang/julia/issues/25662)).
+    than `0` or `0:-1` ([#25472](https://github.com/JuliaLang/julia/issues/25472), [#25662](https://github.com/JuliaLang/julia/issues/25662), [#26149](https://github.com/JuliaLang/julia/issues/26149))
 
   * The `Base.HasShape` iterator trait has gained a type parameter `N` indicating the
     number of dimensions, which must correspond to the length of the tuple returned by
@@ -445,6 +445,9 @@ Library improvements
 
   * The function `thisind(s::AbstractString, i::Integer)` returns the largest valid index
     less or equal than `i` in the string `s` or `0` if no such index exists ([#24414](https://github.com/JuliaLang/julia/issues/24414)).
+
+  * `Char` is now a subtype of `AbstractChar`, and most of the functions that
+    take character arguments now accept any `AbstractChar` ([#26286](https://github.com/JuliaLang/julia/issues/26286)).
 
   * `Irrational` is now a subtype of `AbstractIrrational` ([#24245](https://github.com/JuliaLang/julia/issues/24245)).
 
@@ -1078,7 +1081,11 @@ Deprecated or removed
   * `DevNull`, `STDIN`, `STDOUT`, and `STDERR` have been renamed to `devnull`, `stdin`, `stdout`,
     and `stderr`, respectively ([#25786](https://github.com/JuliaLang/julia/issues/25786)).
 
-  * `wait` and `fetch` on `Task` now resemble the interface of `Future`
+  * `wait` and `fetch` on `Task` now resemble the interface of `Future`.
+
+  * `showcompact(io, x...)` has been deprecated in favor of
+    `show(IOContext(io, :compact => true), x...)` ([#26080](https://github.com/JuliaLang/julia/issues/26080)).
+    Use `sprint(show, x..., context=:compact => true)` instead of `sprint(showcompact, x...)`.
 
 Command-line option changes
 ---------------------------
