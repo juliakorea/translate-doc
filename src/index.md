@@ -14,7 +14,7 @@
 ## 매뉴얼
 
   * [소개글](@ref man-introduction)
-  * [시작하기](@ref Getting-Started)
+  * [시작하기](@ref man-getting-started)
   * [변수](@ref Variables)
   * [정수와 부동 소수점 수](@ref Integers-and-Floating-Point-Numbers)
   * [Mathematical Operations and Elementary Functions](@ref)

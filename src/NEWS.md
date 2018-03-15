@@ -108,12 +108,12 @@ Language changes
   * `global const` declarations may no longer appear inside functions ([#12010](https://github.com/JuliaLang/julia/issues/12010)).
 
   * Uninitialized `BitArray` constructors of the form `BitArray[{N}](shape...)` have been
-    deprecated in favor of equivalents accepting `uninitialized` (an alias for
-    `Uninitialized()`) as their first argument, as in
-    `BitArray[{N}](uninitialized, shape...)`. For example, `BitVector(3)` is now
-    `BitVector(uninitialized, 3)`, `BitMatrix((2, 4))` is now
-    `BitMatrix(uninitialized, (2, 4))`, and `BitArray{3}(11, 13, 17)` is now
-    `BitArray{3}(uninitialized, 11, 14, 17)` ([#24785](https://github.com/JuliaLang/julia/issues/24785)).
+    deprecated in favor of equivalents accepting `undef` (an alias for
+    `UndefInitializer()`) as their first argument, as in
+    `BitArray[{N}](undef, shape...)`. For example, `BitVector(3)` is now
+    `BitVector(undef, 3)`, `BitMatrix((2, 4))` is now
+    `BitMatrix(undef, (2, 4))`, and `BitArray{3}(11, 13, 17)` is now
+    `BitArray{3}(undef, 11, 14, 17)` ([#24785](https://github.com/JuliaLang/julia/issues/24785)).
 
   * Dispatch rules have been simplified:
     method matching is now determined exclusively by subtyping;
@@ -449,6 +449,11 @@ Library improvements
   * `Char` is now a subtype of `AbstractChar`, and most of the functions that
     take character arguments now accept any `AbstractChar` ([#26286](https://github.com/JuliaLang/julia/issues/26286)).
 
+  * `String(array)` now accepts an arbitrary `AbstractVector{UInt8}`. For `Vector`
+    inputs, it "steals" the memory buffer, leaving them with an empty buffer which
+    is guaranteed not to be shared with the `String` object. For other types of vectors
+    (in particular immutable vectors), a copy is made and the input is not truncated ([#26093](https://github.com/JuliaLang/julia/issues/26093)).
+
   * `Irrational` is now a subtype of `AbstractIrrational` ([#24245](https://github.com/JuliaLang/julia/issues/24245)).
 
   * Introduced the `empty` function, the functional pair to `empty!` which returns a new,
@@ -650,11 +655,11 @@ Deprecated or removed
 
   * Uninitialized `Array` constructors of the form
     `Array[{T,N}](shape...)` have been deprecated in favor of equivalents
-    accepting `uninitialized` (an alias for `Uninitialized()`) as their first argument,
-    as in `Array[{T,N}](uninitialized, shape...)`. For example,
-    `Vector(3)` is now `Vector(uninitialized, 3)`, `Matrix{Int}((2, 4))` is now,
-    `Matrix{Int}(uninitialized, (2, 4))`, and `Array{Float32,3}(11, 13, 17)` is now
-    `Array{Float32,3}(uninitialized, 11, 13, 17)` ([#24781](https://github.com/JuliaLang/julia/issues/24781)).
+    accepting `undef` (an alias for `UndefInitializer()`) as their first argument,
+    as in `Array[{T,N}](undef, shape...)`. For example,
+    `Vector(3)` is now `Vector(undef, 3)`, `Matrix{Int}((2, 4))` is now,
+    `Matrix{Int}(undef, (2, 4))`, and `Array{Float32,3}(11, 13, 17)` is now
+    `Array{Float32,3}(undef, 11, 13, 17)` ([#24781](https://github.com/JuliaLang/julia/issues/24781)).
 
   * `LinAlg.fillslots!` has been renamed `LinAlg.fillstored!` ([#25030](https://github.com/JuliaLang/julia/issues/25030)).
 
@@ -672,19 +677,19 @@ Deprecated or removed
   * `slicedim(A, d, i)` has been deprecated in favor of `copy(selectdim(A, d, i))`. The new
     `selectdim` function now always returns a view into `A`; in many cases the `copy` is
     not necessary. Previously, `slicedim` on a vector `V` over dimension `d=1` and scalar
-       index `i` would return the just selected element (unless `V` was a `BitVector`). This
-       has now been made consistent: `selectdim` now always returns a view into the original
-       array, with a zero-dimensional view in this specific case ([#26009](https://github.com/JuliaLang/julia/issues/26009)).
+	index `i` would return the just selected element (unless `V` was a `BitVector`). This
+	has now been made consistent: `selectdim` now always returns a view into the original
+	array, with a zero-dimensional view in this specific case ([#26009](https://github.com/JuliaLang/julia/issues/26009)).
 
   * `whos` has been renamed `varinfo`, and now returns a markdown table instead of printing
     output ([#12131](https://github.com/JuliaLang/julia/issues/12131)).
 
   * Uninitialized `RowVector` constructors of the form `RowVector{T}(shape...)` have been
-    deprecated in favor of equivalents accepting `uninitialized` (an alias for
-    `Uninitialized()`) as their first argument, as in
-    `RowVector{T}(uninitialized, shape...)`. For example, `RowVector{Int}(3)` is now
-    `RowVector{Int}(uninitialized, 3)`, and `RowVector{Float32}((1, 4))` is now
-    `RowVector{Float32}(uninitialized, (1, 4))` ([#24786](https://github.com/JuliaLang/julia/issues/24786)).
+    deprecated in favor of equivalents accepting `undef` (an alias for
+    `UndefInitializer()`) as their first argument, as in
+    `RowVector{T}(undef, shape...)`. For example, `RowVector{Int}(3)` is now
+    `RowVector{Int}(undef, 3)`, and `RowVector{Float32}((1, 4))` is now
+    `RowVector{Float32}(undef, (1, 4))` ([#24786](https://github.com/JuliaLang/julia/issues/24786)).
 
   * `writecsv(io, a; opts...)` has been deprecated in favor of
     `writedlm(io, a, ','; opts...)` ([#23529](https://github.com/JuliaLang/julia/issues/23529)).
@@ -747,7 +752,7 @@ Deprecated or removed
     in favor of `replace(s::AbstractString, pat => r; [count])` ([#25165](https://github.com/JuliaLang/julia/issues/25165)).
     Moreover, `count` cannot be negative anymore (use `typemax(Int)` instead ([#22325](https://github.com/JuliaLang/julia/issues/22325)).
 
-  * `read(io, type, dims)` is deprecated to `read!(io, Array{type}(uninitialized, dims))` ([#21450](https://github.com/JuliaLang/julia/issues/21450)).
+  * `read(io, type, dims)` is deprecated to `read!(io, Array{type}(undef, dims))` ([#21450](https://github.com/JuliaLang/julia/issues/21450)).
 
   * `read(::IO, ::Ref)` is now a method of `read!`, since it mutates its `Ref` argument ([#21592](https://github.com/JuliaLang/julia/issues/21592)).
 

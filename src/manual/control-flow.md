@@ -481,7 +481,7 @@ julia> for i = 1:2, j = 3:4
 | [`RemoteException`](@ref)     |
 | [`MethodError`](@ref)         |
 | [`OverflowError`](@ref)       |
-| [`ParseError`](@ref)          |
+| [`Meta.ParseError`](@ref)     |
 | [`SystemError`](@ref)         |
 | [`TypeError`](@ref)           |
 | [`UndefRefError`](@ref)       |

@@ -15,11 +15,17 @@ Julia는 배열을 특별하게 취급하지는 않는다.
 Julia 컴파일러는 타입 추론을 사용하여 스칼라 배열 인덱싱에 최적화된 코드를 생성한다.
 따라서 편리하고 읽기 쉬운 스타일로 프로그램을 작성하더라도 성능을 희생하지 않으며, 오히려 메모리를 더 적게 사용하는 경우도 있다.
 
-Julia에서 모든 인수는 참조에 의해 전달된다(pass by reference).
-어떤 기술적 계산 언어는 배열을 값에 의해 전달하는데(pass by value), 이렇게 하는 것이 편리한 경우도 많이 있다.
-Julia에서는 함수 내에서 일어난 입력 배열의 변화를 부모 함수에서도 볼 수 있다.
-Julia 배열 라이브러리의 어떤 코드도 입력 배열을 변경하지 않는다.
-사용자의 코드가 이와 비슷하게 행동하도록 하려면, 변경될 수도 있는 배열을 복사하는 것에 소홀해서는 안된다.
+In Julia, all arguments to functions are [passed by
+sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)
+(i.e. by pointers). Some technical computing languages pass arrays by value, and
+while this prevents accidental modification by callees of a value in the caller,
+it makes avoiding unwanted copying of arrays difficult. By convention, a
+function name ending with a `!` indicates that it will mutate or destroy the
+value of one or more of its arguments. Callees must make explicit copies to
+ensure that they don't modify inputs that they don't intend to change. Many non-
+mutating functions are implemented by calling a function of the same name with
+an added `!` at the end on an explicit copy of the input, and returning that
+copy.
 
 ## [배열](@id Arrays)
 
@@ -47,7 +53,7 @@ Julia 배열 라이브러리의 어떤 코드도 입력 배열을 변경하지 �
 
 | 함수                               | 설명                                                                                                                                                                                                                                         |
 |:---------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Array{T}(uninitialized, dims...)`](@ref)     | 초기화 되지 않은 밀집 [`Array`](@ref)                                                                                                                                                                                                        |
+| [`Array{T}(undef, dims...)`](@ref)             | 초기화 되지 않은 밀집 [`Array`](@ref)                                                                                                                                                                                                        |
 | [`zeros(T, dims...)`](@ref)                    | 모든 값이 0으로 초기화 된 `Array`                                                                                                                                                                                                            |
 | [`ones(T, dims...)`](@ref)                     | 모든 값이 1로 초기화 된 `Array`                                                                                                                                                                                                              |
 | [`trues(dims...)`](@ref)                       | 모든 값이 `true`로 초기화 된 [`BitArray`](@ref)                                                                                                                                                                                              |
@@ -652,11 +658,15 @@ Very few operations are implemented specifically for `Array` beyond those that a
 for all `AbstractArrays`s; much of the array library is implemented in a generic
 manner that allows all custom arrays to behave similarly.
 
-`SubArray`는 복사가 아닌 참조로 인덱싱을 수행하는 `AbstractArray`의 특수화이다.
-`SubArray`는 [`view`](@ref)함수로 생성되는데, 호출 방식은 [`getindex`](@ref)와 같다.
-[`view`](@ref)의 결과는 [`getindex`](@ref)와 똑같이 보이나, 데이터가 복사되지 않는다는 차이점이 있다.
-[`view`](@ref)는 입력 인덱스 벡터를 `SubArray` 객체에 저장하는데, 이는 참조되는 원 배열을 나중에 간접적으로 인덱싱 하는데에 쓰인다.
-[`@views`](@ref) 매크로를 표현식이나 코드 블록 앞에 둠으로써, 그 표현식 내의 모든 `array[...]` 슬라이스가 `SubArray` 뷰를 생성하도록 할 수 있다.
+`SubArray` is a specialization of `AbstractArray` that performs indexing by
+sharing memory with the original array rather than by copying it. A `SubArray`
+is created with the [`view`](@ref) function, which is called the same way as
+[`getindex`](@ref) (with an array and a series of index arguments). The result
+of [`view`](@ref) looks the same as the result of [`getindex`](@ref), except the
+data is left in place. [`view`](@ref) stores the input index vectors in a
+`SubArray` object, which can later be used to index the original array
+indirectly.
+             [`@views`](@ref) 매크로를 표현식이나 코드 블록 앞에 둠으로써, 그 표현식 내의 모든 `array[...]` 슬라이스가 `SubArray` 뷰를 생성하도록 할 수 있다.
 
 A "strided" array is stored in memory with elements laid out in regular offsets such that
 an instance with a supported `isbits` element type can be passed to

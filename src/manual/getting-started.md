@@ -1,4 +1,4 @@
-# [시작하기](@id Getting-Started)
+# [시작하기](@id man-getting-started)
 
 줄리아의 설치는 어렵지 않다.  미리 컴파일된 실행파일을 이용하거나, 아니면 소스로부터 직접 컴파일하는 두가지 방법이 존재한다. [https://julialang.org/downloads/](https://julialang.org/downloads/)에서
  알려주는 방법에 따라 Julia를 다운로드하고 설치하면 된다.
