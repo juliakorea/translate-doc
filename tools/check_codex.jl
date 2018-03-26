@@ -33,7 +33,7 @@ function check_src_and_codex(path1, path2)
                 (_,_,dircolon,filename) = chunk
                 dir = replace(dircolon, ":" => "/")
                 # src에만 있으면 src에 있는 파일 지우기
-                if contains(dir, src_path)
+                if occursin(src_path, dir)
                     if endswith(filename, ".swp")
                         continue
                     elseif !(filename in ignore_assets)
