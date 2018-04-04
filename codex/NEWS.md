@@ -667,6 +667,12 @@ Deprecated or removed
     Instead, reshape the array or add trailing indices so the dimensionality and number of indices
     match ([#14770](https://github.com/JuliaLang/julia/issues/14770), [#23628](https://github.com/JuliaLang/julia/issues/23628)).
 
+  * The use of a positional dimension argument has largely been deprecated in favor of a
+    `dims` keyword argument. This includes the functions `sum`, `prod`, `maximum`,
+    `minimum`, `all`, `any`, `findmax`, `findmin`, `mean`, `varm`, `std`, `var`, `cov`,
+    `cor`, `median`, `mapreducedim`, `reducedim`, `sort`, `accumulate`, `accumulate!`,
+    `cumsum`, `cumsum!`, `cumprod`, `cumprod!`, `flipdim`, and `squeeze` ([#25501](https://github.com/JuliaLang/julia/issues/25501)).
+
   * `indices(a)` and `indices(a,d)` have been deprecated in favor of `axes(a)` and
     `axes(a, d)` ([#25057](https://github.com/JuliaLang/julia/issues/25057)).
 
@@ -1041,7 +1047,10 @@ Deprecated or removed
 
   * `search` and `rsearch` have been deprecated in favor of `findfirst`/`findnext` and
     `findlast`/`findprev` respectively, in combination with curried `isequal` and `in`
-    predicates for some methods ([#24673](https://github.com/JuliaLang/julia/issues/24673)
+    predicates for some methods ([#24673](https://github.com/JuliaLang/julia/issues/24673)).
+
+  * `search(buf::IOBuffer, delim::UInt8)` has been deprecated in favor of either `occursin(delim, buf)`
+    (to test containment) or `readuntil(buf, delim)` (to read data up to `delim`) ([#26600](https://github.com/JuliaLang/julia/issues/26600)).
 
   * `ismatch(regex, str)` has been deprecated in favor of `contains(str, regex)` ([#24673](https://github.com/JuliaLang/julia/issues/24673)).
 
