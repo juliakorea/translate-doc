@@ -92,6 +92,7 @@
   * [Random Numbers](@ref)
   * [Shared Arrays](@ref)
   * [Linear Algebra](@ref)
+  * [Logging](@ref)
   * [Sparse Arrays](@ref)
   * [Unicode](@ref)
   * [Unit Testing](@ref)

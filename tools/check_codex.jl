@@ -108,7 +108,7 @@ function check_julia_doc_src_and_codex(path1, path2)
                 end
                 dir = replace(dircolon, ":" => "/")
                 # codex에만 있으면 codex, src에 있는 파일 지우기
-                if contains(dir, codex_path)
+                if occursin(codex_path, dir)
                     for d in (dir, replace(dir, codex_path => src_path))
                         #print_with_color(:red, "rm ")
                         #print_with_color(:white, d)
@@ -117,7 +117,7 @@ function check_julia_doc_src_and_codex(path1, path2)
                         println()
                     end
                 # julia_doc_src에만 있으면 codex, src에 복사
-                elseif contains(dir, julia_doc_src_path)
+                elseif occursin(julia_doc_src_path, dir)
                     copy_julia_doc_src_to_codex_and_src(dir, filename)
                 end
             end
