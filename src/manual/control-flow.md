@@ -504,7 +504,7 @@ be different: the second and fourth values would contain `0`.
 | [`TypeError`](@ref)           |
 | [`UndefRefError`](@ref)       |
 | [`UndefVarError`](@ref)       |
-| `UnicodeError`                |
+| [`StringIndexError`](@ref)    |
 
 예를 들어, 음의 실수 값에 적용된 `sqrt` 함수는 `DomainError`를 throw합니다.
 
