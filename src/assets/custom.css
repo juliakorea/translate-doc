@@ -1,6 +1,14 @@
+/*
+    이롭게 바탕체
+    https://www.iropke.com/archive/iropke-batang-css.html
+*/
+@import url('//cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css');
+
+body {
+    font-family: 'Iropke Batang', serif;
+}
 p {
-    font-family: serif;
-    line-height: 1.9em;
+    line-height: 1.8em;
     margin: 0em;
 }
 li p {
