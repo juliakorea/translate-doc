@@ -139,7 +139,7 @@ makedocs(
     doctest   = "doctest" in ARGS,
     linkcheck = "linkcheck" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
-    strict    = false, # true
+    strict    = true,
     checkdocs = :none,
     format    = "pdf" in ARGS ? :latex : :html,
     sitename  = "줄리아 언어",

@@ -42,7 +42,6 @@ Base.axes(::Any)
 Base.axes(::AbstractArray, ::Any)
 Base.length(::AbstractArray)
 Base.eachindex
-Base.linearindices
 Base.IndexStyle
 Base.conj!
 Base.stride
@@ -157,7 +156,7 @@ Base.invperm
 Base.isperm
 Base.permute!(::Any, ::AbstractVector)
 Base.invpermute!
-Base.reverse
+Base.reverse(::AbstractVector; kwargs...)
 Base.reverseind
 Base.reverse!
 ```

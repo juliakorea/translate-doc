@@ -634,8 +634,10 @@ Library improvements
       other containers, by taking the multiplicity of the arguments into account.
       Use `unique` to get the old behavior.
 
-  * The type `LinearIndices` has been added, providing conversion from
-    cartesian indices to linear indices using the normal indexing operation. ([#24715](https://github.com/JuliaLang/julia/issues/24715))
+  * The `linearindices` function has been deprecated in favor of the new
+    `LinearIndices` type, which additionnally provides conversion from
+    cartesian indices to linear indices using the normal indexing operation.
+    ([#24715](https://github.com/JuliaLang/julia/issues/24715), [#26775](https://github.com/JuliaLang/julia/issues/26775)).
 
   * `IdDict{K,V}` replaces `ObjectIdDict`.  It has type parameters
     like other `AbstractDict` subtypes and its constructors mirror the
