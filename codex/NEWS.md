@@ -711,6 +711,9 @@ Deprecated or removed
     using the broadcasted assignment syntax `A[I...] .= x` or `fill!(view(A, I...), x)`
     ([#26347](https://github.com/JuliaLang/julia/issues/26347)).
 
+  * `broadcast_getindex(A, I...)` and `broadcast_setindex!(A, v, I...)` are deprecated in
+    favor of `getindex.((A,), I...)` and `setindex!.((A,), v, I...)`, respectively ([#27075](https://github.com/JuliaLang/julia/issues/27075)).
+
   * `LinAlg.fillslots!` has been renamed `LinAlg.fillstored!` ([#25030](https://github.com/JuliaLang/julia/issues/25030)).
 
   * `fill!(A::Diagonal, x)` and `fill!(A::AbstractTriangular, x)` have been deprecated
@@ -974,6 +977,9 @@ Deprecated or removed
     been deprecated due to inconsistency with linear algebra. Use `.+` and `.-` for these operations
     instead ([#22880](https://github.com/JuliaLang/julia/issues/22880), [#22932](https://github.com/JuliaLang/julia/issues/22932)).
 
+  * `flipbits!(B)` is deprecated in favor of using in-place broadcast to negate each element:
+    `B .= .!B` ([#27067](https://github.com/JuliaLang/julia/issues/27067)).
+
   * `isleaftype` is deprecated in favor of the simpler predicates `isconcretetype` and `isdispatchtuple`.
     Concrete types are those that might equal `typeof(x)` for some `x`;
     `isleaftype` included some types for which this is not true. Those are now categorized more precisely
@@ -1039,6 +1045,8 @@ Deprecated or removed
     [KahanSummation](https://github.com/JuliaMath/KahanSummation.jl) package ([#24869](https://github.com/JuliaLang/julia/issues/24869)).
 
   * `isnumber` has been renamed to `isnumeric` ([#25021](https://github.com/JuliaLang/julia/issues/25021)).
+
+  * `isalpha` has been renamed to `isletter` ([#26932](https://github.com/JuliaLang/julia/issues/26932)).
 
   * `is_assigned_char` and `normalize_string` have been renamed to `isassigned` and
     `normalize`, and moved to the new `Unicode` standard library module.

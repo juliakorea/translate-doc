@@ -367,14 +367,15 @@ julia> x = collect(reshape(1:9, 3, 3))
  2  5  8
  3  6  9
 
-julia> x[1:2, 2:3] = -1
--1
+julia> x[3, 3] = -9;
+
+julia> x[1:2, 1:2] = [-1 -4; -2 -5];
 
 julia> x
 3×3 Array{Int64,2}:
- 1  -1  -1
- 2  -1  -1
- 3   6   9
+ -1  -4   7
+ -2  -5   8
+  3   6  -9
 ```
 
 ### [지원하는 인덱스 타입](@id man-supported-index-types)
@@ -605,7 +606,6 @@ julia> broadcast(+, a, b)
 `.+` 와 `.*` 같은 [점찍은 연산자](@ref man-dot-operators)는 `broadcast` 호출과 (아래에 설명할 융합을 제외한다면) 동일하다.
 또한 명시적으로 목적지를 지정하는 [`broadcast!`](@ref)도 있다.
 (`.=` 대입을 사용하여 융합하여서도 액세스할 수 있다.)
-그리고 [`broadcast_getindex`](@ref)와 [`broadcast_setindex!`](@ref) 함수는 인덱싱 전에 인덱스를 브로드캐스팅 한다.
 게다가, `f.(args...)`는 `broadcast(f, args...)`와 동일하며, 어떤 함수든 [점 문법](@ref man-vectorized)을 통하여 편리하게 브로드캐스팅 할 수 있는 문법을 제공한다.
 중첩된 "점 호출" `f.(...)`은 (`.+` 등의 연산자도 포함하여) 하나의 `broadcast` 호출로 [자동으로 융합](@ref man-dot-operators)한다.
 
@@ -667,6 +667,10 @@ data is left in place. [`view`](@ref) stores the input index vectors in a
 `SubArray` object, which can later be used to index the original array
 indirectly.
              [`@views`](@ref) 매크로를 표현식이나 코드 블록 앞에 둠으로써, 그 표현식 내의 모든 `array[...]` 슬라이스가 `SubArray` 뷰를 생성하도록 할 수 있다.
+
+[`BitArray`](@ref)s are space-efficient "packed" boolean arrays, which store one bit per boolean value.
+They can be used similarly to `Array{Bool}` arrays (which store one byte per boolean value),
+and can be converted to/from the latter via `Array(bitarray)` and `BitArray(array)`, respectively.
 
 A "strided" array is stored in memory with elements laid out in regular offsets such that
 an instance with a supported `isbits` element type can be passed to
