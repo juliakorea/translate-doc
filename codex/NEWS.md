@@ -469,6 +469,9 @@ This section lists changes that do not have deprecation warnings.
   * `widen` on 8- and 16-bit integer types now widens to the platform word size (`Int`)
     instead of to a 32-bit type ([#26859](https://github.com/JuliaLang/julia/issues/26859)).
 
+  * `mv`,`cp`, `touch`, `mkdir`, `mkpath` now return the path that was created/modified
+    rather than `nothing` ([#27071](https://github.com/JuliaLang/julia/issues/27071)).
+
 Library improvements
 --------------------
 
@@ -477,6 +480,9 @@ Library improvements
 
   * `Char` is now a subtype of `AbstractChar`, and most of the functions that
     take character arguments now accept any `AbstractChar` ([#26286](https://github.com/JuliaLang/julia/issues/26286)).
+
+  * `bytes2hex` now accepts an optional `io` argument to output to a hexadecimal stream
+    without allocating a `String` first ([#27121](https://github.com/JuliaLang/julia/issues/27121)).
 
   * `String(array)` now accepts an arbitrary `AbstractVector{UInt8}`. For `Vector`
     inputs, it "steals" the memory buffer, leaving them with an empty buffer which
