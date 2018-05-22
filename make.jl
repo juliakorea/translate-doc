@@ -35,7 +35,6 @@ const PAGES = [
     "홈" => "index.md",
     hide("NEWS.md"),
     "매뉴얼" => [
-        "manual/introduction.md",
         "manual/getting-started.md",
         "manual/variables.md",
         "manual/integers-and-floating-point-numbers.md",
@@ -117,13 +116,13 @@ const PAGES = [
             "devdocs/offset-arrays.md",
             "devdocs/require.md",
             "devdocs/inference.md",
-            "devdocs/ssair.md", # Julia SSA-form IR
         ],
         "Developing/debugging Julia's C code" => [
             "devdocs/backtraces.md",
             "devdocs/debuggingtips.md",
             "devdocs/valgrind.md",
             "devdocs/sanitizers.md",
+            "devdocs/ssair.md", # Julia SSA-form IR
         ]
     ],
 ]
