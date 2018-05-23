@@ -460,6 +460,18 @@ This section lists changes that do not have deprecation warnings.
   * `mv`,`cp`, `touch`, `mkdir`, `mkpath` now return the path that was created/modified
     rather than `nothing` ([#27071](https://github.com/JuliaLang/julia/issues/27071)).
 
+  * Regular expressions now default to UCP mode. Escape sequences such as `\w`
+    will now match based on unicode character properties, e.g. `r"\w+"` will
+    match `café` (not just `caf`). Add the `a` modifier (e.g. `r"\w+"a`) to
+    restore the previous behavior ([#27189](https://github.com/JuliaLang/julia/issues/27189)).
+
+  * `@sync` now waits only for *lexically* enclosed (i.e. visible directly in the source
+    text of its argument) `@async` expressions. If you need to wait for a task created by
+    a called function `f`, have `f` return the task and put `@async wait(f(...))` within
+    the `@sync` block.
+    This change makes `@schedule` redundant with `@async`, so `@schedule` has been
+    deprecated ([#27164](https://github.com/JuliaLang/julia/issues/27164)).
+
 Library improvements
 --------------------
 
@@ -643,6 +655,9 @@ Library improvements
   * `trunc`, `floor`, `ceil`, and `round` specify `digits`, `sigdigits` and `base` using
     keyword arguments. ([#26156](https://github.com/JuliaLang/julia/issues/26156), [#26670](https://github.com/JuliaLang/julia/issues/26670))
 
+  * `Sys.which()` provides a cross-platform method to find executable files, similar to
+    the Unix `which` command. ([#26559](https://github.com/JuliaLang/julia/issues/26559))
+
 Compiler/Runtime improvements
 -----------------------------
 
@@ -677,7 +692,7 @@ Deprecated or removed
     `dims` keyword argument. This includes the functions `sum`, `prod`, `maximum`,
     `minimum`, `all`, `any`, `findmax`, `findmin`, `mean`, `varm`, `std`, `var`, `cov`,
     `cor`, `median`, `mapreducedim`, `reducedim`, `sort`, `accumulate`, `accumulate!`,
-    `cumsum`, `cumsum!`, `cumprod`, `cumprod!`, `flipdim`, and `squeeze` ([#25501](https://github.com/JuliaLang/julia/issues/25501)).
+    `cumsum`, `cumsum!`, `cumprod`, `cumprod!`, `flipdim`, `squeeze`, and `cat` ([#25501](https://github.com/JuliaLang/julia/issues/25501), [#26660](https://github.com/JuliaLang/julia/issues/26660), [#27100](https://github.com/JuliaLang/julia/issues/27100)).
 
   * `indices(a)` and `indices(a,d)` have been deprecated in favor of `axes(a)` and
     `axes(a, d)` ([#25057](https://github.com/JuliaLang/julia/issues/25057)).
