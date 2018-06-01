@@ -1,12 +1,14 @@
-# Install dependencies needed to build the documentation.
-ENV["JULIA_PKGDIR"] = joinpath(@__DIR__, "deps")
+# code from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
 
-if "deps" in ARGS
+# Install dependencies needed to build the documentation.
 using Pkg
-Pkg.init()
-cp(joinpath(@__DIR__, "REQUIRE"), Pkg.dir("REQUIRE"); remove_destination = true)
-Pkg.update()
-Pkg.resolve()
+empty!(DEPOT_PATH)
+pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
+pushfirst!(LOAD_PATH, @__DIR__)
+
+if !isdir(joinpath(@__DIR__, "deps", "packages", "Documenter")) || "deps" in ARGS
+    Pkg.instantiate()
+    Pkg.add("Documenter")
 end
 
 using Documenter
@@ -31,10 +33,14 @@ const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
     end
 end)
 
+# Korean text in PAGES
+const t_Home     = "홈"
+const t_Manual   = "매뉴얼"
+
 const PAGES = [
-    "홈" => "index.md",
+    t_Home => "index.md",
     hide("NEWS.md"),
-    "매뉴얼" => [
+    t_Manual => [
         "manual/getting-started.md",
         "manual/variables.md",
         "manual/integers-and-floating-point-numbers.md",
@@ -130,20 +136,26 @@ for stdlib in STDLIB_DOCS
     @eval using $(stdlib.stdlib)
 end
 
+# Korean text for makedocs
+const t_sitename       = "줄리아 언어"
+const t_analytics      = "UA-110655381-2" # juliakorea analytic ID
+const t_html_canonical = "https://juliakorea.github.io/ko/latest/"
+
 makedocs(
     build     = joinpath(pwd(), "local" in ARGS ? "_build_local" : "_build/html/ko/latest"),
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false, # true
-    doctest   = "doctest" in ARGS,
-    linkcheck = "linkcheck" in ARGS,
+    doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
+    linkcheck = "linkcheck=true" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
     strict    = true,
     checkdocs = :none,
     format    = "pdf" in ARGS ? :latex : :html,
-    sitename  = "줄리아 언어",
+    sitename  = t_sitename,
     authors   = "The Julia Project",
-    analytics = "UA-110655381-2", # juliakorea 추척 ID
+    analytics = t_analytics,
     pages     = PAGES,
     html_prettyurls = !("local" in ARGS),
-    html_canonical = "https://juliakorea.github.io/ko/latest/"
+    html_canonical = t_html_canonical,
+    assets = ["assets/julia-manual.css", ]
 )

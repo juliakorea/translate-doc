@@ -47,7 +47,7 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
 
         link[:href => relhref(src, "assets/custom.css"), :rel => "stylesheet", :type => "text/css"],
 
-        # juliakorea 단어 word break
+        # juliakorea Korean word break
         script[:src => "/js/jquery-1.8.3.min.js"],
         script[:src => "/js/jquery.word-break-keep-all.min.js"],
         script("\$(document).ready(function() { \$('p').wordBreakKeepAll(); });")
@@ -75,6 +75,10 @@ function Documenter.Writers.HTMLWriter.render_page(ctx, navnode)
     end
 end
 
+const t_Previous = "이전글"
+const t_Next     = "다음글"
+t_Edit_on(host)  = " Edit on $host"
+
 function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     @tags article header footer nav ul li hr span a
 
@@ -101,7 +105,7 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     if !ctx.doc.user.html_disable_git
         url = Utilities.url(ctx.doc.user.repo, getpage(ctx, navnode).source, commit=ctx.doc.user.html_edit_branch)
         if url !== nothing
-            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](logo), " Edit on $host"))
+            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](logo), t_Edit_on(host)))
         end
     end
     art_header = header(topnav, hr(), render_topbar(ctx, navnode))
@@ -109,14 +113,14 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     # build the footer with nav links
     art_footer = footer(hr())
     if navnode.prev !== nothing
-        direction = span[".direction"]("이전글") # Previous
+        direction = span[".direction"](t_Previous)
         title = span[".title"](mdconvert(pagetitle(ctx, navnode.prev); droplinks=true))
         link = a[".previous", :href => navhref(ctx, navnode.prev, navnode)](direction, title)
         push!(art_footer.nodes, link)
     end
 
     if navnode.next !== nothing
-        direction = span[".direction"]("다음글") # Next
+        direction = span[".direction"](t_Next)
         title = span[".title"](mdconvert(pagetitle(ctx, navnode.next); droplinks=true))
         link = a[".next", :href => navhref(ctx, navnode.next, navnode)](direction, title)
         push!(art_footer.nodes, link)

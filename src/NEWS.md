@@ -475,7 +475,7 @@ This section lists changes that do not have deprecation warnings.
   * `widen` on 8- and 16-bit integer types now widens to the platform word size (`Int`)
     instead of to a 32-bit type ([#26859](https://github.com/JuliaLang/julia/issues/26859)).
 
-  * `mv`,`cp`, `touch`, `mkdir`, `mkpath` now return the path that was created/modified
+  * `mv`,`cp`, `touch`, `mkdir`, `mkpath`, `chmod` and `chown` now return the path that was created/modified
     rather than `nothing` ([#27071](https://github.com/JuliaLang/julia/issues/27071)).
 
   * Regular expressions now default to UCP mode. Escape sequences such as `\w`
@@ -580,7 +580,7 @@ Library improvements
     the test fails ([#22296](https://github.com/JuliaLang/julia/issues/22296)).
 
   * Uses of `Val{c}` in `Base` has been replaced with `Val{c}()`, which is now easily
-    accessible via the `@pure` constructor `Val(c)`. Functions are defined as
+    accessible via the efficient constructor `Val(c)`. Functions are defined as
     `f(::Val{c}) = ...` and called by `f(Val(c))`. Notable affected functions include:
     `ntuple`, `Base.literal_pow`, `sqrtm`, `lufact`, `lufact!`, `qrfact`, `qrfact!`,
     `cholfact`, `cholfact!`, `_broadcast!`, `reshape`, `cat` and `cat_t`.

@@ -1,15 +1,16 @@
 # check_codex.jl
-# translate-doc/codex와 ../julia/doc을 비교하는 스크립트
+# diff between  translate-doc/codex  and  ../julia/doc
 
 const TOP_PATH = abspath(dirname(@__FILE__), "..")
 const JULIA_PATH = abspath(TOP_PATH, "..", "julia")
 
-if !(VERSION >= v"0.7.0-DEV")
-    println("Julia ", v"0.7.0-DEV", " 버젼으로 실행하세요")
+const required_julia_version = v"0.7.0-alpha"
+if !(VERSION >= required_julia_version)
+    println("Run with Julia ", required_julia_version)
 end
 
 if !isdir(JULIA_PATH)
-    println("줄리아 리파지토리 경로를 지정해 주세요 $JULIA_PATH")
+    println("Requires Julia repository at $JULIA_PATH")
 end
 
 const codex_path = abspath(TOP_PATH, "codex")
@@ -32,7 +33,6 @@ function check_src_and_codex(path1, path2)
             elseif kind == "Only"
                 (_,_,dircolon,filename) = chunk
                 dir = replace(dircolon, ":" => "/")
-                # src에만 있으면 src에 있는 파일 지우기
                 if occursin(src_path, dir)
                     if endswith(filename, ".swp")
                         continue
@@ -107,7 +107,6 @@ function check_julia_doc_src_and_codex(path1, path2)
                     continue
                 end
                 dir = replace(dircolon, ":" => "/")
-                # codex에만 있으면 codex, src에 있는 파일 지우기
                 if occursin(codex_path, dir)
                     for d in (dir, replace(dir, codex_path => src_path))
                         #print_with_color(:red, "rm ")
@@ -116,7 +115,6 @@ function check_julia_doc_src_and_codex(path1, path2)
                         print("rm ", d, filename)
                         println()
                     end
-                # julia_doc_src에만 있으면 codex, src에 복사
                 elseif occursin(julia_doc_src_path, dir)
                     copy_julia_doc_src_to_codex_and_src(dir, filename)
                 end
@@ -138,9 +136,9 @@ function check_pages()
     julia_doc_makejl_path = abspath(JULIA_PATH, "doc", "make.jl")
     pages1 = get_pages(julia_doc_makejl_path) do s; s end
     pages2 = get_pages(makejl_path) do s
-        for (a,b) in [("홈", "Home"),
-                      ("매뉴얼", "Manual"),
-                      ("\"devdocs/ssair.md\", # Julia SSA-form IR", ""), # 임시
+        for (a,b) in [("t_Home", "\"Home\""),
+                      ("t_Manual", "\"Manual\""),
+                      ("\"devdocs/ssair.md\", # Julia SSA-form IR", ""), # temporal
                      ]
             s = replace(s, a => b)
         end
