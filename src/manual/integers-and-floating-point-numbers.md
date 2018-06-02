@@ -588,11 +588,19 @@ ERROR: MethodError: objects of type Int64 are not callable
 
   * 16진수 리터럴 표현식 `0xff`는 수치형 리터럴 `0`과 변수 `xff`의 곱셈으로 해석될 수 있다.
   * 부동 소수점 리터럴 표현식 `1e10`은 수치형 리터럴 `1`이 변수 `e10`에 곱해지는 걸로 해석될 수 있고 이는 `e`가 아닌 `E`를 쓸 때에도 마찬가지이다.
+  * The 32-bit floating-point literal expression `1.5f22` could be interpreted as the numeric literal
+    `1.5` multiplied by the variable `f22`.
 
-이 두 가지 경우에, 우리는 수치형 리터러를 해석하는데 있어서 다음과 같은 방식으로 모호함을 해결했다:
+이와 같은 경우에, 우리는 수치형 리터러를 해석하는데 있어서 다음과 같은 방식으로 모호함을 해결했다:
 
   * `0x`로 시작하는 표현식은 항상 16진수 리터럴이다.
   * 수치형 리터럴으로 시작하는 표현식에서 수치형 리터럴 다음에 `e`또는 `E`가 뒤따라오면 항상 부동소수점 리터럴이다.
+  * Expressions starting with a numeric literal followed by `f` are always 32-bit floating-point literals.
+
+Unlike `E`, which is equivalent to `e` in numeric literals for historical reasons, `F` is just another
+letter and does not behave like `f` in numeric literals. Hence, expressions starting with a numeric literal
+followed by `F` are interpreted as the numerical literal multiplied by a variable, which means that, for
+example, `1.5F22` is equal to `1.5 * F22`.
 
 ## 리터럴 0과 1
 
