@@ -1,0 +1,13 @@
+/*
+ * Iropke Batang (Korean)
+ * http://font.iropke.com/batang/
+ */
+@font-face {
+  font-family: 'Iropke Batang';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/IropkeBatangM.eot);
+  src: url(fonts/IropkeBatangM.eot?#iefix) format('embedded-opentype'),
+       url(fonts/IropkeBatangM.woff) format('woff'),
+       url(fonts/IropkeBatangM.ttf) format('truetype');
+}

@@ -2,10 +2,10 @@
     이롭게 바탕체
     https://www.iropke.com/archive/iropke-batang-css.html
 */
-@import url('//cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css');
+@import url('font-iropke-batang.css');
 
 body {
-    font-family: 'Iropke Batang', serif;
+    font-family: 'Lato', 'Iropke Batang';
 }
 p {
     line-height: 1.8em;
