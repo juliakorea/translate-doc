@@ -21,11 +21,11 @@ sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)
 while this prevents accidental modification by callees of a value in the caller,
 it makes avoiding unwanted copying of arrays difficult. By convention, a
 function name ending with a `!` indicates that it will mutate or destroy the
-value of one or more of its arguments. Callees must make explicit copies to
-ensure that they don't modify inputs that they don't intend to change. Many non-
-mutating functions are implemented by calling a function of the same name with
-an added `!` at the end on an explicit copy of the input, and returning that
-copy.
+value of one or more of its arguments (see, for example, [`sort`](@ref) and [`sort!`](@ref).
+Callees must make explicit copies to ensure that they don't modify inputs that
+they don't intend to change. Many non- mutating functions are implemented by
+calling a function of the same name with an added `!` at the end on an explicit
+copy of the input, and returning that copy.
 
 ## [배열](@id Arrays)
 
@@ -73,6 +73,25 @@ copy.
 `[A, B, C, ...]` 문법은 주어진 인수들의 일차원 배열(벡터)을 생성한다.
 만약 모든 인수가 공통의 [확장 타입(promotion type)](@ref conversion-and-promotion)을 가진다면, 이들은 [`convert`](@ref)를 통해 공통의 확장 타입으로 변환된다.
 
+To see the various ways we can pass dimensions to these constructors, consider the following examples:
+```jldoctest
+julia> zeros(Int8, 2, 2)
+2×2 Array{Int8,2}:
+ 0  0
+ 0  0
+
+julia> zeros(Int8, (2, 2))
+2×2 Array{Int8,2}:
+ 0  0
+ 0  0
+
+julia> zeros((2, 2))
+2×2 Array{Float64,2}:
+ 0.0  0.0
+ 0.0  0.0
+```
+Here, `(2, 2)` is a [`Tuple`](@ref).
+
 ### 병합(Concatenation)
 
 배열은 다음의 함수를 사용하여 생성하고 병합할 수 있다.
@@ -83,7 +102,18 @@ copy.
 | [`vcat(A...)`](@ref)        | `cat(A...; dims=1)`의 줄임       |
 | [`hcat(A...)`](@ref)        | `cat(A...; dims=2)`의 줄임       |
 
-스칼라 값이 인수로 전달되면 원소 갯수가 하나인 배열로 취급한다.
+스칼라 값이 인수로 전달되면 원소 갯수가 하나인 배열로 취급한다. 예를 들어,
+```jldoctest
+julia> vcat([1, 2], 3)
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia> hcat([1 2], 3)
+1×3 Array{Int64,2}:
+ 1  2  3
+```
 
 병합 함수는 자주 사용되므로 다음의 특별한 문법을 가진다:
 
@@ -94,6 +124,24 @@ copy.
 | `[A B; C D; ...]` | [`hvcat`](@ref) |
 
 [`hvcat`](@ref) 은 1차원 (세미콜론으로 구분) 과 2차원(스페이스로 구분) 모두 병합한다.
+Consider these examples of this syntax:
+```jldoctest
+julia> [[1; 2]; [3, 4]]
+4-element Array{Int64,1}:
+ 1
+ 2
+ 3
+ 4
+
+julia> [[1 2] [3 4]]
+1×4 Array{Int64,2}:
+ 1  2  3  4
+
+julia> [[1 2]; [3 4]]
+2×2 Array{Int64,2}:
+ 1  2
+ 3  4
+```
 
 ### 타입이 있는 배열의 초기화
 
@@ -393,7 +441,51 @@ julia> x
     * `CartesianIndex{N}`의 배열 (자세한 내용은 아래를 참조).
 3. 스칼라 인덱스의 배열을 나타내는 객체이면서 [`to_indices`](@ref)를 통해 스칼라 인덱스의 배열로 변환될 수 있는 것. 기본으로 다음을 포함한다:
     * [`Colon()`](@ref) (`:`). 차원 혹은 배열의 모든 원소를 선택한다.
-    * 부울 배열. `true` 인덱스에 있는 원소를 선택한다.
+    * 부울 배열. `true` 인덱스에 있는 원소를 선택한다 (자세한 내용은 아래를 참조)
+
+Some examples:
+```jldoctest
+julia> A = reshape(collect(1:2:18), (3, 3))
+3×3 Array{Int64,2}:
+ 1   7  13
+ 3   9  15
+ 5  11  17
+
+julia> A[4]
+7
+
+julia> A[[2, 5, 8]]
+3-element Array{Int64,1}:
+  3
+  9
+ 15
+
+julia> A[[1 4; 3 8]]
+2×2 Array{Int64,2}:
+ 1   7
+ 5  15
+
+julia> A[[]]
+0-element Array{Int64,1}
+
+julia> A[1:2:5]
+3-element Array{Int64,1}:
+ 1
+ 5
+ 9
+
+julia> A[2, :]
+3-element Array{Int64,1}:
+  3
+  9
+ 15
+
+julia> A[:, 3]
+3-element Array{Int64,1}:
+ 13
+ 15
+ 17
+```
 
 #### 직교 인덱스(Cartesian indices)
 

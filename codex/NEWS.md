@@ -214,6 +214,10 @@ Language changes
 
   * `…` (`\dots`) and `⁝` (`\tricolon`) are now parsed as binary operators ([#26262](https://github.com/JuliaLang/julia/issues/26262)).
 
+  * Assignment syntax (`a=b`) inside square bracket expressions (e.g. `A[...]`, `[x, y]`)
+    is deprecated. It will likely be reclaimed in a later version for passing keyword
+    arguments. Note this does not affect updating operators like `+=` ([#25631](https://github.com/JuliaLang/julia/issues/25631)).
+
 Breaking changes
 ----------------
 
@@ -1248,7 +1252,11 @@ Deprecated or removed
 
   * `signif` has been deprecated in favor of the `sigdigits` keyword argument to `round`.
 
+  * `Base.IntSet` has been deprecated in favor of `Base.BitSet` ([#24282](https://github.com/JuliaLang/julia/issues/24282)).
+
   * `setrounding` has been deprecated for `Float32` and `Float64`, as the behaviour was too unreliable ([#26935](https://github.com/JuliaLang/julia/issues/26935)).
+
+  * `atan2` is now a 2-argument method of `atan` ([#27248](https://github.com/JuliaLang/julia/issues/27248)).
 
 Command-line option changes
 ---------------------------
