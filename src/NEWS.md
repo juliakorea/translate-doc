@@ -35,6 +35,8 @@
   * 키워드 인자를 요구할 수 있습니다: 기본값을 생략한 경우, 호출하는 쪽에서 키워드 값을 지정하지 않으면
     예외를 던집니다 ([#25830](https://github.com/JuliaLang/julia/issues/25830)).
 
+  * pair 연산자 `=>` 또한 `.=>`로 브로드캐스팅 할 수 있습니다. 파싱 에러(parsing error) 였던 것을 고쳤습니다. ([#27447](https://github.com/JuliaLang/julia/issues/27447))
+
 Language changes
 ----------------
 
@@ -982,8 +984,11 @@ Deprecated or removed
 
   * `Base.SparseArrays.SpDiagIterator` has been removed ([#23261](https://github.com/JuliaLang/julia/issues/23261)).
 
-  * The tuple-of-types form of `cfunction`, `cfunction(f, returntype, (types...))`, has been deprecated
-    in favor of the tuple-type form `cfunction(f, returntype, Tuple{types...})` ([#23066](https://github.com/JuliaLang/julia/issues/23066)).
+  * The function `cfunction`, has been deprecated in favor of a macro form `@cfunction`.
+    Most existing uses can be upgraded simply by adding a `@`.
+    The new syntax now additionally supports allocating closures at runtime,
+    for dealing with C APIs that don't provide a separate `void* env`-type callback
+    argument. ([#26486](https://github.com/JuliaLang/julia/issues/26486))
 
   * `diagm(v::AbstractVector, k::Integer=0)` has been deprecated in favor of
     `diagm(k => v)` ([#24047](https://github.com/JuliaLang/julia/issues/24047)).
@@ -1243,6 +1248,9 @@ Deprecated or removed
   * `Base.IntSet` has been deprecated in favor of `Base.BitSet` ([#24282](https://github.com/JuliaLang/julia/issues/24282)).
 
   * `setrounding` has been deprecated for `Float32` and `Float64`, as the behaviour was too unreliable ([#26935](https://github.com/JuliaLang/julia/issues/26935)).
+
+  * `gamma`, `lgamma`, `beta`, `lbeta` and `lfact` have been moved to
+    [SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl) ([#27459](https://github.com/JuliaLang/julia/issues/27459), [#27473](https://github.com/JuliaLang/julia/issues/27473)).
 
   * `atan2` is now a 2-argument method of `atan` ([#27248](https://github.com/JuliaLang/julia/issues/27248)).
 
