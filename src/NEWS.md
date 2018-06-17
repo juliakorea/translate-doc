@@ -208,6 +208,9 @@ Language changes
     is deprecated. It will likely be reclaimed in a later version for passing keyword
     arguments. Note this does not affect updating operators like `+=` ([#25631](https://github.com/JuliaLang/julia/issues/25631)).
 
+  * `try` blocks without `catch` or `finally` are no longer allowed. An explicit empty
+    `catch` block should be written instead ([#27554](https://github.com/JuliaLang/julia/issues/27554)).
+
 Breaking changes
 ----------------
 
@@ -682,6 +685,9 @@ Library improvements
   * `Sys.which()` provides a cross-platform method to find executable files, similar to
     the Unix `which` command. ([#26559](https://github.com/JuliaLang/julia/issues/26559))
 
+  * Added an optimized method of `vecdot` for taking the Frobenius inner product
+    of sparse matrices. ([#27470](https://github.com/JuliaLang/julia/issues/27470))
+
 Compiler/Runtime improvements
 -----------------------------
 
@@ -1011,8 +1017,8 @@ Deprecated or removed
 
   * `eu` (previously an alias for `ℯ`) has been deprecated in favor of `ℯ` (or `MathConstants.e`) ([#23427](https://github.com/JuliaLang/julia/issues/23427)).
 
-  * `GMP.gmp_version()`, `GMP.GMP_VERSION`, `GMP.gmp_bits_per_limb()`, and `GMP.GMP_BITS_PER_LIBM`
-    have been renamed to `GMP.version()`, `GMP.VERSION`, `GMP.bits_per_libm()`, and `GMP.BITS_PER_LIBM`,
+  * `GMP.gmp_version()`, `GMP.GMP_VERSION`, `GMP.gmp_bits_per_limb()`, and `GMP.GMP_BITS_PER_LIMB`
+    have been renamed to `GMP.version()`, `GMP.VERSION`, `GMP.bits_per_limb()`, and `GMP.BITS_PER_LIMB`,
     respectively. Similarly, `MPFR.get_version()`, has been renamed to `MPFR.version()` ([#23323](https://github.com/JuliaLang/julia/issues/23323)). Also,
     `LinAlg.LAPACK.laver()` has been renamed to `LinAlg.LAPACK.version()` and now returns a `VersionNumber`.
 
