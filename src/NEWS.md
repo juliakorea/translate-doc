@@ -540,6 +540,9 @@ Library improvements
     [ANSI color codes](https://en.wikipedia.org/wiki/ANSI_escape_code) ([#25067](https://github.com/JuliaLang/julia/issues/25067)),
     rather than using the undocumented `Base.have_color` global flag.
 
+  * `print_with_color` has been deprecated in favor of
+    `printstyled([io], xs...; bold=false, color=:normal)` for printing styled text ([#25522](https://github.com/JuliaLang/julia/issues/25522)).
+
   * Functions `first` and `last` now accept `nchar` argument for `AbstractString`.
     If this argument is used they return a string consisting of first/last `nchar`
     characters from the original string ([#23960](https://github.com/JuliaLang/julia/issues/23960)).
@@ -1270,6 +1273,10 @@ Deprecated or removed
   * The functions `eigs` and `svds` have been moved to the `Arpack.jl` package ([#27616](https://github.com/JuliaLang/julia/issues/27616)).
 
   * `vecdot` and `vecnorm` are deprecated in favor of `dot` and `norm`, respectively ([#27401](https://github.com/JuliaLang/julia/issues/27401)).
+
+  * `clipboard` has been moved to the `InteractiveUtils` standard library package
+    (along with other utilities mostly used at the interactive prompt, such as `edit`
+    and `less`) ([#27635](https://github.com/JuliaLang/julia/issues/27635)).
 
 Command-line option changes
 ---------------------------

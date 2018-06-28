@@ -27,9 +27,7 @@ they don't intend to change. Many non- mutating functions are implemented by
 calling a function of the same name with an added `!` at the end on an explicit
 copy of the input, and returning that copy.
 
-## [배열](@id Arrays)
-
-### 기본 함수
+## 기본 함수
 
 | 함수                   | 설명                                                           |
 |:---------------------- |:-------------------------------------------------------------- |
@@ -44,7 +42,7 @@ copy of the input, and returning that copy.
 | [`stride(A,k)`](@ref)  | `k` 차원 방향의 스트라이드 (연속한 원소 간의 선형 인덱스 거리) |
 | [`strides(A)`](@ref)   | 모든 차원의 스트라이드 투플                                    |
 
-### 생성과 초기화
+## 생성과 초기화
 
 배열을 생성하고 초기화 하는 많은 함수가 있다.
 다음에 나열된 함수들에서, `dims...` 인수는 차원의 크기들을 나타내는 투플 하나를 받거나, 혹은 각 차원의 크기를 여러 인수로 받을 수 있다.
@@ -92,7 +90,7 @@ julia> zeros((2, 2))
 ```
 Here, `(2, 2)` is a [`Tuple`](@ref).
 
-### 병합(Concatenation)
+## 병합(Concatenation)
 
 배열은 다음의 함수를 사용하여 생성하고 병합할 수 있다.
 
@@ -143,7 +141,7 @@ julia> [[1 2]; [3 4]]
  3  4
 ```
 
-### 타입이 있는 배열의 초기화
+## 타입이 있는 배열의 초기화
 
 특정 원소 타입의 배열은 `T[A, B, C, ...]` 문법을 통해 생성할 수 있다.
 이는 원소 타입이 `T`인 일차원 배열을 생성하고, 원소 `A`, `B`, `C` 등을 담도록 초기화한다.
@@ -161,7 +159,7 @@ julia> Int8[[1 2] [3 4]]
  1  2  3  4
 ```
 
-### [컴프리헨션(Comprehensions)](@id Comprehensions)
+## [컴프리헨션(Comprehensions)](@id Comprehensions)
 
 컴프리헨션은 배열을 생성하는 일반적이면서도 강력한 방법을 제공한다.
 컴프리헨션의 문법은 수학에서 쓰이는 집합의 조건제시법과 유사하다:
@@ -207,7 +205,7 @@ julia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 ```
 
-### 제너레이터 표현식 (Generator Expressions)
+## 제너레이터 표현식 (Generator Expressions)
 
 컴프리헨션은 대괄호 없이도 쓸 수 있으며, 이 경우 제너레이터 객체를 생성한다.
 제너레이터는 배열을 미리 할당하고 값을 저장하는 것이 아니라, 필요에 따라 값을 생성하도록 반복할 수 있다 ([반복](@ref Iteration) 참조).
@@ -234,6 +232,13 @@ julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
  (0.333333, 2)  (0.25, 4)
 ```
 
+Generators are implemented via inner functions. As in other cases of
+inner functions in the language, variables from the enclosing scope can be
+"captured" in the inner function.  For example, `sum(p[i] - q[i] for i=1:n)`
+captures the three variables `p`, `q` and `n` from the enclosing scope.
+Captured variables can present performance challenges described in
+[performance tips](@ref man-performance-tips).
+
 제너레이터와 컴프리헨션에서 `for` 키워드를 여러번 사용함으로써 범위가 앞선 범위에 의존하도록 할 수 있다.
 
 ```jldoctest
@@ -258,7 +263,7 @@ julia> [(i,j) for i=1:3 for j=1:i if i+j == 4]
  (3, 1)
 ```
 
-### [인덱싱](@id man-array-indexing)
+## [인덱싱](@id man-array-indexing)
 
 n차원 배열 `A`를 인덱싱 하는 일반적인 문법은 다음과 같다:
 
@@ -383,7 +388,7 @@ julia> searchsorted(a, 3)
 3:2
 ```
 
-### 대입
+## 대입
 
 n차원 배열 `A`에 값을 대입하는 일반적인 문법은 다음과 같다:
 
@@ -426,7 +431,7 @@ julia> x
   3   6  -9
 ```
 
-### [지원하는 인덱스 타입](@id man-supported-index-types)
+## [지원하는 인덱스 타입](@id man-supported-index-types)
 
 표현식 `A[I_1, I_2, ..., I_n]`에서, `I_k`는 스칼라 인덱스, 스칼라 인덱스의 배열, 혹은 [`to_indices`](@ref)를 통해 스칼라 인덱스 배열로 변환될 수 있는 객체 중 하나이다:
 
@@ -487,7 +492,7 @@ julia> A[:, 3]
  17
 ```
 
-#### 직교 인덱스(Cartesian indices)
+### 직교 인덱스(Cartesian indices)
 
 `CartesianIndex{N}` 객체는 여러 차원을 포괄하는 정수의 `N`투플처럼 동작하는 스칼라 인덱스를 나타낸다.
 
@@ -553,7 +558,7 @@ julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]
 
     `CartesianIndex`와 `CartesianIndex`의 배열은 차원의 마지막 인덱스를 나타내는 `end` 키워드와 호환되지 않으므로, `CartesianIndex` 혹은 `CartesianIndex`의 배열을 포함할 수도 있는 표현식에서는 `end`를 사용해서는 안된다.
 
-#### 논리적 인덱싱
+### 논리적 인덱싱
 
 부울 배열을 이용한 인덱싱은 값이 `true`인 곳의 인덱스를 선택한다.
 주로 논리적 인덱싱, 혹은 논리적 마스크를 사용한 인덱싱이라고 부르며, 부울 벡터 `B`를 통한 인덱싱은 [`findall(B)`](@ref)가 리턴하는 정수의 벡터를 통한 인덱싱과 동일하다.
@@ -590,7 +595,7 @@ julia> x[mask]
  16
 ```
 
-### [반복(Iteration)](@id Iteration)
+## [반복(Iteration)](@id Iteration)
 
 배열 전체를 반복하는 방법으로는 다음을 추천한다:
 
@@ -625,7 +630,7 @@ i = CartesianIndex(3, 2)
 
 `for i = 1:length(A)`에 비해, [`eachindex`](@ref)는 모든 종류의 배열을 효율적으로 반복할 수 있도록 해준다.
 
-### 배열 특성(trait)
+## 배열 특성(trait)
 
 커스텀 [`AbstractArray`](@ref) 타입을 정의하는 경우, 빠른 선형 인덱싱이 가능함을 지정할 수 있다:
 
@@ -636,7 +641,7 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 이 설정은 `eachindex`가 정수를 사용하여 `MyArray`를 반복하도록 한다.
 이 특성을 지정하지 않으면, 기본값인 `IndexCartesian()`를 사용한다.
 
-### 배열과 벡터화된 연산자/함수
+## 배열과 벡터화된 연산자/함수
 
 배열은 다음의 연산자를 지원한다:
 
@@ -662,7 +667,7 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 또한,  [`max`](@ref)를 `a`와 `b`에 원소별로 [`broadcast`](@ref) 하는 `max.(a,b)`와 , `a`의 최대값을 찾는 [`maximum(a)`](@ref)의 차이에 유의하라.
 `min.(a,b)` 와 `minimum(a)` 의 관계도 마찬가지이다.
 
-### [브로드캐스팅](@id Broadcasting)
+## [브로드캐스팅](@id Broadcasting)
 
 행렬의 각 배열을 더하는 것 처럼, 다른 크기의 배열들을 원소별로 이항 연산할 필요가 종종 있다.
 이를 비효율적으로 하는 방법은 벡터를 행렬과 같은 크기로 복사하는 것이다:
@@ -722,7 +727,7 @@ julia> string.(1:3, ". ", ["First", "Second", "Third"])
  "3. Third"
 ```
 
-### 구현
+## 구현
 
 Julia에서 기본 배열 타입은 추상 타입인 [`AbstractArray{T,N}`](@ref)이다.
 `AbstractArray{T,N}`는 차원수 `N`과 원소 타입 `T`로 매개변수화 되어 있다.
