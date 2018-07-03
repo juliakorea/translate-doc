@@ -550,7 +550,12 @@ julia> 2^2x
 64
 ```
 
-수치형 리터럴 계수의 선행(precedence)도 부정연산과 같은 단항 연산과 같이 작동한다. 따라서 `2^3x`는 `2^(3x)`으로, `2x^3`은 `2*(x^3)`으로 파싱(parsing)된다.
+The precedence of numeric literal coefficients is slightly lower than that of
+unary operators such as negation.
+So `-2x` is parsed as `(-2) * x` and `√2x` is parsed as `(√2) * x`.
+However, numeric literal coefficients parse similarly to unary operators when
+combined with exponentiation.
+For example `2^3x` is parsed as `2^(3x)`, and `2x^3` is parsed as `2*(x^3)`.
 
 수치형 리터럴은 괄호가 있는 식에서도 계수(coeffiients)로 작동할 수 있다:
 
