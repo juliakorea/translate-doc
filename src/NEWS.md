@@ -1216,6 +1216,9 @@ Deprecated or removed
   * `rand(t::Tuple{Vararg{Int}})` is deprecated in favor of `rand(Float64, t)` or `rand(t...)`;
     `rand(::Tuple)` will have another meaning in the future ([#25429](https://github.com/JuliaLang/julia/issues/25429), [#25278](https://github.com/JuliaLang/julia/issues/25278)).
 
+  * `randjump`, which produced an array, is deprecated in favor of the
+    scalar version `Future.randjump` used with `accumulate` ([#27746](https://github.com/JuliaLang/julia/issues/27746)).
+
   * The `assert` function (and `@assert` macro) have been documented that they are not guaranteed to run under various optimization levels and should therefore not be used to e.g. verify passwords.
 
   * `ObjectIdDict` has been deprecated in favor of `IdDict{Any,Any}` ([#25210](https://github.com/JuliaLang/julia/issues/25210)).
@@ -1287,6 +1290,8 @@ Deprecated or removed
   * `clipboard` has been moved to the `InteractiveUtils` standard library package
     (along with other utilities mostly used at the interactive prompt, such as `edit`
     and `less`) ([#27635](https://github.com/JuliaLang/julia/issues/27635)).
+
+  * `ndigits(n, b, [pad])` is deprecated in favor of `ndigits(n, base=b, pad=pad)` ([#27908](https://github.com/JuliaLang/julia/issues/27908)).
 
 Command-line option changes
 ---------------------------
