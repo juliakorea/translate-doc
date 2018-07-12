@@ -483,7 +483,7 @@ be different: the second and fourth values would contain `0`.
 |:----------------------------- |
 | [`ArgumentError`](@ref)       |
 | [`BoundsError`](@ref)         |
-| `CompositeException`          |
+| [`CompositeException`](@ref)  |
 | [`DivideError`](@ref)         |
 | [`DomainError`](@ref)         |
 | [`EOFError`](@ref)            |

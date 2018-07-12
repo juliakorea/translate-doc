@@ -14,7 +14,7 @@ New language features
   * Named tuples, with the syntax `(a=1, b=2)`. These behave very similarly to tuples,
     except components can also be accessed by name using dot syntax `t.a` ([#22194](https://github.com/JuliaLang/julia/issues/22194)).
 
-  * Keyword argument containers (`kw` in `f(; kw...)`) are now named tuples. Dictionary
+  * Keyword argument containers (`kw` in `f(; kw...)`) are now based on named tuples. Dictionary
     functions like `haskey` and indexing can be used on them, and name-value pairs can be
     iterated using `pairs(kw)`. `kw` can no longer contain multiple entries for the same
     argument name ([#4916](https://github.com/JuliaLang/julia/issues/4916)).
@@ -225,6 +225,10 @@ Language changes
 
   * `try` blocks without `catch` or `finally` are no longer allowed. An explicit empty
     `catch` block should be written instead ([#27554](https://github.com/JuliaLang/julia/issues/27554)).
+
+  * `AbstractArray` types that use unconventional (not 1-based) indexing can now support
+    `size`, `length`, and `@inbounds`. To optionally enforce conventional indices,
+    you can `@assert !has_offset_axes(A)`.
 
 Breaking changes
 ----------------
@@ -496,8 +500,7 @@ This section lists changes that do not have deprecation warnings.
   * `isequal` for `Ptr`s now compares element types; `==` still compares only addresses
     ([#26858](https://github.com/JuliaLang/julia/issues/26858)).
 
-  * `widen` on 8- and 16-bit integer types now widens to the platform word size (`Int`)
-    instead of to a 32-bit type ([#26859](https://github.com/JuliaLang/julia/issues/26859)).
+  * `widen` on 8- and 16-bit integer types now widens to 16- and 32-bit types, respectively. ([#28045](https://github.com/JuliaLang/julia/issues/28045)).
 
   * `mv`,`cp`, `touch`, `mkdir`, `mkpath`, `chmod` and `chown` now return the path that was created/modified
     rather than `nothing` ([#27071](https://github.com/JuliaLang/julia/issues/27071)).
@@ -721,7 +724,8 @@ Library improvements
 
   * The initial element `v0` in `reduce(op, v0, itr)` has been replaced with an `init`
     optional keyword argument, as in `reduce(op, itr; init=v0)`. Similarly for `foldl`,
-    `foldr`, `mapreduce`, `mapfoldl` and `mapfoldr`. ([#27711](https://github.com/JuliaLang/julia/issues/27711))
+    `foldr`, `mapreduce`, `mapfoldl`, `mapfoldr`, `accumulate` and `accumulate!`.
+    ([#27711](https://github.com/JuliaLang/julia/issues/27711), [#27859](https://github.com/JuliaLang/julia/issues/27859))
 
 Compiler/Runtime improvements
 -----------------------------

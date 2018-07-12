@@ -12,7 +12,7 @@
   * 네임드 터플(이름을 갖는 터플, named tuples). 문법은 `(a=1, b=2)` 이런 식입니다. 터플처럼 쓰면 되는데
     .이름 `t.a` 이런 식으로 해당 요소에 접근할 수 있습니다 ([#22194](https://github.com/JuliaLang/julia/issues/22194)).
 
-  * 키워드 인자 컨테이너(`f(; kw...)` 에서 `kw`)는 네임드 터플입니다. `haskey`와 같은 딕셔너리 함수로 인덱싱할 수 있고,
+  * 키워드 인자 컨테이너(`f(; kw...)` 에서 `kw`)는 네임드 터플(named tuples)을 기반으로 합니다. `haskey`와 같은 딕셔너리 함수로 인덱싱할 수 있고,
     이름-값 쌍은 `pairs(kw)`를 사용하여 차례대로 접근할 수 있습니다. `kw`는 더 이상 같은 인자 이름을 중복하여 쓸 수 없습니다 ([#4916](https://github.com/JuliaLang/julia/issues/4916)).
 
   * 사용자 정의 infix 연산자를 유니코드 결합 기호, 부호, 윗/아래 첨자로 정의할 수 있습니다.
@@ -213,6 +213,10 @@ Language changes
 
   * `try` blocks without `catch` or `finally` are no longer allowed. An explicit empty
     `catch` block should be written instead ([#27554](https://github.com/JuliaLang/julia/issues/27554)).
+
+  * `AbstractArray` types that use unconventional (not 1-based) indexing can now support
+    `size`, `length`, and `@inbounds`. To optionally enforce conventional indices,
+    you can `@assert !has_offset_axes(A)`.
 
 Breaking changes
 ----------------
@@ -484,8 +488,8 @@ This section lists changes that do not have deprecation warnings.
   * `isequal` for `Ptr`s now compares element types; `==` still compares only addresses
     ([#26858](https://github.com/JuliaLang/julia/issues/26858)).
 
-  * `widen` on 8- and 16-bit integer types now widens to the platform word size (`Int`)
-    instead of to a 32-bit type ([#26859](https://github.com/JuliaLang/julia/issues/26859)).
+  * `widen` on 8- and 16-bit integer types now widens to 16- and 32-bit types, respectively. ([#28045](https://github.com/JuliaLang/julia/issues/28045)).
+
 
   * `mv`,`cp`, `touch`, `mkdir`, `mkpath`, `chmod` and `chown` now return the path that was created/modified
     rather than `nothing` ([#27071](https://github.com/JuliaLang/julia/issues/27071)).
@@ -709,7 +713,8 @@ Library improvements
 
   * The initial element `v0` in `reduce(op, v0, itr)` has been replaced with an `init`
     optional keyword argument, as in `reduce(op, itr; init=v0)`. Similarly for `foldl`,
-    `foldr`, `mapreduce`, `mapfoldl` and `mapfoldr`. ([#27711](https://github.com/JuliaLang/julia/issues/27711))
+    `foldr`, `mapreduce`, `mapfoldl`, `mapfoldr`, `accumulate` and `accumulate!`.
+    ([#27711](https://github.com/JuliaLang/julia/issues/27711), [#27859](https://github.com/JuliaLang/julia/issues/27859))
 
 Compiler/Runtime improvements
 -----------------------------
