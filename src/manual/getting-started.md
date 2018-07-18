@@ -82,7 +82,7 @@ julia [switches] -- [programfile] [args...]
 |`-e`, `--eval <expr>`                  |`<expr>`를 실행만 한다|
 |`-E`, `--print <expr>`                 |`<expr>`를 실행하고 결과를 표시한다|
 |`-L`, `--load <file>`                  |`<file>`을 모든 프로세서에 로드한다|
-|`-p`, `--procs {N\|auto`}              |N개의 worker 프로세스를 추가로 생성한다; `auto`는 현재 컴퓨터의 최대 코어수만큼 worker 프로세스를 생성한다|
+|`-p`, `--procs {N\|auto`}              |N개의 로컬 worker 프로세스를 추가로 생성한다; `auto`는 로컬 CPU 스레드 (논리적 코어) 만큼의 worker 프로세스를 생성한다|
 |`--machine-file <file>`                |`<file>`에 나열된 호스트에서 worker 프로세스를 실행한다|
 |`-i`                                   |대화형 모드; PEPL을 돌리며 `ininteractive()`는 true이다|
 |`-q`, `--quiet`                        |깔끔히 시작하기: 배너 없이, REPL 경고도 안 보여준다|
