@@ -113,6 +113,7 @@ const PAGES = [
             "devdocs/cartesian.md",
             "devdocs/meta.md",
             "devdocs/subarrays.md",
+            "devdocs/isbitsunionarrays.md",
             "devdocs/sysimg.md",
             "devdocs/llvm.md",
             "devdocs/stdio.md",
