@@ -754,9 +754,13 @@ julia> function (p::Polynomial)(x)
            end
            return v
        end
+
+julia> (p::Polynomial)() = p(5)
 ```
 
-함수는 이름 대신 형식으로 지정됩니다. 함수 본문에서 `p` 는 호출 된 객체를 나타냅니다. `다항식` 은 다음과 같이 사용할 수 있습니다.
+함수는 이름 대신 타입으로 지정됩니다.
+As with normal functions there is a terse syntax form.
+함수 본문에서 `p` 는 호출 된 객체를 나타냅니다. `다항식` 은 다음과 같이 사용할 수 있습니다:
 
 ```jldoctest polynomial
 julia> p = Polynomial([1,10,100])
@@ -764,6 +768,9 @@ Polynomial{Int64}([1, 10, 100])
 
 julia> p(3)
 931
+
+julia> p()
+2551
 ```
 
 이 메카니즘은 타입 생성자와 클로저 (주변 환경을 참조하는 내부 함수)가 줄리아에서 어떻게 작동 하는지를 결정하는 열쇠이기도합니다.

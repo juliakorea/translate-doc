@@ -787,7 +787,7 @@ Deprecated or removed
     `dims` keyword argument. This includes the functions `sum`, `prod`, `maximum`,
     `minimum`, `all`, `any`, `findmax`, `findmin`, `mean`, `varm`, `std`, `var`, `cov`,
     `cor`, `median`, `mapreducedim`, `reducedim`, `sort`, `accumulate`, `accumulate!`,
-    `cumsum`, `cumsum!`, `cumprod`, `cumprod!`, `flipdim`, `squeeze`, and `cat` ([#25501](https://github.com/JuliaLang/julia/issues/25501), [#26660](https://github.com/JuliaLang/julia/issues/26660), [#27100](https://github.com/JuliaLang/julia/issues/27100)).
+    `cumsum`, `cumsum!`, `cumprod`, `cumprod!`, `flipdim`, `dropdims`, and `cat` ([#25501](https://github.com/JuliaLang/julia/issues/25501), [#26660](https://github.com/JuliaLang/julia/issues/26660), [#27100](https://github.com/JuliaLang/julia/issues/27100)).
 
   * `indices(a)` and `indices(a,d)` have been deprecated in favor of `axes(a)` and
     `axes(a, d)` ([#25057](https://github.com/JuliaLang/julia/issues/25057)).
@@ -1309,6 +1309,12 @@ Deprecated or removed
     and `less`) ([#27635](https://github.com/JuliaLang/julia/issues/27635)).
 
   * `ndigits(n, b, [pad])` is deprecated in favor of `ndigits(n, base=b, pad=pad)` ([#27908](https://github.com/JuliaLang/julia/issues/27908)).
+
+  * `squeeze` is deprecated in favor of `dropdims`.
+
+  * `srand` is deprecated in favor of the unexported `Random.seed!` ([#27726](https://github.com/JuliaLang/julia/issues/27726)).
+
+  * `realmin`/`realmax` are deprecated in favor of `floatmin`/`floatmax` ([#28302](https://github.com/JuliaLang/julia/issues/28302)).
 
 Command-line option changes
 ---------------------------
