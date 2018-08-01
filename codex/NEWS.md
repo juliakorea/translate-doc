@@ -233,6 +233,10 @@ Language changes
     `size`, `length`, and `@inbounds`. To optionally enforce conventional indices,
     you can `@assert !has_offset_axes(A)`.
 
+  * Module pre-compilation is now the default for code loading. Adding a
+    `__precompile__()` declaration is no longer necessary, although
+    `__precompile__(false)` can still be used to opt-out ([#26991](https://github.com/JuliaLang/julia/issues/26991)).
+
 Breaking changes
 ----------------
 
@@ -545,6 +549,8 @@ Library improvements
   * `Char` is now a subtype of `AbstractChar`, and most of the functions that
     take character arguments now accept any `AbstractChar` ([#26286](https://github.com/JuliaLang/julia/issues/26286)).
 
+  * `pathof(module)` returns the path a module was imported from ([#28310](https://github.com/JuliaLang/julia/issues/28310)).
+
   * `bytes2hex` now accepts an optional `io` argument to output to a hexadecimal stream
     without allocating a `String` first ([#27121](https://github.com/JuliaLang/julia/issues/27121)).
 
@@ -602,6 +608,10 @@ Library improvements
   * The function `rand` can now pick up random elements from strings, associatives
     and sets ([#22228](https://github.com/JuliaLang/julia/issues/22228), [#21960](https://github.com/JuliaLang/julia/issues/21960), [#18155](https://github.com/JuliaLang/julia/issues/18155), [#22224](https://github.com/JuliaLang/julia/issues/22224)).
 
+  * It's now possible to specify the characters to pick from in the `randstring` function ([#22222](https://github.com/JuliaLang/julia/issues/22222)).
+
+  * Allow multidimensional arrays in `shuffle` and `shuffle!` functions ([#22226](https://github.com/JuliaLang/julia/issues/22226)).
+
   * Method lists are now printed as a numbered list. In addition, the source code of a
     method can be opened in an editor by entering the corresponding number in the REPL
     and pressing `^Q` ([#22007](https://github.com/JuliaLang/julia/issues/22007)).
@@ -648,6 +658,10 @@ Library improvements
 
   * `BigFloat` random numbers can now be generated ([#22720](https://github.com/JuliaLang/julia/issues/22720)).
 
+  * The efficiency of random generation for MersenneTwister RNGs has been improved for
+    integers, `Float64` and ranges; as a result, given a seed, the produced stream of numbers
+    has changed ([#27560](https://github.com/JuliaLang/julia/issues/27560), [#25277](https://github.com/JuliaLang/julia/issues/25277), [#25197](https://github.com/JuliaLang/julia/issues/25197), [#25058](https://github.com/JuliaLang/julia/issues/25058), [#25047](https://github.com/JuliaLang/julia/issues/25047)).
+
   * REPL Undo via Ctrl-/ and Ctrl-_
 
   * `diagm` now accepts several diagonal index/vector `Pair`s ([#24047](https://github.com/JuliaLang/julia/issues/24047)).
@@ -682,8 +696,8 @@ Library improvements
     `permutedims(v::AbstractVector)` will create a row matrix ([#24839](https://github.com/JuliaLang/julia/issues/24839)).
 
   * A new `replace(A, old=>new)` function is introduced to replace `old` by `new` in
-    collection `A`. There are also two other methods with a different API, and
-    a mutating variant, `replace!` ([#22324](https://github.com/JuliaLang/julia/issues/22324)).
+    collection `A`. There is also another method with a different API, and
+    a mutating variant, `replace!` ([#22324](https://github.com/JuliaLang/julia/issues/22324), [#25697](https://github.com/JuliaLang/julia/issues/25697), [#26206](https://github.com/JuliaLang/julia/issues/26206), [#27944](https://github.com/JuliaLang/julia/issues/27944)).
 
   * Adding integers to `CartesianIndex` objects is now deprecated. Instead of
     `i::Int + x::CartesianIndex`, use `i*one(x) + x` ([#26284](https://github.com/JuliaLang/julia/issues/26284)).
@@ -734,6 +748,13 @@ Library improvements
   * Added an optimized method of `kron` for taking the tensor product of two
     `Diagonal` matrices. ([27581])
 
+  * An official API for extending `rand` is now defined ([#23964](https://github.com/JuliaLang/julia/issues/23964), [#25002](https://github.com/JuliaLang/julia/issues/25002)).
+
+  * The constructor `MersenneTwister()` is re-enabled, producing a randomly initialized RNG
+    (similar to `Random.seed!(MersenneTwister(0))`) ([#21909](https://github.com/JuliaLang/julia/issues/21909)).
+
+  * `BitSet` can now store any `Int` (instead of only positive ones) ([#25029](https://github.com/JuliaLang/julia/issues/25029)).
+
   * The initial element `v0` in `reduce(op, v0, itr)` has been replaced with an `init`
     optional keyword argument, as in `reduce(op, itr; init=v0)`. Similarly for `foldl`,
     `foldr`, `mapreduce`, `mapfoldl`, `mapfoldr`, `accumulate` and `accumulate!`.
@@ -754,6 +775,9 @@ Compiler/Runtime improvements
 
   * Inference now propagates constants inter-procedurally, and can compute
     various constants expressions at compile-time ([#24362](https://github.com/JuliaLang/julia/issues/24362)).
+
+  * The LLVM SLP Vectorizer optimization pass is now enabled at the default
+    optimization level.
 
 Deprecated or removed
 ---------------------
@@ -788,6 +812,14 @@ Deprecated or removed
     direct result of `eigen(A, B)` instead, either destructured into its components
     (`vals, vecs = eigen(A, B)`), or as a `GeneralizedEigen` object
     (`X = eigen(A, B)`) ([#26997](https://github.com/JuliaLang/julia/issues/26997), [#27159](https://github.com/JuliaLang/julia/issues/27159), [#27212](https://github.com/JuliaLang/julia/issues/27212)).
+
+  * `ordschur(T::StridedMatrix{Ty}, Z::StridedMatrix{Ty}, select::Union{Vector{Bool},BitVector})`
+    and `ordschur(S::StridedMatrix{Ty}, T::StridedMatrix{Ty}, Q::StridedMatrix{Ty},
+    Z::StridedMatrix{Ty}, select::Union{Vector{Bool},BitVector})` and their respective
+    inplace versions have been deprecated.
+    Use `ordschur(schur::Schur, select::Union{Vector{Bool},BitVector})` and
+    `ordschur(gschur::GeneralizedSchur, select::Union{Vector{Bool},BitVector})` instead
+    ([#28155](https://github.com/JuliaLang/julia/issues/28155)).
 
   * Indexing into multidimensional arrays with more than one index but fewer indices than there are
     dimensions is no longer permitted when those trailing dimensions have lengths greater than 1.
@@ -1326,6 +1358,10 @@ Deprecated or removed
   * `srand` is deprecated in favor of the unexported `Random.seed!` ([#27726](https://github.com/JuliaLang/julia/issues/27726)).
 
   * `realmin`/`realmax` are deprecated in favor of `floatmin`/`floatmax` ([#28302](https://github.com/JuliaLang/julia/issues/28302)).
+
+  * `sortrows`/`sortcols` have been deprecated in favor of the more general `sortslices`.
+
+  * `nextpow2`/`prevpow2` have been deprecated in favor of the more general `nextpow`/`prevpow` functions.
 
 Command-line option changes
 ---------------------------
