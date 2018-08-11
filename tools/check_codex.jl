@@ -19,7 +19,7 @@ const julia_doc_src_path = abspath(JULIA_PATH, "doc", "src")
 translated_files = []
 
 function check_src_and_codex(path1, path2)
-    ignore_assets = ["custom.css", "font-iropke-batang.css", "fonts"]
+    ignore_assets = ["custom.css", "font-iropke-batang.css", "fonts", "HISTORY.md"]
     src_codex_diff = `diff -qr $path1 $path2`
     lines = readlines(ignorestatus(src_codex_diff))
     for line in lines

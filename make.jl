@@ -39,7 +39,7 @@ const t_Manual   = "매뉴얼"
 
 const PAGES = [
     t_Home => "index.md",
-    hide("NEWS.md"),
+    # hide("NEWS.md"),
     t_Manual => [
         "manual/getting-started.md",
         "manual/variables.md",
