@@ -1,6 +1,23 @@
-# 줄리아 1.0 문서
+```@eval
+io = IOBuffer()
+release = isempty(VERSION.prerelease)
+v = "$(VERSION.major).$(VERSION.minor)"
+!release && (v = v*"-$(first(VERSION.prerelease))")
+print(io, """
+    # 줄리아 $(v) 문서
 
-환영합니다. 줄리아 1.0 문서입니다.
+    환영합니다. 줄리아 $(v) 문서입니다.
+
+    """)
+if !release
+    print(io,"""
+        !!! warning "작업 진행 중!"
+            개발 버전의 줄리아 문서입니다.
+        """)
+end
+import Markdown
+Markdown.parse(String(take!(io)))
+```
 
 전체적으로 언어를 훑어보며, 0.6 버전 이후 어떤 것들이 바뀌었는지
 [블로그 글](https://julialang.org/blog/2018/08/one-point-zero)(번역 필요)을 읽어 주세요.
@@ -8,10 +25,11 @@
 0.7과 1.0의 차이는 지원 중단 경고문(deprecation warnings) 부분을 삭제한 것입니다.
 0.6으로부터 바뀐 모든 내용은 [0.7 버전 릴리즈 노트](https://github.com/juliakorea/translate-doc/wiki/NEWS)를 봐 주세요.
 
-!!! note
-    한글 문서 번역은 [깃헙](https://github.com/juliakorea/translate-doc)에서 누구나 참여하실 수 있습니다.
-    많은 참여 부탁드립니다.
+` `
 
+!!! note "번역 안내"
+    한글 문서 번역은 깃헙 [https://github.com/juliakorea/translate-doc](https://github.com/juliakorea/translate-doc)에서 누구나 참여하실 수 있습니다.
+    많은 참여 부탁드립니다.
 
 ### [소개글](@id man-introduction)
 
