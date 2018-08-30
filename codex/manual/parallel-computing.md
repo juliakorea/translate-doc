@@ -77,7 +77,7 @@ A channel can be visualized as a pipe, i.e., it has a write end and a read end :
 
     # we can schedule `n` instances of `foo` to be active concurrently.
     for _ in 1:n
-        @schedule foo()
+        @async foo()
     end
     ```
 * Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
@@ -184,16 +184,16 @@ julia> function make_jobs(n)
 
 julia> n = 12;
 
-julia> @schedule make_jobs(n); # feed the jobs channel with "n" jobs
+julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
 
 julia> for i in 1:4 # start 4 tasks to process requests in parallel
-           @schedule do_work()
+           @async do_work()
        end
 
 julia> @elapsed while n > 0 # print out results
            job_id, exec_time = take!(results)
-           println("$job_id finished in $(round(exec_time,2)) seconds")
-           n = n - 1
+           println("$job_id finished in $(round(exec_time; digits=2)) seconds")
+           global n = n - 1
        end
 4 finished in 0.22 seconds
 3 finished in 0.45 seconds
@@ -1086,7 +1086,7 @@ julia> for p in workers() # start tasks on the workers to process requests in pa
 
 julia> @elapsed while n > 0 # print out results
            job_id, exec_time, where = take!(results)
-           println("$job_id finished in $(round(exec_time,2)) seconds on worker $where")
+           println("$job_id finished in $(round(exec_time; digits=2)) seconds on worker $where")
            n = n - 1
        end
 1 finished in 0.18 seconds on worker 4
