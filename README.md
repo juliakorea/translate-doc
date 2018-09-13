@@ -3,4 +3,8 @@
 
 
 ### 최근 번역 빌드한 것 보기 (HTML)
- - https://juliakorea.github.io/ko/
+ - https://juliakorea.github.io/ko/latest/
+
+
+### Julia Documentation 구글 번역 보기
+ - [중국어 -> 한국어](https://translate.google.com/translate?sl=zh-CN&tl=ko&js=y&hl=en&ie=UTF-8&u=http%3A%2F%2Fdocs.juliacn.com%2Flatest%2F)
