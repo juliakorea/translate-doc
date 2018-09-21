@@ -16,7 +16,7 @@ Julia also supports experimental multi-threading, where execution is forked and 
 threads.
 Known as the fork-join approach, parallel threads execute independently, and must ultimately be joined in Julia's main thread to allow serial execution to continue.
 Multi-threading is supported using the `Base.Threads` module that is still considered experimental, as Julia is
-not yet fully thread-safe. In particular segfaults seem to occur during I\O operations and task switching.
+not yet fully thread-safe. In particular segfaults seem to occur during I/O operations and task switching.
 As an up-to-date reference, keep an eye on [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading).
 Multi-Threading should only be used if you take into consideration global variables, locks and
 atomics, all of which are explained later.
@@ -1649,13 +1649,13 @@ in future releases.
 Outside of Julia parallelism there are plenty of external packages that should be mentioned.
 For example [MPI.jl](https://github.com/JuliaParallel/MPI.jl) is a Julia wrapper for the `MPI` protocol, or
 [DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl), as presented in [Shared Arrays](@ref).
-A mention must be done to the Julia's GPU programming ecosystem, which includes :
+A mention must be made of Julia's GPU programming ecosystem, which includes:
 
 1. Low-level (C kernel) based operations [OpenCL.jl](https://github.com/JuliaGPU/OpenCL.jl) and [CUDAdrv.jl](https://github.com/JuliaGPU/CUDAdrv.jl) which are respectively an OpenCL interface and a CUDA wrapper.
 
 2. Low-level (Julia Kernel) interfaces like [CUDAnative.jl](https://github.com/JuliaGPU/CUDAnative.jl) which is a Julia native CUDA implementation.
 
-3. High-level vendor specific abstractions like [CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl) and [CLArrays.jl](https://github.com/JuliaGPU/CLArrays.jl)
+3. High-level vendor-specific abstractions like [CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl) and [CLArrays.jl](https://github.com/JuliaGPU/CLArrays.jl)
 
 4. High-level libraries like [ArrayFire.jl](https://github.com/JuliaComputing/ArrayFire.jl) and [GPUArrays.jl](https://github.com/JuliaGPU/GPUArrays.jl)
 
