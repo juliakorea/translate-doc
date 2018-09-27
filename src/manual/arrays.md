@@ -8,7 +8,7 @@ Julia는 배열을 특별하게 취급하지는 않는다.
 커스텀 배열 타입을 구현하는 것의 세부사항은 [manual section on the AbstractArray interface](@ref man-interface-array) 를 참조하기 바란다.
 
 배열은 다차원 그리드에 저장된 객체들의 모음이다.
-가장 일반적인 경우, 배열은 `Any` 타입의 객체들을 담을 수 있다.
+가장 일반적인 경우, 배열은 [`Any`](@ref) 타입의 객체들을 담을 수 있다.
 대부분의 계산 목적을 위해서는, 배열은 [`Float64`](@ref) 혹은 [`Int32`](@ref)와 같이 더 구체적인 타입의 객체를 담는 것이 좋다.
 
 다른 많은 기술 계산 언어에서는 성능을 위해 프로그램을 벡터화된 스타일로 작성할 필요가 있지만, Julia에서는 일반적으로 그럴 필요가 없다.
@@ -21,7 +21,7 @@ sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)
 while this prevents accidental modification by callees of a value in the caller,
 it makes avoiding unwanted copying of arrays difficult. By convention, a
 function name ending with a `!` indicates that it will mutate or destroy the
-value of one or more of its arguments (see, for example, [`sort`](@ref) and [`sort!`](@ref).
+value of one or more of its arguments (see, for example, [`sort`](@ref) and [`sort!`](@ref)).
 Callees must make explicit copies to ensure that they don't modify inputs that
 they don't intend to change. Many non- mutating functions are implemented by
 calling a function of the same name with an added `!` at the end on an explicit
