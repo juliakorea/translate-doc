@@ -21,7 +21,7 @@ sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)
 while this prevents accidental modification by callees of a value in the caller,
 it makes avoiding unwanted copying of arrays difficult. By convention, a
 function name ending with a `!` indicates that it will mutate or destroy the
-value of one or more of its arguments (see, for example, [`sort`](@ref) and [`sort!`](@ref)).
+value of one or more of its arguments (compare, for example, [`sort`](@ref) and [`sort!`](@ref)).
 Callees must make explicit copies to ensure that they don't modify inputs that
 they don't intend to change. Many non- mutating functions are implemented by
 calling a function of the same name with an added `!` at the end on an explicit
@@ -68,27 +68,27 @@ copy of the input, and returning that copy.
 | [`fill!(A, x)`](@ref)                          | 배열 `A` 를 `x` 값으로 채우기                                                                                                                                                                                                                |
 | [`fill(x, dims...)`](@ref)                     | `x` 값으로 차 있는 `Array`                                                                                                                                                                                                                   |
 
-`[A, B, C, ...]` 문법은 주어진 인수들의 일차원 배열(벡터)을 생성한다.
+`[A, B, C, ...]` 문법은 주어진 인수들의 일차원 배열(이를테면 벡터)을 생성한다.
 만약 모든 인수가 공통의 [확장 타입(promotion type)](@ref conversion-and-promotion)을 가진다면, 이들은 [`convert`](@ref)를 통해 공통의 확장 타입으로 변환된다.
 
 To see the various ways we can pass dimensions to these constructors, consider the following examples:
 ```jldoctest
-julia> zeros(Int8, 2, 2)
-2×2 Array{Int8,2}:
- 0  0
- 0  0
+julia> zeros(Int8, 2, 3)
+2×3 Array{Int8,2}:
+ 0  0  0
+ 0  0  0
 
-julia> zeros(Int8, (2, 2))
-2×2 Array{Int8,2}:
- 0  0
- 0  0
+julia> zeros(Int8, (2, 3))
+2×3 Array{Int8,2}:
+ 0  0  0
+ 0  0  0
 
-julia> zeros((2, 2))
-2×2 Array{Float64,2}:
- 0.0  0.0
- 0.0  0.0
+julia> zeros((2, 3))
+2×3 Array{Float64,2}:
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
 ```
-Here, `(2, 2)` is a [`Tuple`](@ref).
+Here, `(2, 3)` is a [`Tuple`](@ref).
 
 ## 병합(Concatenation)
 
@@ -232,11 +232,11 @@ julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
  (0.333333, 2)  (0.25, 4)
 ```
 
-Generators are implemented via inner functions. As in other cases of
-inner functions in the language, variables from the enclosing scope can be
+Generators are implemented via inner functions. Just like
+inner functions used elsewhere in the language, variables from the enclosing scope can be
 "captured" in the inner function.  For example, `sum(p[i] - q[i] for i=1:n)`
 captures the three variables `p`, `q` and `n` from the enclosing scope.
-Captured variables can present performance challenges described in
+Captured variables can present performance challenges; see
 [performance tips](@ref man-performance-tips).
 
 제너레이터와 컴프리헨션에서 `for` 키워드를 여러번 사용함으로써 범위가 앞선 범위에 의존하도록 할 수 있다.
@@ -384,7 +384,7 @@ julia> x[1, [2 3; 4 1]]
 ```jldoctest
 julia> a = [1,2,5,6,7];
 
-julia> searchsorted(a, 3)
+julia> searchsorted(a, 4)
 3:2
 ```
 
@@ -699,7 +699,7 @@ julia> broadcast(+, a, b)
 `.+` 와 `.*` 같은 [점찍은 연산자](@ref man-dot-operators)는 `broadcast` 호출과 (아래에 설명할 융합을 제외한다면) 동일하다.
 또한 명시적으로 목적지를 지정하는 [`broadcast!`](@ref)도 있다.
 (`.=` 대입을 사용하여 융합하여서도 액세스할 수 있다.)
-게다가, `f.(args...)`는 `broadcast(f, args...)`와 동일하며, 어떤 함수든 [점 문법](@ref man-vectorized)을 통하여 편리하게 브로드캐스팅 할 수 있는 문법을 제공한다.
+사실, `f.(args...)`는 `broadcast(f, args...)`와 동일하며, 어떤 함수든 [점 문법](@ref man-vectorized)을 통하여 편리하게 브로드캐스팅 할 수 있는 문법을 제공한다.
 중첩된 "점 호출" `f.(...)`은 (`.+` 등의 연산자도 포함하여) 하나의 `broadcast` 호출로 [자동으로 융합](@ref man-dot-operators)한다.
 
 추가적으로, [`broadcast`](@ref)는 배열에 국한되지 않고 (함수 문서 참조) 투플 또한 지원하며,
@@ -746,7 +746,7 @@ For more details on defining custom
 `DenseArray` is an abstract subtype of `AbstractArray` intended to include all arrays where
 elements are stored contiguously in column-major order (see additional notes in
 [Performance Tips](@ref man-performance-tips)). The [`Array`](@ref) type is a specific instance
-of `DenseArray`  [`Vector`](@ref) and [`Matrix`](@ref) are aliases for the 1-d and 2-d cases.
+of `DenseArray`;  [`Vector`](@ref) and [`Matrix`](@ref) are aliases for the 1-d and 2-d cases.
 Very few operations are implemented specifically for `Array` beyond those that are required
 for all `AbstractArrays`s; much of the array library is implemented in a generic
 manner that allows all custom arrays to behave similarly.
