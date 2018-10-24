@@ -59,6 +59,9 @@ julia> 안녕하세요 = "Hello"
 * tab * -`\ _2` - * tab *. 다른 사람의 코드와 같이 기호를 어딘가에서 찾으면
 당신이 입력하는 방법을 모르겠다면, REPL 도움말은 당신에게 말할 것입니다 
 
+
+julia는 심지어 내장 상수와 함수조차도 필요하다면 재정의합니다.(잠재적인 혼란을 피하기 위해 추천하지는 않습니다.)
+```
 julia> pi = 3
 3
 
@@ -69,8 +72,7 @@ julia> sqrt = 4
 4
 ```
 
-그러나 이미 사용중인 내장 상수 또는 기능을 다시 정의하려고하면 
-julia는 다음과같은 에러를 낼것이다
+그러나 이미 사용중인 내장 상수와 함수을 다시 정의하려고하면 julia는 다음과같은 에러를 낼것이다
 
 ```jldoctest
 julia> pi
@@ -89,11 +91,10 @@ ERROR: cannot assign variable Base.sqrt from module Main
 ##허용된 변수 이름
 
 
-변수 이름은 문자 (A-Z 또는 a-z), 밑줄 또는 유니 코드 코드의 하위 집합으로 시작해
-야합니다
-00A0보다 큰 점; 특히 [유니 코드 문자 범주] (http://www.fileformat.info/info/unicode/category/index.htm)
+변수 이름은 문자 (A-Z 또는 a-z), 밑줄 또는 00A0보다 큰 유니 코드 코드의 하위 집합으로 시작해
+야합니다. 특히 [유니 코드 문자 범주] (http://www.fileformat.info/info/unicode/category/index.htm)
 Lu / Ll / Lt / Lm / Lo / Nl (문자), Sc / So (통화 및 기타 기호) 및 기타 문자와 >유사한 문자
-(예 : Sm 수학 기호의 서브 세트)이 허용됩니다. 그 다음 문자는
+(예 : Sm 수학 기호의 서브 세트)이 허용됩니다. 그 다음 문자는 !와
 숫자 (0-9 및 Nd / No 범주의 다른 문자) 및 기타 유니 코드 코드 포인트 : 발음 구별
  기호
 및 기타 수정 표시 (Mn / Mc / Me / Sk 범주), 일부 구두점 커넥터 (범주 Pc),
