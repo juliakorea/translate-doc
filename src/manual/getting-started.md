@@ -75,7 +75,7 @@ julia [switches] -- [programfile] [args...]
 |:---                                   |:---|
 |`-v`, `--version`                      |버전 정보를 표시한다|
 |`-h`, `--help`                         |이 메세지를 표시한다|
-|`--project[={<dir>|@.}]`               |Set <dir> as the home project/environment. The default @. option will search through parent directories until a Project.toml or JuliaProject.toml file is found.|
+|`--project[={<dir>\|@.}]`              |Set <dir> as the home project/environment. The default @. option will search through parent directories until a Project.toml or JuliaProject.toml file is found.|
 |`-J`, `--sysimage <file>`              |주어진 시스템 이미지 파일로 실행한다|
 |`-H`, `--home <dir>`                   |`julia` 실행파일의 위치를 지정한다|
 |`--startup-file={yes\|no}`             |`~/.julia/config/startup.jl` 를 불러온다|
