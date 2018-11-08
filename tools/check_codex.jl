@@ -138,7 +138,6 @@ function check_pages()
     pages2 = get_pages(makejl_path) do s
         for (a,b) in [("t_Home", "\"Home\""),
                       ("t_Manual", "\"Manual\""),
-                      ("\"devdocs/ssair.md\", # Julia SSA-form IR", ""), # temporal
                      ]
             s = replace(s, a => b)
         end
