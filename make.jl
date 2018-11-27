@@ -1,14 +1,14 @@
 # code from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
 
 # Install dependencies needed to build the documentation.
-using Pkg
+empty!(LOAD_PATH)
+push!(LOAD_PATH, @__DIR__, "@stdlib")
 empty!(DEPOT_PATH)
 pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
-pushfirst!(LOAD_PATH, @__DIR__)
 
 if !isdir(joinpath(@__DIR__, "deps", "packages", "Documenter")) || "deps" in ARGS
+    using Pkg
     Pkg.instantiate()
-    Pkg.add("Documenter")
 end
 
 using Documenter
@@ -22,7 +22,7 @@ baremodule GenStdLib end
 end
 
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
-const STDLIB_DIR = normpath(@__DIR__, "..", "julia", "stdlib")
+const STDLIB_DIR = Sys.STDLIB
 const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
     sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src", "index.md")
     if isfile(sourcefile)
