@@ -105,6 +105,11 @@ julia [switches] -- [programfile] [args...]
 |`--track-allocation={none\|user\|all}` |각 소스 코드 라인에 의해 할당되는 바이트 수를 기록한다|
 |`--track-allocation`                   |`--track-allocation=user`와 같다|
 
+!!! compat "Julia 1.1"
+    In Julia 1.0, the default `--project=@.` option did not search up from the root
+    directory of a Git repository for the `Project.toml` file. From Julia 1.1 forward, it
+    does.
+
 ## 참고 자료
 
 줄리아 웹사이트의 [배우기](https://juliakorea.github.io/learning/) 페이지에 사용자가 보면 유용한 자료를 엄선하여 모아두었다.

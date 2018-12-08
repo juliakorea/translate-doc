@@ -145,7 +145,7 @@ julia> [[1 2]; [3 4]]
 
 특정 원소 타입의 배열은 `T[A, B, C, ...]` 문법을 통해 생성할 수 있다.
 이는 원소 타입이 `T`인 일차원 배열을 생성하고, 원소 `A`, `B`, `C` 등을 담도록 초기화한다.
-예를 들어 `Any[x, y, z]`는 어떤 값이든 가질 수 있는 배열을 생성한다.
+예를 들어, `Any[x, y, z]`는 어떤 값이든 가질 수 있는 배열을 생성한다.
 
 병합 구문 또한 비슷한 방법으로 원소 타입을 지정할 수 있다.
 
@@ -277,7 +277,7 @@ X = A[I_1, I_2, ..., I_n]
 만약 모든 인덱스가 스칼라라면, 결과 `X`는 배열 `A`의 원소 중 하나이다.
 그렇지 않을 경우 `X`는 배열이며, 모든 인덱스의 차원 수의 합이 `X`의 차원수가 된다.
 
-예를들어 만약 모든 인덱스가 벡터라면 `X`의 크기는 `(length(I_1), length(I_2), ..., length(I_n))`가 되고, `X`의 `(i_1, i_2, ..., i_n)` 위치는  `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]` 값을 가지게 된다.
+예를 들어, 모든 인덱스 `I_k`가 벡터라면 `X`의 크기는 `(length(I_1), length(I_2), ..., length(I_n))`가 되고, `X`의 `i_1, i_2, ..., i_n` 위치는  `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]` 값을 가지게 된다.
 
 Example:
 
@@ -345,9 +345,8 @@ julia> A[[1 2; 1 2], 1, 2, 1]
  5  6
 ```
 
-`X`의 `(i_1, i_2, i_3, ..., i_{n+1})` 위치는 `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]` 값을 가진다.
-스칼라 인덱스를 가진 모든 차원은 결과에서 빠진다.
-예를 들어, `A[2, I, 3]`의 결과는 크기가 `size(I)`인 배열이며, `i`번째 원소의 값은 `A[2, I[i], 3]`이다.
+`X`의 `i_1, i_2, i_3, ..., i_{n+1}` 위치는 `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]` 값을 가진다.
+스칼라(scalars)로 인덱스된 모든 차원은 결과에서 빠진다. 예를 들어, `J`가 인덱스들의 배열이면 `A[2, J, 3]`의 결과는 크기가 `size(J)`인 배열이며, `j`번째 원소의 값은 `A[2, J[j], 3]`이다.
 
 인덱싱 문법의 특수한 한 부분으로서, 각 차원의 마지막 인덱스를 나타내기 위해서 인덱싱 괄호 안에서 `end` 키워드를 사용할 수 있다.
 마지막 인덱스는 인덱싱 되는 가장 안쪽의 배열의 크기에 따라 결정된다.
@@ -399,9 +398,17 @@ A[I_1, I_2, ..., I_n] = X
 여기서 `I_k` 는 스칼라 정수, 정수의 배열, 혹은 [지원하는 다른 인덱스](@ref man-supported-index-types) 중 하나이다.
 여기에는 모든 인덱스를 선택하는 [`Colon`](@ref) (`:`), 연속되거나 일정한 간격의 부분수열을 선택하는 `a:c` 혹은 `a:b:c`와 같은 형태의 범위, 그리고 `true` 값을 선택하는 부울 배열도 포함된다.
 
-만약 `X`가 배열이라면, 그 원소의 갯수는 모든 인덱스 길이의 곱인 `prod(length(I_1), length(I_2), ..., length(I_n))`와 같아야 한다.
-`A`의 `I_1[i_1], I_2[i_2], ..., I_n[i_n]` 위치에 있는 값은 `X[i_1, i_2, ..., i_n]` 값으로 덮어쓰인다.
-만약 `X`가 스칼라(scala)면, `A`의 모든 위치에 `.=` (element-wise assignment operator)를 적용한다:
+If all indices `I_k` are integers, then the value in location `I_1, I_2, ..., I_n` of `A` is
+overwritten with the value of `X`, [`convert`](@ref)ing to the
+[`eltype`](@ref) of `A` if necessary.
+
+
+If any index `I_k` selects more than one location, then the right hand side `X` must be an
+array with the same shape as the result of indexing `A[I_1, I_2, ..., I_n]` or a vector with
+the same number of elements. The value in location `I_1[i_1], I_2[i_2], ..., I_n[i_n]` of
+`A` is overwritten with the value `X[I_1, I_2, ..., I_n]`, converting if necessary. The
+element-wise assignment operator `.=` may be used to [broadcast](@ref Broadcasting) `X`
+across the selected locations:
 
 ```
 A[I_1, I_2, ..., I_n] .= X
