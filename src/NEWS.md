@@ -110,6 +110,7 @@ Standard library changes
   * `mul!`, `rmul!` and `lmul!` methods for `UniformScaling` ([#29506](https://github.com/JuliaLang/julia/issues/29506)).
   * `Symmetric` and `Hermitian` matrices now preserve the wrapper when scaled with a number ([#29469](https://github.com/JuliaLang/julia/issues/29469)).
   * Exponentiation operator `^` now supports raising an `Irrational` to an `AbstractMatrix` power ([#29782](https://github.com/JuliaLang/julia/issues/29782)).
+  * Added keyword arguments `rtol`, `atol` to `pinv`, `nullspace` and `rank` ([#29998](https://github.com/JuliaLang/julia/issues/29998), [#29926](https://github.com/JuliaLang/julia/issues/29926)).
 
 #### Random
   * `randperm` and `randcycle` now use the type of their argument to determine the element type of
@@ -132,6 +133,7 @@ External dependencies
   * The source code for Pkg is no longer included in JuliaLang/julia. Pkg is instead
     downloaded during the build process ([#29615](https://github.com/JuliaLang/julia/issues/29615)).
   * LLVM has been upgraded to 6.0.1 and support for LLVM < 6.0 has been dropped ([#28745](https://github.com/JuliaLang/julia/issues/28745), [#28696](https://github.com/JuliaLang/julia/issues/28696)).
+  * Pkg has been upgraded to version 1.1 ([#30342](https://github.com/JuliaLang/julia/issues/30342)).
 
 Deprecated or removed
 ---------------------

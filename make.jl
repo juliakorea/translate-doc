@@ -14,12 +14,7 @@ end
 using Documenter
 include("contrib/html_writer.jl")
 
-# Include the `build_sysimg` file.
-
 baremodule GenStdLib end
-@isdefined(build_sysimg) || @eval module BuildSysImg
-    include(joinpath(@__DIR__, "contrib", "build_sysimg.jl"))
-end
 
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
 const STDLIB_DIR = Sys.STDLIB
@@ -145,7 +140,7 @@ const t_html_canonical = "https://juliakorea.github.io/ko/latest/"
 
 makedocs(
     build     = joinpath(pwd(), "local" in ARGS ? "_build_local" : "_build/html/ko/latest"),
-    modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+    modules   = [Base, Core, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false, # true
     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
