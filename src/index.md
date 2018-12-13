@@ -19,7 +19,7 @@ import Markdown
 Markdown.parse(String(take!(io)))
 ```
 
-[지난 릴리즈](https://github.com/juliakorea/translate-doc/wiki/NEWS)로부터 바뀐 점은 [릴리즈 노트](NEWS.md)에 있습니다.
+지난 릴리즈에서 부터 바뀐 점은 [릴리즈 노트](NEWS.md)에 있습니다.
 
 ` `
 

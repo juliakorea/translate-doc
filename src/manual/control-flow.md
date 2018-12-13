@@ -626,24 +626,24 @@ Stacktrace:
 
 ### `try/catch`문
 
-`try/catch`문은 `Exception`을 테스트할 수 있습니다. 예를 들어, 사용자 정의 제곱근 함수를 `Exception`을 사용하여 필요에 따라 실수 또는 복소수 제곱근 방법을 자동으로 호출하도록 작성할 수 있습니다.
+The `try/catch` statement allows for `Exception`s to be tested for, and for the
+graceful handling of things that may ordinarily break your application. For example,
+in the below code the function for square root would normally throw an exception. By
+placing a `try/catch` block around it we can mitigate that here. You may choose how
+you wish to handle this exception, whether logging it, return a placeholder value or
+as in the case below where we just printed out a statement. One thing to think about
+when deciding how to handle unexpected situations is that using a `try/catch` block is
+much slower than using conditional branching to handle those situations.
+Below there are more examples of handling exceptions with a `try/catch` block:
 
 ```jldoctest
-julia> f(x) = try
-           sqrt(x)
-       catch
-           sqrt(complex(x, 0))
+julia> try
+           sqrt("ten")
+       catch e
+           println("You should have entered a numeric value")
        end
-f (generic function with 1 method)
-
-julia> f(1)
-1.0
-
-julia> f(-1)
-0.0 + 1.0im
+You should have entered a numeric value
 ```
-
-이 함수를 계산하는 실제 코드에서는 예외를 잡는 대신 `x`와 0을 비교한다는 점에 유의해야 합니다. 단순히 비교하고 분기하는 것보다 예외는 훨씬 느립니다.
 
 또한 `try/catch`문은 `Exception`이 변수에 저장되도록 합니다. 이 고안된 예제에서, 다음 예제는 `x`가 색인 가능한 경우 `x`의 두 번째 요소의 제곱근을 계산하고, 그렇지 않으면 `x`가 실수임을 가정하고 제곱근을 반환합니다.
 
