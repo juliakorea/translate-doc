@@ -6,5 +6,6 @@
  - https://juliakorea.github.io/ko/latest/
 
 
-### Julia Documentation 구글 번역 보기
- - [중국어 -> 한국어](https://translate.google.com/translate?sl=zh-CN&tl=ko&js=y&hl=en&ie=UTF-8&u=http%3A%2F%2Fdocs.juliacn.com%2Flatest%2F)
+### 중국어 번역 자료 한국어 자동 번역
+ - Julia 대만(juliatw) 문서 [https://docs.juliatw.org/latest/](https://translate.google.com/translate?sl=zh-CN&tl=ko&u=https%3A%2F%2Fdocs.juliatw.org%2Flatest%2F)
+ - Julia 중국(juliacn) 문서 [http://docs.juliacn.com/latest/](https://translate.google.com/translate?sl=zh-CN&tl=ko&u=http%3A%2F%2Fdocs.juliacn.com%2Flatest%2F)
