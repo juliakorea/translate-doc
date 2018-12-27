@@ -1,6 +1,6 @@
 # override Documenter.jl/src/Writers/HTMLWriter.jl
 
-import Documenter: Anchors, Builder, Documents, Expanders, Formats, Documenter, Utilities, Writers
+import Documenter: Anchors, Builder, Documents, Expanders, Documenter, Utilities, Writers
 import Documenter.Utilities.DOM: DOM, Tag, @tags
 import Documenter.Writers.HTMLWriter: pagetitle, domify, open_output
 import Documenter.Writers.HTMLWriter: navhref, relhref
@@ -9,9 +9,10 @@ import Documenter.Writers.HTMLWriter: getpage, get_url
 import Documenter.Writers.HTMLWriter: render_head, render_topbar, render_navmenu, render_article
 import Documenter.Writers.HTMLWriter: normalize_css, google_fonts, fontawesome_css, highlightjs_css
 import Documenter.Writers.HTMLWriter: analytics_script, requirejs_cdn, asset_links
+import Documenter.Writers.HTMLWriter: canonical_link_element
 
 function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
-    @tags head meta link script title style
+    @tags head meta link script title
     src = get_url(ctx, navnode)
 
     page_title = "$(mdflatten(pagetitle(ctx, navnode))) · $(ctx.doc.user.sitename)"
@@ -28,9 +29,12 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
 
         analytics_script(ctx.doc.user.analytics),
 
+        canonical_link_element(ctx.settings.canonical, src),
+
         # Stylesheets.
         map(css_links) do each
             link[:href => each, :rel => "stylesheet", :type => "text/css"]
+
         end,
 
         script("documenterBaseURL=\"$(relhref(src, "."))\""),
@@ -45,6 +49,7 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
         # Custom user-provided assets.
         asset_links(src, ctx.local_assets),
 
+        # juliakorea custom css
         link[:href => relhref(src, "assets/custom.css"), :rel => "stylesheet", :type => "text/css"],
 
         # juliakorea Korean word break
@@ -89,23 +94,37 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
 
     topnav = nav(ul(header_links))
 
-    # Set the logo and name for the "Edit on.." button. We assume GitHub as a host.
-    host = "GitHub"
-    logo = "\uf09b"
-
+    # Set the logo and name for the "Edit on.." button.
     host_type = Utilities.repo_host_from_url(ctx.doc.user.repo)
     if host_type == Utilities.RepoGitlab
         host = "GitLab"
         logo = "\uf296"
+    elseif host_type == Utilities.RepoGithub
+        host = "GitHub"
+        logo = "\uf09b"
     elseif host_type == Utilities.RepoBitbucket
         host = "BitBucket"
         logo = "\uf171"
+    else
+        host = ""
+        logo = "\uf15c"
     end
+    hoststring = isempty(host) ? " source" : " on $(host)"
 
-    if !ctx.doc.user.html_disable_git
-        url = Utilities.url(ctx.doc.user.repo, getpage(ctx, navnode).source, commit=ctx.doc.user.html_edit_branch)
+    if !ctx.settings.disable_git
+        pageurl = get(getpage(ctx, navnode).globals.meta, :EditURL, getpage(ctx, navnode).source)
+        if Utilities.isabsurl(pageurl)
+            url = pageurl
+        else
+            if !(pageurl == getpage(ctx, navnode).source)
+                # need to set users path relative the page itself
+                pageurl = joinpath(first(splitdir(getpage(ctx, navnode).source)), pageurl)
+            end
+            url = Utilities.url(ctx.doc.user.repo, pageurl, commit=ctx.settings.edit_branch)
+        end
         if url !== nothing
-            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](logo), t_Edit_on(host)))
+            edit_verb = (ctx.settings.edit_branch === nothing) ? "View" : "Edit"
+            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](logo), " $(edit_verb)$hoststring"))
         end
     end
     art_header = header(topnav, hr(), render_topbar(ctx, navnode))

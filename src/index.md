@@ -27,6 +27,23 @@ Markdown.parse(String(take!(io)))
     한글 문서 번역은 깃헙 [https://github.com/juliakorea/translate-doc](https://github.com/juliakorea/translate-doc) 에서 누구나 참여하실 수 있습니다.
     많은 참여 부탁드립니다.
 
+!!! note "구글 자동 번역"
+    중국어 번역 자료를 한국어로 자동 번역해서 유용하게 볼 수 있습니다.
+    - Julia 대만(juliatw) 문서 [https://docs.juliatw.org/latest/](https://translate.google.com/translate?sl=zh-CN&tl=ko&u=https%3A%2F%2Fdocs.juliatw.org%2Flatest%2F)
+    - Julia 중국(juliacn) 문서 [http://docs.juliacn.com/latest/](https://translate.google.com/translate?sl=zh-CN&tl=ko&u=http%3A%2F%2Fdocs.juliacn.com%2Flatest%2F)
+
+```@eval
+release = isempty(VERSION.prerelease)
+file = release ? "julia-$(VERSION).pdf" :
+       "julia-$(VERSION.major).$(VERSION.minor).$(VERSION.patch)-$(first(VERSION.prerelease)).pdf"
+url = "https://raw.githubusercontent.com/JuliaLang/docs.julialang.org/assets/$(file)"
+import Markdown
+Markdown.parse("""
+!!! note
+    The documentation is also available in PDF format: [$file]($url).
+""")
+```
+
 ### [소개글](@id man-introduction)
 
 과학 분야 컴퓨팅은 전통적으로 최고의 성능을 요구하지만, 당사자인 전문 연구자들은 속도가 느리더라도 동적인 언어로서 그들의 업무를 처리한다.

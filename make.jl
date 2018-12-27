@@ -1,9 +1,9 @@
 # code from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
 
 # Install dependencies needed to build the documentation.
-empty!(LOAD_PATH)
+#empty!(LOAD_PATH)
 push!(LOAD_PATH, @__DIR__, "@stdlib")
-empty!(DEPOT_PATH)
+#empty!(DEPOT_PATH)
 pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 
 if !isdir(joinpath(@__DIR__, "deps", "packages", "Documenter")) || "deps" in ARGS
@@ -147,12 +147,13 @@ makedocs(
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
     strict    = true,
     checkdocs = :none,
-    format    = "pdf" in ARGS ? :latex : :html,
+    format    = Documenter.HTML(
+        prettyurls = !("local" in ARGS),
+        canonical = t_html_canonical,
+    ),
     sitename  = t_sitename,
     authors   = "The Julia Project",
     analytics = t_analytics,
     pages     = PAGES,
-    html_prettyurls = !("local" in ARGS),
-    html_canonical = t_html_canonical,
     assets = ["assets/julia-manual.css", ]
 )

@@ -24,6 +24,7 @@ Command-line option changes
 New library functions
 ---------------------
 
+* `getipaddrs()` function returns all the IP addresses of the local machine ([#30349](https://github.com/JuliaLang/julia/issues/30349))
 
 Standard library changes
 ------------------------
@@ -32,6 +33,14 @@ Standard library changes
 #### LinearAlgebra
 
 * Added keyword arguments `rtol`, `atol` to `pinv` and `nullspace` ([#29998](https://github.com/JuliaLang/julia/issues/29998)).
+
+#### SparseArrays
+
+* performance improvements for sparse matrix-matrix multiplication ([#30372](https://github.com/JuliaLang/julia/issues/30372)).
+
+#### Dates
+
+* Fixed `repr` such that it displays `DateTime` as it would be entered in Julia ([#30200](https://github.com/JuliaLang/julia/issues/30200)).
 
 
 External dependencies
