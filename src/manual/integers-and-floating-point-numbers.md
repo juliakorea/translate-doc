@@ -458,7 +458,7 @@ julia> bitstring(nextfloat(x))
 
 부동 소수점 연산은 많은 미묘한 것들을 수반하고 있기 때문에 저수준(low-level) 구현에 익숙하지 않은 유저들은 당활할 수도 있다. 그러나 그 미묘한 점들은 과학적 연산과 관련된 많은 책들에서 잘 설명되고 있고, 아래에 나열하는 참고문헌도 참고하면 좋을 것이다:
 
-  * 부동 소수점과 관련해서 가장 확실한 가이드는 [IEEE 754-2008 Standard](http://standards.ieee.org/findstds/standard/754-2008.html)이지만, 유료이다.
+  * 부동 소수점과 관련해서 가장 확실한 가이드는 [IEEE 754-2008 Standard](https://standards.ieee.org/standard/754-2008.html)이지만, 유료이다.
   * 부동 소수점이 어떻게 표현되는지에 대한 간략하면서도 명쾌한 설명은 John D. Cook's [블로그 글](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)를 참고하면 된다. 같은 주제에 관하여 이와 더불어서 그의 [소개글](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)은 부동 소수점이 실수의 이상적인 추상화와 다름으로써 생기는 몇가지 문제에 대해서도 다루고 있다.
   * Bruce Dawson의 [series of blog posts on floating-point numbers](https://randomascii.wordpress.com/2012/05/20/thats-not-normalthe-performance-of-odd-floats/)도 추천하는 바이다.
   * 상급자들은 부동 소수점의 내부 구현에 관한 이야기들과 부동 소수점 연산을 할 때 맞닥뜨릴 수 있는 수치적인 정확도에 관한 문제들에 대해서는 David Goldberg의 논문 [What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.6768&rep=rep1&type=pdf)를 참고하는 것이 좋다.
@@ -466,7 +466,7 @@ julia> bitstring(nextfloat(x))
 
 ## [임의 정밀도 연산](@id Arbitrary-Precision-Arithmetic)
 
-임의 정밀도의 정수와 부동 소수점들의 연산을 위해, 줄리아는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 줄리아에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
+임의 정밀도의 정수와 부동 소수점들의 연산을 위해, 줄리아는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](https://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 줄리아에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
 
 기본 수치 타입으로부터 임의 정밀도 정수와 부동 소수점 타입을 만들기 위해 생성자가 존재하며, [`parse`](@ref)는 `AbstractString`들로 부터 임의 정밀도 타입을 만들 수 있게 해준다. 한번 임의 정밀도 타입이 만들어지면, [type promotion and conversion mechanism](@ref conversion-and-promotion)덕분에 자유롭게 다른 수치타입과 연산을 수행할 수 있다:
 
