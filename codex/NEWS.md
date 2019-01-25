@@ -33,10 +33,14 @@ Standard library changes
 #### LinearAlgebra
 
 * Added keyword arguments `rtol`, `atol` to `pinv` and `nullspace` ([#29998](https://github.com/JuliaLang/julia/issues/29998)).
+* `UniformScaling` instances are now callable such that e.g. `I(3)` will produce a `Diagonal` matrix ([#30298](https://github.com/JuliaLang/julia/issues/30298)).
 
 #### SparseArrays
 
 * performance improvements for sparse matrix-matrix multiplication ([#30372](https://github.com/JuliaLang/julia/issues/30372)).
+* Sparse vector outer products are more performant and maintain sparsity in products of the
+  form `kron(u, v')`, `u * v'`, and `u .* v'` where `u` and `v` are sparse vectors or column
+  views. ([#24980](https://github.com/JuliaLang/julia/issues/24980))
 
 #### Dates
 
@@ -53,6 +57,7 @@ External dependencies
 * libgit2 has been updated to v0.27.7 ([#30584](https://github.com/JuliaLang/julia/issues/30584)).
 * OpenBLAS has been updated to v0.3.5 ([#30583](https://github.com/JuliaLang/julia/issues/30583)).
 * MbedTLS has been updated to v2.16.0 ([#30618](https://github.com/JuliaLang/julia/issues/30618)).
+* libunwind has been updated to v1.3.1 ([#30724](https://github.com/JuliaLang/julia/issues/30724)).
 
 Deprecated or removed
 ---------------------
