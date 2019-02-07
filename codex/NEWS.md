@@ -7,6 +7,7 @@ New language features
 * The `extrema` function now accepts a function argument in the same manner as `minimum` and
   `maximum` ([#30323](https://github.com/JuliaLang/julia/issues/30323)).
 * `hasmethod` can now check for matching keyword argument names ([#30712](https://github.com/JuliaLang/julia/issues/30712)).
+* `startswith` and `endswith` now accept a `Regex` for the second argument ([#29790](https://github.com/JuliaLang/julia/issues/29790)).
 
 Multi-threading changes
 -----------------------
@@ -27,11 +28,12 @@ New library functions
 ---------------------
 
 * `getipaddrs()` function returns all the IP addresses of the local machine ([#30349](https://github.com/JuliaLang/julia/issues/30349))
+* Added `Base.hasproperty` and `Base.hasfield` ([#28850](https://github.com/JuliaLang/julia/issues/28850)).
+* One argument `!=(x)`, `>(x)`, `>=(x)`, `<(x)`, `<=(x)` has been added for currying,
+  similar to the existing `==(x)` and `isequal(x)` methods ([#30915](https://github.com/JuliaLang/julia/issues/30915)).
 
 Standard library changes
 ------------------------
-
-* Added `Base.hasproperty` and `Base.hasfield` ([#28850](https://github.com/JuliaLang/julia/issues/28850)).
 
 #### LinearAlgebra
 
