@@ -15,7 +15,7 @@ Multi-threading changes
 
 Language changes
 ----------------
-
+* Empty entries in `JULIA_DEPOT_PATH` are now expanded to default depot entries ([#31009](https://github.com/JuliaLang/julia/issues/31009)).
 * `Enum` now behaves like a scalar when used in broadcasting ([#30670](https://github.com/JuliaLang/julia/issues/30670)).
 
 Command-line option changes
@@ -38,6 +38,7 @@ Standard library changes
 * `hasmethod` can now check for matching keyword argument names ([#30712](https://github.com/JuliaLang/julia/issues/30712)).
 * `startswith` and `endswith` now accept a `Regex` for the second argument ([#29790](https://github.com/JuliaLang/julia/issues/29790)).
 * `retry` supports arbitrary callable objects ([#30382](https://github.com/JuliaLang/julia/issues/30382)).
+* A no-argument construct to `Ptr{T}` has been added which constructs a null pointer ([#30919](https://github.com/JuliaLang/julia/issues/30919))
 
 #### LinearAlgebra
 
