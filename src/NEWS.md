@@ -43,6 +43,7 @@ Standard library changes
 * `hasmethod` can now check for matching keyword argument names ([#30712](https://github.com/JuliaLang/julia/issues/30712)).
 * `startswith` and `endswith` now accept a `Regex` for the second argument ([#29790](https://github.com/JuliaLang/julia/issues/29790)).
 * `retry` supports arbitrary callable objects ([#30382](https://github.com/JuliaLang/julia/issues/30382)).
+* `filter` now supports `SkipMissing`-wrapped arrays ([#31235](https://github.com/JuliaLang/julia/issues/31235)).
 * A no-argument construct to `Ptr{T}` has been added which constructs a null pointer ([#30919](https://github.com/JuliaLang/julia/issues/30919))
 * `strip` now accepts a function argument in the same manner as `lstrip` and `rstrip` ([#31211](https://github.com/JuliaLang/julia/issues/31211))
 
