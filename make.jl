@@ -12,21 +12,40 @@ if !isdir(joinpath(@__DIR__, "deps", "packages", "Documenter")) || "deps" in ARG
 end
 
 using Documenter
-include("contrib/html_writer.jl")
+include("contrib/html_writer.jl") # Korean customize
 
 baremodule GenStdLib end
 
-# make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
+# Documenter Setup.
+
+symlink_q(tgt, link) = isfile(link) || symlink(tgt, link)
+cp_q(src, dest) = isfile(dest) || cp(src, dest)
+
+# make links for stdlib package docs, this is needed until #552 in Documenter.jl is finished
+const STDLIB_DOCS = []
 const STDLIB_DIR = Sys.STDLIB
-const STDLIB_DOCS = filter(!ismissing, map(readdir(STDLIB_DIR)) do dir
-    sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src", "index.md")
-    if isfile(sourcefile)
-        targetfile = joinpath("stdlib", dir * ".md")
-        (stdlib = Symbol(dir), targetfile = targetfile,)
-    else
-        missing
+const EXT_STDLIB_DOCS = ["Pkg"]
+cd(joinpath(@__DIR__, "src")) do
+    # Base.rm("stdlib"; recursive=true, force=true)
+    # mkdir("stdlib")
+    for dir in readdir(STDLIB_DIR)
+        sourcefile = joinpath(STDLIB_DIR, dir, "docs", "src")
+        if dir in EXT_STDLIB_DOCS
+            sourcefile = joinpath(sourcefile, "basedocs.md")
+        else
+            sourcefile = joinpath(sourcefile, "index.md")
+        end
+        if isfile(sourcefile)
+            targetfile = joinpath("stdlib", dir * ".md")
+            push!(STDLIB_DOCS, (stdlib = Symbol(dir), targetfile = targetfile))
+            # if Sys.iswindows()
+            #     cp_q(sourcefile, targetfile)
+            # else
+            #     symlink_q(sourcefile, targetfile)
+            # end
+        end
     end
-end)
+end
 
 # Korean text in PAGES
 const t_Home     = "홈"

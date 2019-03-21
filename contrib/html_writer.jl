@@ -27,14 +27,13 @@ function Documenter.Writers.HTMLWriter.render_head(ctx, navnode)
         meta[:name => "viewport", :content => "width=device-width, initial-scale=1.0"],
         title(page_title),
 
-        analytics_script(ctx.doc.user.analytics),
+        analytics_script(ctx.settings.analytics),
 
         canonical_link_element(ctx.settings.canonical, src),
 
         # Stylesheets.
         map(css_links) do each
             link[:href => each, :rel => "stylesheet", :type => "text/css"]
-
         end,
 
         script("documenterBaseURL=\"$(relhref(src, "."))\""),
