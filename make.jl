@@ -151,6 +151,11 @@ for stdlib in STDLIB_DOCS
     @eval using $(stdlib.stdlib)
 end
 
+const render_pdf = "pdf" in ARGS
+let r = r"buildroot=(.+)", i = findfirst(x -> occursin(r, x), ARGS)
+    global const buildroot = i === nothing ? (@__DIR__) : first(match(r, ARGS[i]).captures)
+end
+
 # Korean text for makedocs
 const t_sitename       = "줄리아 언어"
 const t_analytics      = "UA-110655381-2" # juliakorea analytic ID
