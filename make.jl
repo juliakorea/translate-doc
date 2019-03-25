@@ -1,17 +1,16 @@
 # code from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
 
 # Install dependencies needed to build the documentation.
-#empty!(LOAD_PATH)
-push!(LOAD_PATH, @__DIR__, "@stdlib")
-#empty!(DEPOT_PATH)
-pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
+# empty!(LOAD_PATH)
+# push!(LOAD_PATH, @__DIR__, "@stdlib")
+# empty!(DEPOT_PATH)
+# pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
+# using Pkg
+# Pkg.instantiate()
 
-if !isdir(joinpath(@__DIR__, "deps", "packages", "Documenter")) || "deps" in ARGS
-    using Pkg
-    Pkg.instantiate()
-end
-
+# using Documenter, DocumenterLaTeX
 using Documenter
+
 include("contrib/html_writer.jl") # Korean customize
 
 baremodule GenStdLib end
