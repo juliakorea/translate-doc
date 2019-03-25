@@ -168,7 +168,7 @@ makedocs(
     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
-    strict    = true,
+    strict    = false, # true,
     checkdocs = :none,
     format    = Documenter.HTML(
         prettyurls = !("local" in ARGS),
