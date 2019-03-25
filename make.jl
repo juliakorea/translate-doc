@@ -173,10 +173,10 @@ makedocs(
     format    = Documenter.HTML(
         prettyurls = !("local" in ARGS),
         canonical = t_html_canonical,
+        analytics = t_analytics,
+        assets = ["assets/julia-manual.css", ],
     ),
     sitename  = t_sitename,
     authors   = "The Julia Project",
-    analytics = t_analytics,
     pages     = PAGES,
-    assets = ["assets/julia-manual.css", ]
 )
