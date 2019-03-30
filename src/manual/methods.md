@@ -634,7 +634,7 @@ function matmul(a::AbstractMatrix, b::AbstractMatrix)
     output = similar(b, R, (size(a, 1), size(b, 2)))
     if size(a, 2) > 0
         for j in 1:size(b, 2)
-            for i in 1:size(b, 1)
+            for i in 1:size(a, 1)
                 ## 여기서 `R` 는 `Any`, `zero(Any)` 는 정의되지 않았기 때문에 `ab = zero(R)` 을 사용하지 않습니다.
                 ## 우리는 또한 typeof (a * b)! = typeof (a * b + a * b) == R이 가능하기 때문에 `ab::R` 을 선언하여 루프에서  `ab` 의 타입을 상수로 만들어야합니다.
                 ab::R = a[i, 1] * b[1, j]
