@@ -36,6 +36,8 @@ Standard library changes
 * The BLAS submodule no longer exports `dot`, which conflicts with that in LinearAlgebra ([#31838](https://github.com/JuliaLang/julia/issues/31838)).
 * `diagm` and `spdiagm` now accept optional `m,n` initial arguments to specify a size ([#31654](https://github.com/JuliaLang/julia/issues/31654)).
 
+* `Hessenberg` factorizations `H` now support efficient shifted solves `(H+µI) \ b` and determinants, and use a specialized tridiagonal factorization for Hermitian matrices. There is also a new `UpperHessenberg` matrix type ([#31853](https://github.com/JuliaLang/julia/issues/31853)).
+
 #### SparseArrays
 
 
@@ -53,4 +55,10 @@ Standard library changes
 External dependencies
 ---------------------
 
+Tooling Improvements
+---------------------
+
+* The `ClangSA.jl` static analysis package has been imported, which makes use of
+  the clang static analyzer to validate GC invariants in Julia's C code. The analysis
+  may be run using `make -C src analyzegc`.
 
