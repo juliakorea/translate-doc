@@ -30,6 +30,7 @@ Standard library changes
 * Cmd interpolation (`` `$(x::Cmd) a b c` `` where) now propagates `x`'s process flags
   (environment, flags, working directory, etc) if `x` is the first interpolant and errors
   otherwise ([#24353](https://github.com/JuliaLang/julia/issues/24353)).
+* `IPAddr` subtypes now behave like scalars when used in broadcasting ([#32133](https://github.com/JuliaLang/julia/issues/32133)).
 
 #### LinearAlgebra
 
@@ -43,6 +44,7 @@ Standard library changes
 
 #### Dates
 
+* Fixed `repr` such that it displays `Time` as it would be entered in Julia ([#32103](https://github.com/JuliaLang/julia/issues/32103)).
 
 #### Statistics
 
