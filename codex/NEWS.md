@@ -21,22 +21,28 @@ Build system changes
 New library functions
 ---------------------
 
+* `findfirst`, `findlast`, `findnext` and `findprev` now accept a character as first argument
+  to search for that character in a string passed as the second argument ([#31664](https://github.com/JuliaLang/julia/issues/31664)).
 * New `findall(pattern, string)` method where `pattern` is a string or regex ([#31834](https://github.com/JuliaLang/julia/issues/31834)).
 
 Standard library changes
 ------------------------
 
 * `Regex` can now be multiplied (`*`) and exponentiated (`^`), like strings ([#23422](https://github.com/JuliaLang/julia/issues/23422)).
-* Cmd interpolation (`` `$(x::Cmd) a b c` `` where) now propagates `x`'s process flags
+* `Cmd` interpolation (`` `$(x::Cmd) a b c` `` where) now propagates `x`'s process flags
   (environment, flags, working directory, etc) if `x` is the first interpolant and errors
   otherwise ([#24353](https://github.com/JuliaLang/julia/issues/24353)).
 * `IPAddr` subtypes now behave like scalars when used in broadcasting ([#32133](https://github.com/JuliaLang/julia/issues/32133)).
+* `clamp` can now handle missing values ([#31066](https://github.com/JuliaLang/julia/issues/31066)).
+
+#### Libdl
+
+* `dlopen()` can now be invoked in `do`-block syntax, similar to `open()`.
 
 #### LinearAlgebra
 
 * The BLAS submodule no longer exports `dot`, which conflicts with that in LinearAlgebra ([#31838](https://github.com/JuliaLang/julia/issues/31838)).
 * `diagm` and `spdiagm` now accept optional `m,n` initial arguments to specify a size ([#31654](https://github.com/JuliaLang/julia/issues/31654)).
-
 * `Hessenberg` factorizations `H` now support efficient shifted solves `(H+µI) \ b` and determinants, and use a specialized tridiagonal factorization for Hermitian matrices. There is also a new `UpperHessenberg` matrix type ([#31853](https://github.com/JuliaLang/julia/issues/31853)).
 
 #### SparseArrays
@@ -45,6 +51,11 @@ Standard library changes
 #### Dates
 
 * Fixed `repr` such that it displays `Time` as it would be entered in Julia ([#32103](https://github.com/JuliaLang/julia/issues/32103)).
+
+#### Sockets
+
+* `getipaddrs` returns IP addresses in the order provided by libuv ([#32260](https://github.com/JuliaLang/julia/issues/32260)).
+* `getipaddr` prefers to return the first `IPv4` interface address provided by libuv ([#32260](https://github.com/JuliaLang/julia/issues/32260)).
 
 #### Statistics
 
