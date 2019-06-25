@@ -5,6 +5,7 @@ New language features
 ---------------------
 
 * Support for Unicode 12.1.0 ([#32002](https://github.com/JuliaLang/julia/issues/32002)).
+* Methods can now be added to an abstract type ([#31916](https://github.com/JuliaLang/julia/issues/31916)).
 
 Language changes
 ----------------
@@ -50,6 +51,7 @@ Standard library changes
 
 #### Dates
 
+* `DateTime` and `Time` formatting/parsing now supports 12-hour clocks with AM/PM via `I` and `p` codes, similar to `strftime` ([#32308](https://github.com/JuliaLang/julia/issues/32308)).
 * Fixed `repr` such that it displays `Time` as it would be entered in Julia ([#32103](https://github.com/JuliaLang/julia/issues/32103)).
 
 #### Sockets
