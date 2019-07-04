@@ -33,6 +33,10 @@ Standard library changes
 * `Cmd` interpolation (`` `$(x::Cmd) a b c` `` where) now propagates `x`'s process flags
   (environment, flags, working directory, etc) if `x` is the first interpolant and errors
   otherwise ([#24353](https://github.com/JuliaLang/julia/issues/24353)).
+* Zero-dimensional arrays are now consistently preserved in the return values of mathematical
+  functions that operate on the array(s) as a whole (and are not explicitly broadcasted across their elements).
+  Previously, the functions  `+`, `-`, `*`, `/`, `conj`, `real` and `imag` returned the unwrapped element
+  when operating over zero-dimensional arrays ([#32122](https://github.com/JuliaLang/julia/issues/32122)).
 * `IPAddr` subtypes now behave like scalars when used in broadcasting ([#32133](https://github.com/JuliaLang/julia/issues/32133)).
 * `clamp` can now handle missing values ([#31066](https://github.com/JuliaLang/julia/issues/31066)).
 
@@ -48,6 +52,11 @@ Standard library changes
 
 #### SparseArrays
 
+* `SparseMatrixCSC(m,n,colptr,rowval,nzval)` perform consistency checks for arguments:
+  `colptr` must be properly populated and lengths of `colptr`, `rowval`, and `nzval`
+  must be compatible with `m`, `n`, and `eltype(colptr)`.
+* `sparse(I, J, V, m, n)` verifies lengths of `I`, `J`, `V` are equal and compatible with
+  `eltype(I)` and `m`, `n`.
 
 #### Dates
 
@@ -62,6 +71,11 @@ Standard library changes
 #### Statistics
 
 * `mean` now accepts both a function argument and a `dims` keyword ([#31576](https://github.com/JuliaLang/julia/issues/31576)).
+
+#### Sockets
+
+* Added `InetAddr` constructor from `AbstractString`, representing IP address, and `Integer`,
+  representing port number ([#31459](https://github.com/JuliaLang/julia/issues/31459)).
 
 #### Miscellaneous
 
