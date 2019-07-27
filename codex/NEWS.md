@@ -14,6 +14,12 @@ Language changes
 Multi-threading changes
 -----------------------
 
+* All system-level I/O operations (e.g. files and sockets) are now thread-safe.
+  This does not include subtypes of `IO` that are entirely in-memory, such as `IOBuffer`,
+  although it specifically does include `BufferStream`.
+  ([#32309](https://github.com/JuliaLang/julia/issues/32309), [#32174](https://github.com/JuliaLang/julia/issues/32174), [#31981](https://github.com/JuliaLang/julia/issues/31981), [#32421](https://github.com/JuliaLang/julia/issues/32421)).
+* The global random number generator (`GLOBAL_RNG`) is now thread-safe (and thread-local) ([#32407](https://github.com/JuliaLang/julia/issues/32407)).
+* New experimental `Threads.@spawn` macro that runs a task on any available thread ([#32600](https://github.com/JuliaLang/julia/issues/32600)).
 
 Build system changes
 --------------------
@@ -25,12 +31,14 @@ New library functions
 * `findfirst`, `findlast`, `findnext` and `findprev` now accept a character as first argument
   to search for that character in a string passed as the second argument ([#31664](https://github.com/JuliaLang/julia/issues/31664)).
 * New `findall(pattern, string)` method where `pattern` is a string or regex ([#31834](https://github.com/JuliaLang/julia/issues/31834)).
+* `istaskfailed` is now documented and exported, like its siblings `istaskdone` and `istaskstarted` ([#32300](https://github.com/JuliaLang/julia/issues/32300)).
+* `RefArray` and `RefValue` objects now accept index `CartesianIndex()` in  `getindex` and `setindex!` ([#32653](https://github.com/JuliaLang/julia/issues/32653))
 
 Standard library changes
 ------------------------
 
 * `Regex` can now be multiplied (`*`) and exponentiated (`^`), like strings ([#23422](https://github.com/JuliaLang/julia/issues/23422)).
-* `Cmd` interpolation (`` `$(x::Cmd) a b c` `` where) now propagates `x`'s process flags
+* `Cmd` interpolation (``` `$(x::Cmd) a b c` ``` where) now propagates `x`'s process flags
   (environment, flags, working directory, etc) if `x` is the first interpolant and errors
   otherwise ([#24353](https://github.com/JuliaLang/julia/issues/24353)).
 * Zero-dimensional arrays are now consistently preserved in the return values of mathematical
@@ -39,6 +47,8 @@ Standard library changes
   when operating over zero-dimensional arrays ([#32122](https://github.com/JuliaLang/julia/issues/32122)).
 * `IPAddr` subtypes now behave like scalars when used in broadcasting ([#32133](https://github.com/JuliaLang/julia/issues/32133)).
 * `clamp` can now handle missing values ([#31066](https://github.com/JuliaLang/julia/issues/31066)).
+* `empty` now accepts a `NamedTuple` ([#32534](https://github.com/JuliaLang/julia/issues/32534)).
+* `mod` now accepts a unit range as the second argument to easily perform offset modular arithmetic to ensure the result is inside the range ([#32628](https://github.com/JuliaLang/julia/issues/32628)).
 
 #### Libdl
 
@@ -57,6 +67,7 @@ Standard library changes
   must be compatible with `m`, `n`, and `eltype(colptr)`.
 * `sparse(I, J, V, m, n)` verifies lengths of `I`, `J`, `V` are equal and compatible with
   `eltype(I)` and `m`, `n`.
+* The `sprand` function is now 2 to 5 times faster ([#30494](https://github.com/JuliaLang/julia/issues/30494)). As a consequence of this change, the random stream of matrices produced with `sprand` and `sprandn` has changed.
 
 #### Dates
 
@@ -80,6 +91,11 @@ Standard library changes
 #### Miscellaneous
 
 * `foldr` and `mapfoldr` now work on any iterator that supports `Iterators.reverse`, not just arrays ([#31781](https://github.com/JuliaLang/julia/issues/31781)).
+
+Deprecated or removed
+---------------------
+
+* `@spawn expr` from the `Distributed` standard library should be replaced with `@spawnat :any expr` ([#32600](https://github.com/JuliaLang/julia/issues/32600)).
 
 External dependencies
 ---------------------
