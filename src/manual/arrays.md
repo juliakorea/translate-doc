@@ -15,17 +15,7 @@ Julia는 배열을 특별하게 취급하지는 않는다.
 Julia 컴파일러는 타입 추론을 사용하여 스칼라 배열 인덱싱에 최적화된 코드를 생성한다.
 따라서 편리하고 읽기 쉬운 스타일로 프로그램을 작성하더라도 성능을 희생하지 않으며, 오히려 메모리를 더 적게 사용하는 경우도 있다.
 
-In Julia, all arguments to functions are [passed by
-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)
-(i.e. by pointers). Some technical computing languages pass arrays by value, and
-while this prevents accidental modification by callees of a value in the caller,
-it makes avoiding unwanted copying of arrays difficult. By convention, a
-function name ending with a `!` indicates that it will mutate or destroy the
-value of one or more of its arguments (compare, for example, [`sort`](@ref) and [`sort!`](@ref)).
-Callees must make explicit copies to ensure that they don't modify inputs that
-they don't intend to change. Many non- mutating functions are implemented by
-calling a function of the same name with an added `!` at the end on an explicit
-copy of the input, and returning that copy.
+줄리아는 함수에 인자를 줄 때 "공유를 통한 전달[pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing)을 한다. 몇몇 프로그래밍 언어는 배열을 값으로 전달하여([pass-by-value](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value)), 원치않는 수정을 막지만 무분별한 값의 복사로 인해 속도 지연을 겪을 수 있다. 줄리아는 관습적으로 `!`울 함수 이름의 마지막에 붙여 값이 수정되거나 삭제될 수 있음을 미연에 알려준다([`sort`](@ref)와 [`sort!`](@ref)를 비교해보자). 함수내에서 오브젝트를 수정하지 않으려면 명시적으로 복사를 해야한다. 이렇게 오브젝트를 수정하지 않는 함수는 `!`이 붙여진 동일 이름의 함수와 같은 역할을 하면서 복사된 오브젝트를 반환한다.
 
 ## 기본 함수
 
@@ -122,7 +112,7 @@ julia> hcat([1 2], 3)
 | `[A B; C D; ...]` | [`hvcat`](@ref) |
 
 [`hvcat`](@ref) 은 1차원 (세미콜론으로 구분) 과 2차원(스페이스로 구분) 모두 병합한다.
-Consider these examples of this syntax:
+아래 예제의 문법과 결과물을 비교해보자:
 ```jldoctest
 julia> [[1; 2]; [3, 4]]
 4-element Array{Int64,1}:

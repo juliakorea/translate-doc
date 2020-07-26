@@ -1,8 +1,6 @@
-# [Functions](@id man-functions)
+# [함수](@id man-functions)
 
-In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
-functions are not pure mathematical functions, in the sense that functions can alter and be affected
-by the global state of the program. The basic syntax for defining functions in Julia is:
+함수는 인자를 받아 값을 리턴하는 오브젝트이다. 줄리아에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 다르다. 아래는 줄리아에서 함수는 정의하는 가장 기본적인 방법이다:
 
 ```jldoctest
 julia> function f(x,y)
@@ -10,29 +8,20 @@ julia> function f(x,y)
        end
 f (generic function with 1 method)
 ```
-
-There is a second, more terse syntax for defining a function in Julia. The traditional function
-declaration syntax demonstrated above is equivalent to the following compact "assignment form":
-
+아래와 같이 함수를 정의하는 방법도 있다:
 ```jldoctest fofxy
 julia> f(x,y) = x + y
 f (generic function with 1 method)
 ```
+위처럼 "할당 형식(assignment form)"으로 선언할 경우 복합 표현이더라도 한줄로 표현해야 한다([복합 표현을 자세하고 알고 싶다면?](@ref man-compound-expressions)). 이렇게 함수를 표현하는 경우는 줄리아에 흔한 일이고, 때론 코드 가독성을 높여준다.
 
-In the assignment form, the body of the function must be a single expression, although it can
-be a compound expression (see [Compound Expressions](@ref man-compound-expressions)). Short, simple function definitions
-are common in Julia. The short function syntax is accordingly quite idiomatic, considerably reducing
-both typing and visual noise.
-
-A function is called using the traditional parenthesis syntax:
+다른 언어처럼 괄호를 통해 함수 인자를 전달한다:
 
 ```jldoctest fofxy
 julia> f(2,3)
 5
 ```
-
-Without parentheses, the expression `f` refers to the function object, and can be passed around
-like any value:
+괄호가 없는 `f`는 함수 오브젝트로써 하나의 값으로 취급할 수 있다:
 
 ```jldoctest fofxy
 julia> g = f;
@@ -40,8 +29,7 @@ julia> g = f;
 julia> g(2,3)
 5
 ```
-
-As with variables, Unicode can also be used for function names:
+함수의 이름은 유니코드라면 무엇이든지 가능하다:
 
 ```jldoctest
 julia> ∑(x,y) = x + y
@@ -51,22 +39,11 @@ julia> ∑(2, 3)
 5
 ```
 
-## Argument Passing Behavior
+## 인자 전달 방식
+함수에 인자를 줄 때 줄리아는 "공유를 통한 전달([pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing))"을 한다. 이 말은 즉슨, 오브젝트를 복사하지 않고 공유한다는 뜻이다. 전달된 인자는 함수 안에 있는 변수에 할당되고, 함수 안의 변수는 단지 그 오브젝트를 가리킬 뿐이다. `Array`와 같은 mutable 오브젝트가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다. 이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
 
-Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
-values are not copied when they are passed to functions. Function arguments themselves act as
-new variable *bindings* (new locations that can refer to values), but the values they refer to
-are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
-a function will be visible to the caller. This is the same behavior found in Scheme, most Lisps,
-Python, Ruby and Perl, among other dynamic languages.
-
-## The `return` Keyword
-
-The value returned by a function is the value of the last expression evaluated, which, by default,
-is the last expression in the body of the function definition. In the example function, `f`, from
-the previous section this is the value of the expression `x + y`. As in C and most other imperative
-or functional languages, the `return` keyword causes a function to return immediately, providing
-an expression whose value is returned:
+## 반환값
+함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다. 다른 프로그래밍 언어처럼 `return`과 리턴값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return`앞에 있는 식을 계산하고 반환할 것이다:
 
 ```julia
 function g(x,y)
@@ -74,9 +51,7 @@ function g(x,y)
     x + y
 end
 ```
-
-Since function definitions can be entered into interactive sessions, it is easy to compare these
-definitions:
+직접 테스트해보자:
 
 ```jldoctest
 julia> f(x,y) = x + y
@@ -94,12 +69,8 @@ julia> f(2,3)
 julia> g(2,3)
 6
 ```
-
-Of course, in a purely linear function body like `g`, the usage of `return` is pointless since
-the expression `x + y` is never evaluated and we could simply make `x * y` the last expression
-in the function and omit the `return`. In conjunction with other control flow, however, `return`
-is of real use. Here, for example, is a function that computes the hypotenuse length of a right
-triangle with sides of length `x` and `y`, avoiding overflow:
+함수 `g`에서 `x+y`는 절대 실행되지 않기 때문에, 이 부분을 빼고 `x*y`만 남겨놔도 똑같이 작동한다.
+`return`을 직접 선언하는 방식은 조건문과 같이 코드의 흐름을 바꾸는 구문과 사용했을 대 빛을 발한다. 아래에 직각 삼각형에서 밑변 `x`와 높이 `y`가 주어졌을 때 빗변의 길이는 구하는 예제로 확인할 수 있다. 아래 함수는 overflow를 없애기 위해 조건문을 사용했다:
 
 ```jldoctest
 julia> function hypot(x,y)
@@ -120,13 +91,9 @@ hypot (generic function with 1 method)
 julia> hypot(3, 4)
 5.0
 ```
+위 함수는 경우에 따라 세가지 방법으로 값을 반환한다. 마지막은 `return`은 생략해도 된다.
 
-There are three possible points of return from this function, returning the values of three different
-expressions, depending on the values of `x` and `y`. The `return` on the last line could be omitted
-since it is the last expression.
-
-A return type can also be specified in the function declaration using the `::` operator. This converts
-the return value to the specified type.
+반환값의 타입은 `::`로 명시할 수 있으며, 이경우 반환값이 자동 형변환된다.
 
 ```jldoctest
 julia> function g(x, y)::Int8
@@ -137,8 +104,8 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-This function will always return an `Int8` regardless of the types of `x` and `y`.
-See [Type Declarations](@ref) for more on return types.
+위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 
+[타입 선언](@ref)을 참고하자.
 
 ## Operators Are Functions
 

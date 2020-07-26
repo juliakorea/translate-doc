@@ -56,13 +56,13 @@ Markdown.parse("""
 그럼에도 작성한 코드가 느리다면 [성능 팁](@ref man-performance-tips)을 읽어보길 권한다.
 줄리아가 어떤 식으로 작동하는지 이해한 뒤라면, C에 근접하는 성능의 코드를 짜는 건 쉽다.
 
-줄리아는 타입 추론과 [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine)으로 구현한 [적시 컴파일 (JIT)](https://en.wikipedia.org/wiki/Just-in-time_compilation)을 사용해
+줄리아는 타입 추론과 [LLVM](https://ko.wikipedia.org/wiki/LLVM)으로 구현한 [JIT 컴파일](https://ko.wikipedia.org/wiki/JIT_%EC%BB%B4%ED%8C%8C%EC%9D%BC)을 사용해
 선택적 타입, 멀티플 디스패치, 좋은 성능을 이뤄내고 있다. 그리고 명령형, 함수형, 객체 지향 프로그래밍의 특징을 포괄하는 다양한 패러다임을 추구한다.
 줄리아는 고급 단계의 수치 계산에 있어 R, 매트랩, 파이썬처럼 간편하고 표현력이 우수하다.
 뿐만 아니라 일반적인 형태의 프로그래밍 또한 가능하다. 이를 위해 줄리아는 수학 프로그래밍 언어를 근간으로 해서 구축하였고
-[리스프](https://en.wikipedia.org/wiki/Lisp_(programming_language)), [펄](https://en.wikipedia.org/wiki/Perl_(programming_language)),
-[파이썬](https://en.wikipedia.org/wiki/Python_(programming_language)), [루아](https://en.wikipedia.org/wiki/Lua_(programming_language)),
-[루비](https://en.wikipedia.org/wiki/Ruby_(programming_language))와 같은 인기있는 동적 언어의 기능을 취합하고 있다.
+[리스프](https://ko.wikipedia.org/wiki/%EB%A6%AC%EC%8A%A4%ED%94%84), [펄](https://ko.wikipedia.org/wiki/%ED%8E%84),
+[파이썬](https://ko.wikipedia.org/wiki/%ED%8C%8C%EC%9D%B4%EC%8D%AC), [루아](https://ko.wikipedia.org/wiki/%EB%A3%A8%EC%95%84_(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D_%EC%96%B8%EC%96%B4)),
+[루비](https://ko.wikipedia.org/wiki/%EB%A3%A8%EB%B9%84_(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D_%EC%96%B8%EC%96%B4))와 같은 인기있는 동적 언어의 기능을 취합하고 있다.
 
 기존에 있는 동적 언어와 비교해 보는 줄리아만의 독특한 점은:
 
@@ -96,7 +96,7 @@ Markdown.parse("""
   * 가벼운 "그린" 쓰레딩 ([코루틴](https://en.wikipedia.org/wiki/Coroutine))
   * 거슬리지 않는 강력한 타입 시스템
   * 숫자와 다른 타입을 위한 우아하고 확장 가능한 컨버젼 및 프로모션(타입 변환)
-  * 효율적인 [유니코드](https://en.wikipedia.org/wiki/Unicode) 와 [UTF-8](https://en.wikipedia.org/wiki/UTF-8) 지원
+  * 효율적인 [유니코드](https://ko.wikipedia.org/wiki/%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C) 와 [UTF-8](https://ko.wikipedia.org/wiki/UTF-8) 지원
   * C 함수 직접 호출(별도의 래퍼나 특정한 API가 필요하지 않음)
   * 다른 프로세스를 관리하는 쉘과 비슷한 강력한 기능
   * 리스프와 비슷한 매크로, 메타프로그래밍을 위한 장치들
