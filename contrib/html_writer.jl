@@ -1,5 +1,6 @@
 # override Documenter.jl/src/Writers/HTMLWriter.jl
 
+#=
 import Documenter: Anchors, Builder, Documents, Expanders, Documenter, Utilities, Writers
 import Documenter.Utilities.DOM: DOM, Tag, @tags
 import Documenter.Writers.HTMLWriter: pagetitle, domify, open_output
@@ -147,3 +148,4 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     pagenodes = domify(ctx, navnode)
     article["#docs"](art_header, pagenodes, art_footer)
 end
+=#

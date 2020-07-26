@@ -1,12 +1,12 @@
 # code from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
 
 # Install dependencies needed to build the documentation.
-# empty!(LOAD_PATH)
-# push!(LOAD_PATH, @__DIR__, "@stdlib")
-# empty!(DEPOT_PATH)
-# pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
-# using Pkg
-# Pkg.instantiate()
+empty!(LOAD_PATH)
+push!(LOAD_PATH, @__DIR__, "@stdlib")
+empty!(DEPOT_PATH)
+pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
+using Pkg
+Pkg.instantiate()
 
 # using Documenter, DocumenterLaTeX
 using Documenter
