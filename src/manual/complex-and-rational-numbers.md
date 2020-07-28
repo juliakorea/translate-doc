@@ -1,23 +1,20 @@
-# Complex and Rational Numbers
+# 복소수와 유리수
 
-Julia includes predefined types for both complex and rational numbers, and supports
-all the standard [Mathematical Operations and Elementary Functions](@ref) on them. [Conversion and Promotion](@ref conversion-and-promotion) are defined
-so that operations on any combination of predefined numeric types, whether primitive or composite,
-behave as expected.
+Julia에서는 복소수와 유리수를 표현할 수 있고 [산술 연산과 기본 함수](@ref)를 모두 지원한다.
+[Conversion and Promotion](@ref conversion-and-promotion)으로 연산 결과가 수학적으로 예측한 것과 최대한 비슷하게 나오게 했다.
 
-## Complex Numbers
+## 복소수
 
-The global constant [`im`](@ref) is bound to the complex number *i*, representing the principal
-square root of -1. (Using mathematicians' `i` or engineers' `j` for this global constant were rejected since they are such popular index variable names.) Since Julia allows numeric literals to be [juxtaposed with identifiers as coefficients](@ref man-numeric-literal-coefficients),
-this binding suffices to provide convenient syntax for complex numbers, similar to the traditional
-mathematical notation:
+전역 상수 [`im`](@ref)는 -1의 루트값으로, 복소수의 허수부 *i*옆에 붙어있다.
+(수학자는 `i`로 쓰고 공학자는 `j` 쓰지만, 이 이름은 인덱싱할 때 자주 사용하므로 전역 상수의 이름으로 채택되지 않았다.)
+Julia는 [계수와 변수 사이에 곱셈 기호를 생략하는 것](@ref man-numeric-literal-coefficients)을 허용하기 때문에 수학적 표기법을 그대로 사용할 수 있다:
 
 ```jldoctest
 julia> 1+2im
 1 + 2im
 ```
 
-You can perform all the standard arithmetic operations with complex numbers:
+복소수는 산술 연산을 지원한다:
 
 ```jldoctest
 julia> (1 + 2im)*(2 - 3im)
@@ -51,7 +48,7 @@ julia> 3(2 - 5im)^-1.0
 0.20689655172413796 + 0.5172413793103449im
 ```
 
-The promotion mechanism ensures that combinations of operands of different types just work:
+타입 자동 치환을 지원하기 때문에 계산 결과가 수학적으로 예상한 것과 동일하다:
 
 ```jldoctest
 julia> 2(1 - 1im)
@@ -82,10 +79,9 @@ julia> 1 + 3/4im
 1.0 - 0.75im
 ```
 
-Note that `3/4im == 3/(4*im) == -(3/4*im)`, since a literal coefficient binds more tightly than
-division.
+리터럴 계수가 나눗셈보다 중요도가 높으므로 `3/4im == 3/(4*im) == -(3/4*im)`가 되는 걸 볼 수 있다.
 
-Standard functions to manipulate complex values are provided:
+복소수를 다루기 위한 기본 함수가 제공된다:
 
 ```jldoctest
 julia> z = 1 + 2im
@@ -110,11 +106,10 @@ julia> angle(1 + 2im) # phase angle in radians
 1.1071487177940904
 ```
 
-As usual, the absolute value ([`abs`](@ref)) of a complex number is its distance from zero.
-[`abs2`](@ref) gives the square of the absolute value, and is of particular use for complex
-numbers since it avoids taking a square root. [`angle`](@ref) returns the phase angle in radians
-(also known as the *argument* or *arg* function). The full gamut of other [Elementary Functions](@ref)
-is also defined for complex numbers:
+여기서 [`abs`](@ref)는 일반적으로 아는 복소수의 절댓값을 반환하고, [`abs2`](@ref)는 복소수 절댓값의 제곱값, [`angle`](@ref)은 복소수의 각도를 라디안으로 반환한다.
+
+
+[기본 함수](@ref)는 복소수에서 잘 정의되어 있다:
 
 ```jldoctest
 julia> sqrt(1im)
@@ -133,9 +128,7 @@ julia> sinh(1 + 2im)
 -0.4890562590412937 + 1.4031192506220405im
 ```
 
-Note that mathematical functions typically return real values when applied to real numbers and
-complex values when applied to complex numbers. For example, [`sqrt`](@ref) behaves differently
-when applied to `-1` versus `-1 + 0im` even though `-1 == -1 + 0im`:
+수리 계산을 하는 함수에 실수 인자가 들어오면 실수를 반환하고 복소수가 들어오면 복소수를 반환한다. 이런 특성 때문에 [`sqrt`](@ref)는 `-1`이 들어올 때와 `-1 + 0im` 이 들어올 때 `-1 == -1 + 0im` 이어도 결과가 다르게 나오는 걸 확인할 수 있다.
 
 ```jldoctest
 julia> sqrt(-1)
@@ -148,26 +141,22 @@ julia> sqrt(-1 + 0im)
 0.0 + 1.0im
 ```
 
-The [literal numeric coefficient notation](@ref man-numeric-literal-coefficients) does not work when constructing a complex number
-from variables. Instead, the multiplication must be explicitly written out:
+변수에 저장된 값으로 복소수를 만들 때는 [리터럴 계수 표현법](@ref man-numeric-literal-coefficients)대신 직접적으로 곱셈을 써줘야 한다:
 
 ```jldoctest
 julia> a = 1; b = 2; a + b*im
 1 + 2im
 ```
 
-However, this is *not* recommended. Instead, use the more efficient [`complex`](@ref) function to construct
-a complex value directly from its real and imaginary parts:
+하지만 위처럼 복소수를 만드는 것은 추천하지 않는다. [`complex`](@ref)를 사용하는 것이 복소수를 만들 때 효율적이이다.
+이렇게 만들면 곱셈과 덧셈 연산자를 사용하지 않는다.
 
 ```jldoctest
 julia> a = 1; b = 2; complex(a, b)
 1 + 2im
 ```
 
-This construction avoids the multiplication and addition operations.
-
-[`Inf`](@ref) and [`NaN`](@ref) propagate through complex numbers in the real and imaginary parts
-of a complex number as described in the [Special floating-point values](@ref) section:
+[특별한 부동 소수점 값들](@ref)에서 소개한 [`Inf`](@ref)과 [`NaN`](@ref)을 복소수에서도 사용할 수 있다:
 
 ```jldoctest
 julia> 1 + Inf*im
@@ -177,18 +166,17 @@ julia> 1 + NaN*im
 1.0 + NaN*im
 ```
 
-## Rational Numbers
+## 유리수
 
-Julia has a rational number type to represent exact ratios of integers. Rationals are constructed
-using the [`//`](@ref) operator:
+Julia는 정수의 비로 유리수를 표현한다.
+유리수는 [`//`](@ref)연산자로 만들 수 있다:
 
 ```jldoctest
 julia> 2//3
 2//3
 ```
 
-If the numerator and denominator of a rational have common factors, they are reduced to lowest
-terms such that the denominator is non-negative:
+분모와 분자가 공통 분모를 가지고 있다면, 이들은 자동으로 상쇄된다:
 
 ```jldoctest
 julia> 6//9
@@ -204,10 +192,8 @@ julia> -4//-12
 1//3
 ```
 
-This normalized form for a ratio of integers is unique, so equality of rational values can be
-tested by checking for equality of the numerator and denominator. The standardized numerator and
-denominator of a rational value can be extracted using the [`numerator`](@ref) and [`denominator`](@ref)
-functions:
+분자가 분모가 서로인 상태는 유일하며, 두 유리수가 같은지 보려면 각 분자와 분모가 같은지 보면 된다.
+유리수의 분자와 분모는 [`numerator`](@ref)와 [`denominator`](@ref)함수로 확인할 수 있다:
 
 ```jldoctest
 julia> numerator(2//3)
@@ -217,8 +203,7 @@ julia> denominator(2//3)
 3
 ```
 
-Direct comparison of the numerator and denominator is generally not necessary, since the standard
-arithmetic and comparison operations are defined for rational values:
+비교연산자는 유리수에 대하여 정의되어 있으므로 분자와 분모를 직접 비교할 일은 적을 것이다:
 
 ```jldoctest
 julia> 2//3 == 6//9
@@ -246,15 +231,14 @@ julia> 6//5 / 10//7
 21//25
 ```
 
-Rationals can easily be converted to floating-point numbers:
+유리수는 쉽게 실수형으로 변환할 수 있다:
 
 ```jldoctest
 julia> float(3//4)
 0.75
 ```
 
-Conversion from rational to floating-point respects the following identity for any integral values
-of `a` and `b`, with the exception of the case `a == 0` and `b == 0`:
+유리수를 실수와 비교할 때는 유리수가 실수로 형 변환을 하고 비교하도록 설계되었다(단, `a == 0`이고 `b == 0`인 경우 제외):
 
 ```jldoctest
 julia> a = 1; b = 2;
@@ -263,7 +247,7 @@ julia> isequal(float(a//b), a/b)
 true
 ```
 
-Constructing infinite rational values is acceptable:
+유리수를 사용하면 무한대를 다음과 같이 정의할 수 있다:
 
 ```jldoctest
 julia> 5//0
@@ -276,7 +260,7 @@ julia> typeof(ans)
 Rational{Int64}
 ```
 
-Trying to construct a [`NaN`](@ref) rational value, however, is invalid:
+하지만 유리수에서 [`NaN`](@ref)를 정의할 수는 없다:
 
 ```jldoctest
 julia> 0//0
@@ -285,7 +269,7 @@ Stacktrace:
 [...]
 ```
 
-As usual, the promotion system makes interactions with other numeric types effortless:
+유리수는 타입 승격 시스템(promotion system)으로 쉽게 다른 타입의 숫자와 상호작용 할 수 있다:
 
 ```jldoctest
 julia> 3//5 + 1
