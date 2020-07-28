@@ -1,6 +1,6 @@
 # [함수](@id man-functions)
 
-함수는 인자를 받아 값을 리턴하는 오브젝트이다. 줄리아에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 다르다. 아래는 줄리아에서 함수는 정의하는 가장 기본적인 방법이다:
+함수는 인자를 받아 값을 리턴하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 다르다. 아래는 Julia에서 함수는 정의하는 가장 기본적인 방법이다:
 
 ```jldoctest
 julia> function f(x,y)
@@ -13,15 +13,15 @@ f (generic function with 1 method)
 julia> f(x,y) = x + y
 f (generic function with 1 method)
 ```
-위처럼 "할당 형식(assignment form)"으로 선언할 경우 복합 표현이더라도 한줄로 표현해야 한다([복합 표현을 자세하고 알고 싶다면?](@ref man-compound-expressions)). 이렇게 함수를 표현하는 경우는 줄리아에 흔한 일이고, 때론 코드 가독성을 높여준다.
+위처럼 "할당 형식(assignment form)"으로 선언할 경우 복합 표현이더라도 한줄로 표현해야 한다([복합 표현을 자세하고 알고 싶다면?](@ref man-compound-expressions)). 이렇게 함수를 표현하는 경우는 Julia에 흔한 일이고, 때론 코드 가독성을 높여준다.
 
-다른 언어처럼 괄호를 통해 함수 인자를 전달한다:
+다른 언어처럼 소괄호를 통해 함수 인자를 전달한다:
 
 ```jldoctest fofxy
 julia> f(2,3)
 5
 ```
-괄호가 없는 `f`는 함수 오브젝트로써 하나의 값으로 취급할 수 있다:
+소괄호가 없는 `f`는 함수 객체로써 하나의 값으로 취급할 수 있다:
 
 ```jldoctest fofxy
 julia> g = f;
@@ -40,10 +40,15 @@ julia> ∑(2, 3)
 ```
 
 ## 인자 전달 방식
-함수에 인자를 줄 때 줄리아는 "공유를 통한 전달([pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing))"을 한다. 이 말은 즉슨, 오브젝트를 복사하지 않고 공유한다는 뜻이다. 전달된 인자는 함수 안에 있는 변수에 할당되고, 함수 안의 변수는 단지 그 오브젝트를 가리킬 뿐이다. `Array`와 같은 mutable 오브젝트가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다. 이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
+함수에 인자를 줄 때 Julia는 "공유를 통한 전달([pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing))"을 한다.
+이 말은 즉슨, 객체를 복사하지 않고 공유한다는 뜻이다.
+전달된 인자는 함수 안에 있는 변수에 할당되고, 함수 안의 변수는 단지 그 객체를 가리킬 뿐이다.
+`Array`와 같은 mutable 객체가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다.
+이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
 
 ## 반환값
-함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다. 다른 프로그래밍 언어처럼 `return`과 리턴값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return`앞에 있는 식을 계산하고 반환할 것이다:
+함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다.
+다른 프로그래밍 언어처럼 `return`과 리턴값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return`앞에 있는 식을 계산하고 반환할 것이다:
 
 ```julia
 function g(x,y)
@@ -91,7 +96,7 @@ hypot (generic function with 1 method)
 julia> hypot(3, 4)
 5.0
 ```
-위 함수는 경우에 따라 세가지 방법으로 값을 반환한다. 마지막은 `return`은 생략해도 된다.
+위 함수는 경우에 따라 세가지 방법으로 값을 반환한다. 마지막에 `return`은 생략해도 된다.
 
 반환값의 타입은 `::`로 명시할 수 있으며, 이경우 반환값이 자동 형변환된다.
 
@@ -107,13 +112,11 @@ Int8
 위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 
 [타입 선언](@ref)을 참고하자.
 
-## Operators Are Functions
+## 연산자는 함수다
 
-In Julia, most operators are just functions with support for special syntax. (The exceptions are
-operators with special evaluation semantics like `&&` and `||`. These operators cannot be functions
-since [Short-Circuit Evaluation](@ref) requires that their operands are not evaluated before evaluation
-of the operator.) Accordingly, you can also apply them using parenthesized argument lists, just
-as you would any other function:
+Julia에서 연산자는 특별한 문법을 가진 함수일 뿐입니다(`&&`와 `||`는 예외다.
+이들은 [Short-Circuit Evaluation](@ref)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
+따라서 연산자는 일반 함수처럼 소괄호를 이용해 인자를 전달할 수 있다:
 
 ```jldoctest
 julia> 1 + 2 + 3
@@ -123,9 +126,8 @@ julia> +(1,2,3)
 6
 ```
 
-The infix form is exactly equivalent to the function application form -- in fact the former is
-parsed to produce the function call internally. This also means that you can assign and pass around
-operators such as [`+`](@ref) and [`*`](@ref) just like you would with other function values:
+infix 표기법(`1+2+3`)과 함수 표기법은 같은 결과를 낸다. 실제로 Julia는 내부에서 infix 표기를 함수 표기로 바꿔서 계산하기 때문에 같을 수밖에 없다.
+연산자가 함수이기 때문에 다음과 같이 사용할 수도 있다:
 
 ```jldoctest
 julia> f = +;
@@ -134,13 +136,13 @@ julia> f(1,2,3)
 6
 ```
 
-Under the name `f`, the function does not support infix notation, however.
+다만 위처럼 함수 이름이 바뀌면 infix 표기법을 사용할 수 없다.
 
-## Operators With Special Names
+## 특별한 이름을 가진 함수
 
-A few special expressions correspond to calls to functions with non-obvious names. These are:
+특정 함수는 호출 대신 특수한 문법으로 대체할 수 있다. 그러한 함수는 다음과 같습니다:
 
-| Expression        | Calls                   |
+| 문법        | 함수 이름                   |
 |:----------------- |:----------------------- |
 | `[A B C ...]`     | [`hcat`](@ref)          |
 | `[A; B; C; ...]`  | [`vcat`](@ref)          |
@@ -151,13 +153,12 @@ A few special expressions correspond to calls to functions with non-obvious name
 | `A.n`             | [`getproperty`](@ref Base.getproperty) |
 | `A.n = x`         | [`setproperty!`](@ref Base.setproperty!) |
 
-## [Anonymous Functions](@id man-anonymous-functions)
+## [익명 함수](@id man-anonymous-functions)
 
-Functions in Julia are [first-class objects](https://en.wikipedia.org/wiki/First-class_citizen):
-they can be assigned to variables, and called using the standard function call syntax from the
-variable they have been assigned to. They can be used as arguments, and they can be returned as
-values. They can also be created anonymously, without being given a name, using either of these
-syntaxes:
+Julia에서 함수는 [일급 객체](https://ko.wikipedia.org/wiki/%EC%9D%BC%EA%B8%89_%EA%B0%9D%EC%B2%B4)다:
+변수에 값으로 저장될 수 있고, 해당 변수를 함수로 사용할 수 있다.
+또 함수 객체는 다른 함수의 인자가 될 수도 있고 반환값이 될 수도 있다.
+함수의 이름이 없어도 함수를 다음과 같은 방법으로 정의할 수 있다:
 
 ```jldoctest
 julia> x -> x^2 + 2x - 1
@@ -169,13 +170,11 @@ julia> function (x)
 #3 (generic function with 1 method)
 ```
 
-This creates a function taking one argument `x` and returning the value of the polynomial `x^2 +
-2x - 1` at that value. Notice that the result is a generic function, but with a compiler-generated
-name based on consecutive numbering.
+두 방법 모두 `x`를 받아 `x^2 + 2x - 1`를 반환하는 함수를 만든다.
+위와 같은 방식으로 함수를 만들면 함수 이름 대신 컴파일러가 #1, #3과 같은 숫자로 함수를 구분하는 걸 볼 수 있다.
 
-The primary use for anonymous functions is passing them to functions which take other functions
-as arguments. A classic example is [`map`](@ref), which applies a function to each value of
-an array and returns a new array containing the resulting values:
+익명 함수는 함수를 함수 인자로 주면서, 한 번 밖에 사용하지 않을 때 유용하다.
+[`map`](@ref)이 그 중 하나로, 배열이 값 각각을 인자로 받는 함수를 받아 반환값으로 새로운 배열을 만든다:
 
 ```jldoctest
 julia> map(round, [1.2,3.5,1.7])
@@ -185,10 +184,8 @@ julia> map(round, [1.2,3.5,1.7])
  2.0
 ```
 
-This is fine if a named function effecting the transform already exists to pass as the first argument
-to [`map`](@ref). Often, however, a ready-to-use, named function does not exist. In these
-situations, the anonymous function construct allows easy creation of a single-use function object
-without needing a name:
+위에서는 이미 원하는 함수가 정의되어 있었기 때문에 문제가 없었다.
+하지만 그런 함수가 없을 때, 익명 함수를 사용하면 편리하다:
 
 ```jldoctest
 julia> map(x -> x^2 + 2x - 1, [1,3,-1])
@@ -198,18 +195,14 @@ julia> map(x -> x^2 + 2x - 1, [1,3,-1])
  -2
 ```
 
-An anonymous function accepting multiple arguments can be written using the syntax `(x,y,z)->2x+y-z`.
-A zero-argument anonymous function is written as `()->3`. The idea of a function with no arguments
-may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
-wrapped in a zero-argument function, which is later invoked by calling it as `f`.
+익명 함수에 다중 인자를 사용하려면 `(x,y,z)->2x+y-z`처럼 쓰면 된다. `()->3`처럼 인자를 받지 않는 함수를 정의할 수도 있다. 처음 프로그래밍을 접하면 "인자를 받지 않는 함수를 왜쓰지?"라고 생각할 수 있지만 코딩을 하다보면 여러모로 유용하다.
 
-## Tuples
+## 튜플
 
-Julia has a built-in data structure called a *tuple* that is closely related to function
-arguments and return values.
-A tuple is a fixed-length container that can hold any values, but cannot be modified
-(it is *immutable*).
-Tuples are constructed with commas and parentheses, and can be accessed via indexing:
+
+줄리아의 *튜플*은 함수의 입출력에 중요하게 관여한다.
+튜플은 어떤 값이든 저장할 수 있는 고정 크기의 컨테이너이며, 생성 후에는 수정이 불가능(immutable)하다.
+튜플은 반점과 소괄호를 이용해 만들고 인덱싱을 통해 값에 접근한다:
 
 ```jldoctest
 julia> (1, 1+1)
@@ -225,9 +218,7 @@ julia> x[2]
 "hello"
 ```
 
-Notice that a length-1 tuple must be written with a comma, `(1,)`, since `(1)` would just
-be a parenthesized value.
-`()` represents the empty (length-0) tuple.
+크기가 1인 튜플을 만들고 싶어도 `(1,)`처럼 꼭 반점을 넣어야 한다. `(1)`은 값을 소괄호로 감싼 것으로 취급된다. `()`은 비어 있는 튜플을 생성한다.
 
 ## Named Tuples
 
