@@ -17,7 +17,8 @@ Julia 컴파일러는 타입 추론을 통해 스칼라 배열 인덱싱에 최�
 줄리아는 함수에 인자를 줄 때 "공유를 통한 전달([pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing))을 한다.
 몇몇 프로그래밍 언어는 배열을 값으로 전달하여([pass-by-value](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value)), 원치않는 수정을 막지만 무분별한 값의 복사로 인해 속도 지연을 겪을 수 있다.
 줄리아는 관습적으로 `!`울 함수 이름의 마지막에 붙여 값이 수정되거나 삭제될 수 있음을 미연에 알려준다([`sort`](@ref)와 [`sort!`](@ref)를 비교해보자).
-함수내에서 오브젝트를 수정하지 않으려면 명시적으로 복사를 해야한다. 이렇게 오브젝트를 수정하지 않는 함수는 `!`이 붙여진 동일 이름의 함수와 같은 역할을 하면서 복사된 오브젝트를 반환한다.
+함수내에서 객체를 수정하지 않으려면 명시적으로 복사를 해야한다.
+이렇게 객체를 수정하지 않는 함수는 `!`이 붙여진 동일 이름의 함수와 같은 역할을 하면서 복사된 객체를 반환한다.
 
 ## 기본 함수
 
@@ -26,18 +27,18 @@ Julia 컴파일러는 타입 추론을 통해 스칼라 배열 인덱싱에 최�
 | [`eltype(A)`](@ref)    | `A` 의 원소 타입                                               |
 | [`length(A)`](@ref)    | `A` 의 원소 갯수                                               |
 | [`ndims(A)`](@ref)     | `A` 의 차원수                                                  |
-| [`size(A)`](@ref)      | `A` 의 크기 투플                                               |
+| [`size(A)`](@ref)      | `A` 의 크기 튜플                                               |
 | [`size(A,n)`](@ref)    | `A` 의 `n` 차원의 크기                                         |
-| [`axes(A)`](@ref)      | `A` 의 유효한 인덱스 투플                                      |
+| [`axes(A)`](@ref)      | `A` 의 유효한 인덱스 튜플                                      |
 | [`axes(A,n)`](@ref)    | `A` 의 유효 인덱스 `n`차원 범위(range)                         |
 | [`eachindex(A)`](@ref) | `A` 의 모든 위치를 방문하는 효율적인 반복자(iterator)          |
 | [`stride(A,k)`](@ref)  | `k` 차원 방향의 스트라이드 (연속한 원소 간의 선형 인덱스 거리) |
-| [`strides(A)`](@ref)   | 모든 차원의 스트라이드 투플                                    |
+| [`strides(A)`](@ref)   | 모든 차원의 스트라이드 튜플                                    |
 
 ## 생성과 초기화
 
 배열을 생성하고 초기화 하는 많은 함수가 있다.
-다음에 나열된 함수들에서, `dims...` 인수는 차원의 크기들을 나타내는 투플 하나를 받거나, 혹은 각 차원의 크기를 여러 인수로 받을 수 있다.
+다음에 나열된 함수들에서, `dims...` 인수는 차원의 크기들을 나타내는 튜플 하나를 받거나, 혹은 각 차원의 크기를 여러 인수로 받을 수 있다.
 이 함수들의 대부분은 첫번째 인수로 배열의 원소 타입 `T`를 받을 수 있다.
 `T`가 생략되었다면 [`Float64`](@ref)가 기본값이다.
 
@@ -430,7 +431,7 @@ julia> x
 
 1. 스칼라 인덱스. 다음을 포함한다:
     * 부울이 아닌 정수.
-    * [`CartesianIndex{N}`](@ref). 여러 차원에 걸쳐있는 정수의 `N`투플처럼 행동한다. (자세한 내용은 아래를 참조.)
+    * [`CartesianIndex{N}`](@ref). 여러 차원에 걸쳐있는 정수의 `N`튜플처럼 행동한다. (자세한 내용은 아래를 참조.)
 2. 스칼라 인덱스의 배열. 다음을 포함한다:
     * 정수 벡터와 다차원 정수 배열.
     * `[]`와 같은 빈 배열. 아무 원소도 선택하지 않는다.
@@ -487,7 +488,7 @@ julia> A[:, 3]
 
 ### 직교 인덱스(Cartesian indices)
 
-`CartesianIndex{N}` 객체는 여러 차원을 포괄하는 정수의 `N`투플처럼 동작하는 스칼라 인덱스를 나타낸다.
+`CartesianIndex{N}` 객체는 여러 차원을 포괄하는 정수의 `N`튜플처럼 동작하는 스칼라 인덱스를 나타낸다.
 
 ```jldoctest cartesianindex
 julia> A = reshape(1:32, 4, 4, 2);
@@ -808,8 +809,8 @@ julia> broadcast(+, a, b)
 사실, `f.(args...)`는 `broadcast(f, args...)`와 동일하며, 어떤 함수든 [점 문법](@ref man-vectorized)을 통하여 편리하게 브로드캐스팅 할 수 있는 문법을 제공한다.
 중첩된 "점 호출" `f.(...)`은 (`.+` 등의 연산자도 포함하여) 하나의 `broadcast` 호출로 [자동으로 융합](@ref man-dot-operators)한다.
 
-추가적으로, [`broadcast`](@ref)는 배열에 국한되지 않고 (함수 문서 참조) 투플 또한 지원하며,
-배열, 투플, [`Ref`](@ref)([`Ptr`](@ref) 제외)가 아닌 모든 값은 "스칼라"로 취급한다.
+추가적으로, [`broadcast`](@ref)는 배열에 국한되지 않고 (함수 문서 참조) 튜플 또한 지원하며,
+배열, 튜플, [`Ref`](@ref)([`Ptr`](@ref) 제외)가 아닌 모든 값은 "스칼라"로 취급한다.
 
 ```jldoctest
 julia> convert.(Float32, [1, 2])
@@ -839,13 +840,13 @@ Julia에서 기본 배열 타입은 추상 타입인 [`AbstractArray{T,N}`](@ref
 
 `AbstractArray` 타입은 배열과 비슷한 모든 것을 포함하며, 이들의 구현은 전통적인 배열과는 차이가 많이 날 수도 있다.
 예를 들어, 원소를 저장하지 않고 요청에 따라서 계산할 수도 있다.
-다만 모든 구체적인 `AbstractArray{T,N}` 타입은 일반적으로 적어도 (`Int` 투플을 리턴하는) [`size(A)`](@ref),
+다만 모든 구체적인 `AbstractArray{T,N}` 타입은 일반적으로 적어도 (`Int` 튜플을 리턴하는) [`size(A)`](@ref),
 [`getindex(A,i)`](@ref), 그리고 [`getindex(A,i1,...,iN)`](@ref getindex)를 구현해야 한다.
 변경 가능한 배열은 [`setindex!`](@ref)도 구현해야 한다.
 이러한 연산들은 대략 상수 시간 복잡도, 엄밀히 말해 Õ(1) 복잡도를 가지도록 구현하는 것이 좋다.
 그렇지 않으면 어떤 배열 함수는 생각 이상으로 느릴지도 모른다.
 구체적 타입은 [`copy`](@ref)등의 out-of-place 연산에서 유사한 배열을 할당하는데에 쓰일 수 있는 [`similar(A,T=eltype(A),dims=size(A))`](@ref)메소드를 제공해야 한다.
-`AbstractArray{T,N}`가 내부적으로 어떻게 표현이 되든, `T` 는 *정수* 인덱싱이 리턴하는 객체(`A` 가 빈 배열이 아닌 경우 `A[1, ..., 1]`)의 타입이며, `N`은 [`size`](@ref)가 리턴하는 투플의 길이여야 한다.
+`AbstractArray{T,N}`가 내부적으로 어떻게 표현이 되든, `T` 는 *정수* 인덱싱이 리턴하는 객체(`A` 가 빈 배열이 아닌 경우 `A[1, ..., 1]`)의 타입이며, `N`은 [`size`](@ref)가 리턴하는 튜플의 길이여야 한다.
 For more details on defining custom
 `AbstractArray` implementations, see the [array interface guide in the interfaces chapter](@ref man-interface-array).
 
