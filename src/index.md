@@ -33,10 +33,7 @@ Markdown.parse(String(take!(io)))
     - Julia 중국(juliacn) 문서 [http://docs.juliacn.com/latest/](https://translate.google.com/translate?sl=zh-CN&tl=ko&u=http%3A%2F%2Fdocs.juliacn.com%2Flatest%2F)
 
 ```@eval
-release = isempty(VERSION.prerelease)
-file = release ? "julia-$(VERSION).pdf" :
-       "julia-$(VERSION.major).$(VERSION.minor).$(VERSION.patch)-$(first(VERSION.prerelease)).pdf"
-url = "https://raw.githubusercontent.com/JuliaLang/docs.julialang.org/assets/$(file)"
+file = url = "julia-1.5.1.pdf"
 import Markdown
 Markdown.parse("""
 !!! note
