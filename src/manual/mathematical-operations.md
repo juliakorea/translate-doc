@@ -149,7 +149,7 @@ julia> .![true,false,true]
 
 Furthermore, "dotted" updating operators like `a .+= b` (or `@. a += b`) are parsed
 as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation
-(see the [dot syntax documentation](@ref man-vectorized)).
+([dot 문법 문서](@ref man-vectorized)을 참고하라).
 
 dot 연산자는 사용자 정의 연산자에서도 활용할 수 있다.
 예를 들어 `⊗(A,B) = kron(A,B)`를 정의했다면 `[A,B] .⊗ [C,D]`은 `[A⊗C, B⊗D]`를 계산한다.
@@ -289,11 +289,9 @@ true
 ```
 
 비교연산 이어쓰기는 코드 구성을 깔끔하게 한다.
-비교연산 이어쓰기는 `&&`을 사용하여 비교연산을 한 것과 똑같이 작동하며, 원소별 연산끼리는 [`&`](@ref)연산이 적용된다.(???)
-Chained comparisons use the
-`&&` operator for scalar comparisons, and the [`&`](@ref) operator for elementwise comparisons,
-which allows them to work on arrays. For example, `0 .< A .< 1` gives a boolean array whose entries
-are true where the corresponding elements of `A` are between 0 and 1.
+비교연산 이어쓰기는 `&&`사용하여 연산을 한것과 똑같이 작용하고, 원소별 연산에서는 [`&`](@ref)을 사용한 것과 동일하다.
+쉽게 말하면 우리가 수학적으로 예상한 것과 똑같이 나온다는 것이다.
+그 예로 `0 .< A .< 1`는 각 원소가 0과 1 사이에 있는지에 대한 참/거짓을 행렬로 반환한다.
 
 Note the evaluation behavior of chained comparisons:
 
@@ -313,11 +311,10 @@ julia> v(1) > v(2) <= v(3)
 false
 ```
 
-The middle expression is only evaluated once, rather than twice as it would be if the expression
-were written as `v(1) < v(2) && v(2) <= v(3)`. However, the order of evaluations in a chained
-comparison is undefined. It is strongly recommended not to use expressions with side effects (such
-as printing) in chained comparisons. If side effects are required, the short-circuit `&&` operator
-should be used explicitly (see [Short-Circuit Evaluation](@ref)).
+첫번째 결과에서 중간값이 한번만 계산됨을 확인할 수 있다.
+이를 통해 `v(1) < v(2) && v(2) <= v(3)`로 계산했을 때보다 적은 계산량을 가지고, 비교연산 이어쓰기에서는 기존 프로그래밍 언어와 달리 계산 순서는 미리 예측할 수 없다는 걸 확인할 수 있다.
+따라서 비교연산 이어쓰기에서는 계산 순서가 중요한 연산(예시: 입출력)을 하지말자.
+이런 부작용을 감안하고 써야한다면 `&&`연산자를 활용하자. ([Short-Circuit Evaluation](@ref)을 참고하라).
 
 ### 기본 함수
 
@@ -349,11 +346,9 @@ Julia는 수치 계산을 위한 함수와 연산자를 전폭적으로 지원�
 | 할당            | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | 오른쪽                      |
 
 [^1]:
-    단항연산자 `+` 와 `-`를 연속해서 사용하는 경우, 업데이트 연산자(`++`)와 구별하기 위해 괄호를 명시적으로 사용해야 한다. 다른 단항 연산자와 같이 사용하는 경우엔 right-associativity
-     `+` and `-` require explicit parentheses around their argument to disambiguate them from the operator `++`, etc. Other compositions of unary operators are parsed with right-associativity, e. g., `√√-a` as `√(√(-a))`.
+    단항연산자 `+` 와 `-`를 연속해서 사용하는 경우, 업데이트 연산자(`++`)와 구별하기 위해 괄호를 명시적으로 사용해야 한다. 다른 단항 연산자와 같이 사용하는 경우엔 right-associativity 규칙에 따라 구문을 분석한다(예시: `√√-a`를 `√(√(-a))`로 분석).
 [^2]:
-    The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b),
-    c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
+    The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b), c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
 
 모든 Julia 연산자의 우선순위 목록을 보고 싶다면, 다음 파일의 최상단 코드를 참고하라:
 [`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm)
