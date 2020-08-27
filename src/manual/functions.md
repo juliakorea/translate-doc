@@ -674,17 +674,14 @@ julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length
  7
 ```
 
-## [Dot Syntax for Vectorizing Functions](@id man-vectorized)
+## [배열에서 사용하는 Dot 문법](@id man-vectorized)
 
-In technical-computing languages, it is common to have "vectorized" versions of functions, which
-simply apply a given function `f(x)` to each element of an array `A` to yield a new array via
-`f(A)`. This kind of syntax is convenient for data processing, but in other languages vectorization
-is also often required for performance: if loops are slow, the "vectorized" version of a function
-can call fast library code written in a low-level language. In Julia, vectorized functions are
-*not* required for performance, and indeed it is often beneficial to write your own loops (see
-[Performance Tips](@ref man-performance-tips)), but they can still be convenient. Therefore, *any* Julia function
-`f` can be applied elementwise to any array (or other collection) with the syntax `f.(A)`.
-For example, `sin` can be applied to all elements in the vector `A` like so:
+수치 계산용 언어에서는 함수의 스칼라 버전이 존재하면 벡터 버전이 자동 지원되는 것은 흔하다.
+즉 `f(x)`가 있으면 이를 행렬의 모든 원소에 적용하는 `f(A)`가 지원되기 마련이다.
+이런 문법은 데이터 처리를 편리하게 하지만, 몇몇 언어는 성능면에서 문제를 겪어 사용자가 직접 저급 언어의 라이브러리를 사용해 벡터 버전의 함수를 만들기도 한다.
+Julia는 성능 향상을 위해 이런 노력을 할 필요가 없다.
+모든 Julia 함수 `f`는 `f.(A)`이란 문법을 사용해 원소별 연산이 가능하다.
+예를 들어 `sin`로 벡터 `A`를 쉽게 계산할 수 있다:
 
 ```jldoctest
 julia> A = [1.0, 2.0, 3.0]
@@ -700,9 +697,7 @@ julia> sin.(A)
  0.1411200080598672
 ```
 
-Of course, you can omit the dot if you write a specialized "vector" method of `f`, e.g. via `f(A::AbstractArray) = map(f, A)`,
-and this is just as efficient as `f.(A)`. But that approach requires you to decide in advance
-which functions you want to vectorize.
+물론 사용자가  `f(A::AbstractArray) = map(f, A)`와 같이 직접 벡터 함수를 만드는 것도 가능하고 `f.(A)`만큼 효율적이다.
 
 More generally, `f.(args...)` is actually equivalent to `broadcast(f, args...)`, which allows
 you to operate on multiple arrays (even of different shapes), or a mix of arrays and scalars (see

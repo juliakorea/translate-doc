@@ -40,7 +40,7 @@ url = "https://raw.githubusercontent.com/JuliaLang/docs.julialang.org/assets/$(f
 import Markdown
 Markdown.parse("""
 !!! note
-    The documentation is also available in PDF format: [$file]($url).
+    이 문서를 PDF 형태로 보실 수 있습니다: [$file]($url).
 """)
 ```
 
