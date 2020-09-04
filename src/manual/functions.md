@@ -1,6 +1,6 @@
 # [함수](@id man-functions)
 
-함수는 인자를 받아 값을 리턴하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 다르다. 아래는 Julia에서 함수는 정의하는 가장 기본적인 방법이다:
+함수는 인자를 받아 값을 반환하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 조금 다르다. 아래는 Julia에서 함수는 정의하는 가장 기본적인 방법이다:
 
 ```jldoctest
 julia> function f(x,y)
@@ -220,10 +220,9 @@ julia> x[2]
 
 크기가 1인 튜플을 만들고 싶어도 `(1,)`처럼 꼭 반점을 넣어야 한다. `(1)`은 값을 소괄호로 감싼 것으로 취급된다. `()`은 비어 있는 튜플을 생성한다.
 
-## Named Tuples
+## 지명 튜플(Named tuple)
 
-The components of tuples can optionally be named, in which case a *named tuple* is
-constructed:
+튜플의 인자에 이름을 부여할 수 있으며 이를 *지명 튜플*이라고 한다:
 
 ```jldoctest
 julia> x = (a=1, b=1+1)
@@ -233,15 +232,14 @@ julia> x.a
 1
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`).
+지명 튜플은 이름이 있다는 것을 제외하면 일반적인 튜플과 유사하며, dot 문법을 통해 값에 접근할 수 있다 (`x.a`).
 
-## Multiple Return Values
+## 다중 반환값
 
-In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
-can be created and destructured without needing parentheses, thereby providing an illusion that
-multiple values are being returned, rather than a single tuple value. For example, the following
-function returns a pair of values:
+여러 값을 반환하기 위해 함수는 튜플을 반환한다.
+하지만 튜플은 괄호 없이 생성되기도 하고 분리되기도 하므로 명시적으로 튜플을 사용한다는 것을 나타낼 필요가 없다.
+이는 우리가 값을 여러개 반환한다는 환상을 심어준다.
+예제로 두개의 값을 반환하는 상황을 보자:
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -250,16 +248,14 @@ julia> function foo(a,b)
 foo (generic function with 1 method)
 ```
 
-If you call it in an interactive session without assigning the return value anywhere, you will
-see the tuple returned:
+대화형 실행환경에서 함수를 실행하면 튜플이 반환되는 것을 확인할 수 있다:
 
 ```jldoctest foofunc
 julia> foo(2,3)
 (5, 6)
 ```
 
-A typical usage of such a pair of return values, however, extracts each value into a variable.
-Julia supports simple tuple "destructuring" that facilitates this:
+보통의 경우 튜플의 값을 변수로 각각 분리하고 사용하기 때문에, Julia는 튜플을 분리할 수 있는 간단한 방법을 제공하여 편의성을 높였다:
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -272,7 +268,8 @@ julia> y
 6
 ```
 
-You can also return multiple values via an explicit usage of the `return` keyword:
+`return`으로도 다중 변수 반환을 할 수 있다.
+아래 예제는 이전 예제와 똑같이 작동한다:
 
 ```julia
 function foo(a,b)
@@ -280,9 +277,7 @@ function foo(a,b)
 end
 ```
 
-This has the exact same effect as the previous definition of `foo`.
-
-## Argument destructuring
+## 인자 분리
 
 The destructuring feature can also be used within a function argument.
 If a function argument name is written as a tuple (e.g. `(x, y)`) instead of just
@@ -301,7 +296,7 @@ Notice the extra set of parentheses in the definition of `range`.
 Without those, `range` would be a two-argument function, and this example would
 not work.
 
-## Varargs Functions
+## 가변인자 함수
 
 It is often convenient to be able to write functions taking an arbitrary number of arguments.
 Such functions are traditionally known as "varargs" functions, which is short for "variable number
