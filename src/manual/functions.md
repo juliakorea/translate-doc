@@ -234,7 +234,7 @@ julia> x.a
 
 지명 튜플은 이름이 있다는 것을 제외하면 일반적인 튜플과 유사하며, dot 문법을 통해 값에 접근할 수 있다 (`x.a`).
 
-## 다중 반환값
+## 다중 반환
 
 여러 값을 반환하기 위해 함수는 튜플을 반환한다.
 하지만 튜플은 괄호 없이 생성되기도 하고 분리되기도 하므로 명시적으로 튜플을 사용한다는 것을 나타낼 필요가 없다.
@@ -298,18 +298,15 @@ not work.
 
 ## 가변인자 함수
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last argument with an ellipsis:
+경우에 따라 함수에 원하는 만큼 인자를 주는 것이 유용할 때도 있다.
+이러한 가변인자 함수를 만들려면 함수 인자 선언의 마지막에 `(인자 이름)...`을 넣으면 된다:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
 ```
 
-The variables `a` and `b` are bound to the first two argument values as usual, and the variable
-`x` is bound to an iterable collection of the zero or more values passed to `bar` after its first
-two arguments:
+위 예제에서 처음 두번째 인자까지는 `a`와 `b`에 할당되고, 변수 `x`에는 나머지 인자들이 튜플로 묶여서 전달된다:
 
 ```jldoctest barfunc
 julia> bar(1,2)
@@ -325,14 +322,11 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-In all these cases, `x` is bound to a tuple of the trailing values passed to `bar`.
+가변인자의 개수를 제한하는 방법은 [Parametrically-constrained Varargs methods](@ref)에서 확인할 수 있다.
 
-It is possible to constrain the number of values passed as a variable argument; this will be discussed
-later in [Parametrically-constrained Varargs methods](@ref).
-
-On the flip side, it is often handy to "splat" the values contained in an iterable collection
-into a function call as individual arguments. To do this, one also uses `...` but in the function
-call instead:
+`...`을 다르게도 활용할 수 있다.
+interable 객체에 저장된 값 하나하나를 전부 함수 인자로 주고 싶을 때, 해당 변수에 `...`을 붙여주면 순서대로 인자를 넣어준다.
+아래의 경우 튜플이 알아서 쪼개져 각 인자에 순서대로 들어간다:
 
 ```jldoctest barfunc
 julia> x = (3, 4)
@@ -340,12 +334,7 @@ julia> x = (3, 4)
 
 julia> bar(1,2,x...)
 (1, 2, (3, 4))
-```
 
-In this case a tuple of values is spliced into a varargs call precisely where the variable number
-of arguments go. This need not be the case, however:
-
-```jldoctest barfunc
 julia> x = (2, 3, 4)
 (2, 3, 4)
 
@@ -359,7 +348,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Furthermore, the iterable object splatted into a function call need not be a tuple:
+물론 interable 객체이기만 하면 위 방법을 사용할 수 있다:
 
 ```jldoctest barfunc
 julia> x = [3,4]
@@ -381,8 +370,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Also, the function that arguments are splatted into need not be a varargs function (although it
-often is):
+이 방법은 가변인자 함수가 아니어도 사용할 수 있다:
 
 ```jldoctest
 julia> baz(a,b) = a + b;
@@ -407,16 +395,12 @@ Closest candidates are:
   baz(::Any, ::Any) at none:1
 ```
 
-As you can see, if the wrong number of elements are in the splatted container, then the function
-call will fail, just as it would if too many arguments were given explicitly.
+보다시피 인자의 개수가 잘못되면 함수 호출은 실패하고 위와 같은 에러를 보게 될 것이다.
 
-## Optional Arguments
+## 기본값이 제공된 인자(optional arguments)
 
-In many cases, function arguments have sensible default values and therefore might not need to
-be passed explicitly in every call. For example, the function [`Date(y, [m, d])`](@ref)
-from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
-However, `m` and `d` arguments are optional and their default value is `1`.
-This behavior can be expressed concisely as:
+기본값이 지정된 함수는 해당 인자를 주지 않아도 잘 작동한다.
+예를 들어`Dates`의 `Date`타입에 지정된 [`Date(y, [m, d])`](@ref) 함수는 `y`만 지정하면 `m`과 `d`는 1로 자동 지정된다:
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -426,11 +410,8 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-Observe, that this definition calls another method of `Date` function that takes one argument
-of `UTInstant{Day}` type.
-
-With this definition, the function can be called with either one, two or three arguments, and
-`1` is automatically passed when any of the arguments is not specified:
+이 예제에 부연설명을 하면, `Date`함수는 `UTInstant{Day}`라는 인자를 받는 다른 매서드 함수 `Date`를 호출한다.
+위 함수의 정의에 따라 이 함수에는 인자를 하나, 둘, 혹은 세개를 줄 수 있으며, 인자가 직접 주어지지 않을 경우 `1`이 자동으로 부여됨을 알 수 있다:
 
 ```jldoctest
 julia> using Dates
@@ -445,9 +426,8 @@ julia> Date(2000)
 2000-01-01
 ```
 
-Optional arguments are actually just a convenient syntax for writing multiple method definitions
-with different numbers of arguments (see [Note on Optional and keyword Arguments](@ref)).
-This can be checked for our `Date` function example by calling `methods` function.
+기본값 제공은 다중인자 함수의 사용 편의성을 위한 것이다([Note on Optional and keyword Arguments](@ref)를 보자).
+위 예제에서 메서드 함수를 호출한 것을 보면 알 수 있다.
 
 ## Keyword Arguments
 
