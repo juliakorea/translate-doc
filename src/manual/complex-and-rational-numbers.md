@@ -156,7 +156,7 @@ julia> a = 1; b = 2; complex(a, b)
 1 + 2im
 ```
 
-[특별한 부동 소수점 값들](@ref)에서 소개한 [`Inf`](@ref)과 [`NaN`](@ref)을 복소수에서도 사용할 수 있다:
+[특별한 부동 소수점 값들](@ref Special-floating-point-values)에서 소개한 [`Inf`](@ref)과 [`NaN`](@ref)을 복소수에서도 사용할 수 있다:
 
 ```jldoctest
 julia> 1 + Inf*im

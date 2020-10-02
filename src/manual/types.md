@@ -13,7 +13,7 @@ Julia's type system is dynamic, but gains some of the advantages of static type 
 it possible to indicate that certain values are of specific types. This can be of great assistance
 in generating efficient code, but even more significantly, it allows method dispatch on the types
 of function arguments to be deeply integrated with the language. Method dispatch is explored in
-detail in [Methods](@ref), but is rooted in the type system presented here.
+detail in [메서드](@ref Methods), but is rooted in the type system presented here.
 
 The default behavior in Julia when types are omitted is to allow values to be of any type. Thus,
 one can write many useful Julia functions without ever explicitly using types. When additional
@@ -210,7 +210,7 @@ end
 
 The first thing to note is that the above argument declarations are equivalent to `x::Any` and
 `y::Any`. When this function is invoked, say as `myplus(2,5)`, the dispatcher chooses the most
-specific method named `myplus` that matches the given arguments. (See [Methods](@ref) for more
+specific method named `myplus` that matches the given arguments. (See [메서드](@ref Methods) for more
 information on multiple dispatch.)
 
 Assuming no method more specific than the above is found, Julia next internally defines and compiles
@@ -303,7 +303,7 @@ such as integers and floating-point values, are not objects, while instances of 
 types are true objects with associated methods. In Julia, all values are objects, but functions
 are not bundled with the objects they operate on. This is necessary since Julia chooses which
 method of a function to use by multiple dispatch, meaning that the types of *all* of a function's
-arguments are considered when selecting a method, rather than just the first one (see [Methods](@ref)
+arguments are considered when selecting a method, rather than just the first one (see [메서드](@ref Methods)
 for more information on methods and dispatch). Thus, it would be inappropriate for functions to
 "belong" to only their first argument. Organizing methods into function objects rather than having
 named bags of methods "inside" each object ends up being a highly beneficial aspect of the language
@@ -398,7 +398,7 @@ The [`===`](@ref) function confirms that the "two" constructed instances of `NoF
 and the same. Singleton types are described in further detail [below](@ref man-singleton-types).
 
 There is much more to say about how instances of composite types are created, but that discussion
-depends on both [Parametric Types](@ref) and on [Methods](@ref), and is sufficiently important
+depends on both [Parametric Types](@ref) and on [메서드](@ref Methods), and is sufficiently important
 to be addressed in its own section: [Constructors](@ref man-constructors).
 
 ## Mutable Composite Types
@@ -634,7 +634,7 @@ end
 (Equivalently, one could define `function norm(p::Point{T} where T<:Real)` or
 `function norm(p::Point{T}) where T<:Real`; see [UnionAll Types](@ref).)
 
-More examples will be discussed later in [Methods](@ref).
+More examples will be discussed later in [메서드](@ref Methods).
 
 How does one construct a `Point` object? It is possible to define custom constructors for composite
 types, which will be discussed in detail in [Constructors](@ref man-constructors), but in the absence of any special
@@ -789,7 +789,7 @@ Now both `Point{Float64}` and `DiagPoint{Float64}` are implementations of the `P
 abstraction, and similarly for every other possible choice of type `T`. This allows programming
 to a common interface shared by all `Pointy` objects, implemented for both `Point` and `DiagPoint`.
 This cannot be fully demonstrated, however, until we have introduced methods and dispatch in the
-next section, [Methods](@ref).
+next section, [메서드](@ref Methods).
 
 There are situations where it may not make sense for type parameters to range freely over all
 possible types. In such situations, one can constrain the range of `T` like so:
@@ -908,7 +908,7 @@ false
 ```
 
 Notice that `Vararg{T}` corresponds to zero or more elements of type `T`. Vararg tuple types are
-used to represent the arguments accepted by varargs methods (see [Varargs Functions](@ref)).
+used to represent the arguments accepted by varargs methods (see [가변인자 함수](@ref)).
 
 The type `Vararg{T,N}` corresponds to exactly `N` elements of type `T`.  `NTuple{N,T}` is a convenient
 alias for `Tuple{Vararg{T,N}}`, i.e. a tuple type containing exactly `N` elements of type `T`.

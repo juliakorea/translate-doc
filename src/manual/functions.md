@@ -46,7 +46,7 @@ julia> ∑(2, 3)
 `Array`와 같은 mutable 객체가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다.
 이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
 
-## 반환값
+## return 키워드
 함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다.
 다른 프로그래밍 언어처럼 `return`과 리턴값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return`앞에 있는 식을 계산하고 반환할 것이다:
 
@@ -98,6 +98,8 @@ julia> hypot(3, 4)
 ```
 위 함수는 경우에 따라 세가지 방법으로 값을 반환한다. 마지막에 `return`은 생략해도 된다.
 
+## 반환 타입
+
 반환값의 타입은 `::`로 명시할 수 있으며, 이경우 반환값이 자동 형변환된다.
 
 ```jldoctest
@@ -109,13 +111,35 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 
-[타입 선언](@ref)을 참고하자.
+위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 [Type Declarations](@ref)을 참고하자.
+
+## 반환값이 없는 함수
+
+함수가 값을 반환할 필요가 없을 경우, Julia 언어 내에서는 관습적으로 [nothing](@ref)을 반환한다:
+
+```jldoctest
+function printx(x)
+    println("x = $x")
+    return nothing
+end
+```
+
+This is a *convention* in the sense that `nothing` is not a Julia keyword
+but a only singleton object of type `Nothing`.
+Also, you may notice that the `printx` function example above is contrived,
+because `println` already returns `nothing`, so that the `return` line is redundant.
+
+There are two possible shortened forms for the `return nothing` expression.
+On the one hand, the `return` keyword implicitly returns `nothing`, so it can be used alone.
+On the other hand, since functions implicitly return their last expression evaluated,
+`nothing` can be used alone when it's the last expression.
+The preference for the expression `return nothing` as opposed to `return` or `nothing`
+alone is a matter of coding style.
 
 ## 연산자는 함수다
 
 Julia에서 연산자는 특별한 문법을 가진 함수일 뿐입니다(`&&`와 `||`는 예외다.
-이들은 [Short-Circuit Evaluation](@ref)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
+이들은 [단락 계산](@ref Short-Circuit-Evaluation)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
 따라서 연산자는 일반 함수처럼 소괄호를 이용해 인자를 전달할 수 있다:
 
 ```jldoctest
@@ -322,7 +346,7 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-가변인자의 개수를 제한하는 방법은 [Parametrically-constrained Varargs methods](@ref)에서 확인할 수 있다.
+가변인자의 개수를 제한하는 방법은 [매개변수적으로 제한된 Varargs 메서드](@ref)에서 확인할 수 있다.
 
 `...`을 다르게도 활용할 수 있다.
 interable 객체에 저장된 값 하나하나를 전부 함수 인자로 주고 싶을 때, 해당 변수에 `...`을 붙여주면 순서대로 인자를 넣어준다.
@@ -583,7 +607,7 @@ end
 Here, [`open`](@ref) first opens the file for writing and then passes the resulting output stream
 to the anonymous function you defined in the `do ... end` block. After your function exits, [`open`](@ref)
 will make sure that the stream is properly closed, regardless of whether your function exited
-normally or threw an exception. (The `try/finally` construct will be described in [Control Flow](@ref).)
+normally or threw an exception. (The `try/finally` construct will be described in [제어 흐름](@ref).)
 
 With the `do` block syntax, it helps to check the documentation or implementation to know how
 the arguments of the user function are initialized.

@@ -40,7 +40,7 @@
 | [`Float32`](@ref) | [single](https://en.wikipedia.org/wiki/Single_precision_floating-point_format) | 32             |
 | [`Float64`](@ref) | [double](https://en.wikipedia.org/wiki/Double_precision_floating-point_format) | 64             |
 
-추가적으로 [Complex and Rational Numbers](@ref)는 위에서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
+추가적으로 [복소수와 유리수](@ref)는 위에서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
 
 ## 정수
 
@@ -335,7 +335,7 @@ julia> bitstring(-0.0)
 | `-Inf16`  | `-Inf32`  | `-Inf`    | negative infinity | 모든 유한한 부동 소수점 실수보다 작은 값              |
 | `NaN16`   | `NaN32`   | `NaN`     | not a number      | 어떤 부동 소수점 실수와도 같지 않은 값 |
 
-이와 같은 유한하지 않은 부동 소수점 값들이 서로와 다른 실수에 대해서 순서를 매길 때에는 [Numeric Comparisons](@ref)를 참고하길 바란다. [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008)에 따르면, 위에서의 부동 소수점 실수들은 어떤 산술 연산에 의한 결과임을 알 수 있다:
+이와 같은 유한하지 않은 부동 소수점 값들이 서로와 다른 실수에 대해서 순서를 매길 때에는 [비교 연산](@ref)을 참고하길 바란다. [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008)에 따르면, 위에서의 부동 소수점 실수들은 어떤 산술 연산에 의한 결과임을 알 수 있다:
 
 ```jldoctest
 julia> 1/Inf
@@ -616,7 +616,7 @@ example, `1.5F22` is equal to `1.5 * F22`.
 | [`zero(x)`](@ref) | `x`타입이나 변수 `x`의 타입의 리터럴 0 |
 | [`one(x)`](@ref)  | `x`타입이나 변수 `x`의 타입의 리터럴 1  |
 
-위 함수들은 [Numeric Comparisons](@ref)에서 불필요한 [type conversion](@ref conversion-and-promotion)에 의한 성능저하를 줄일 때 유용하다.
+위 함수들은 [비교 연산](@ref)에서 불필요한 [type conversion](@ref conversion-and-promotion)에 의한 성능저하를 줄일 때 유용하다.
 
 Examples:
 

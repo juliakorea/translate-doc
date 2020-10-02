@@ -41,7 +41,7 @@ may trip up Julia users accustomed to MATLAB:
     also seen in functions such as [`range`](@ref), or with iterators such as `enumerate`, and
     `zip`. The special objects can mostly be used as if they were normal arrays.
   * Functions in Julia return values from their last expression or the `return` keyword instead of
-    listing the names of variables to return in the function definition (see [The return Keyword](@ref)
+    listing the names of variables to return in the function definition (see [return 키워드](@ref)
     for details).
   * A Julia script may contain any number of functions, and all definitions will be externally visible
     when the file is loaded. Function definitions can be loaded from files outside the current working

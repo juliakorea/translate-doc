@@ -44,7 +44,7 @@ work to processes only when they finish their current tasks.
 
 ## Channels
 
-The section on [`Task`](@ref)s in [Control Flow](@ref) discussed the execution of multiple functions in
+The section on [`Task`](@ref)s in [제어 흐름](@ref) discussed the execution of multiple functions in
 a co-operative manner. [`Channel`](@ref)s can be quite useful to pass data between running tasks, particularly
 those involving I/O operations.
 

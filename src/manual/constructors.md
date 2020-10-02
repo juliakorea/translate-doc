@@ -484,7 +484,7 @@ Following the outer constructor definitions, we defined a number of methods for 
 operator, which provides a syntax for writing rationals (e.g. `1 ⊘ 2`). Julia's `Rational`
 type uses the [`//`](@ref) operator for this purpose. Before these definitions, `⊘`
 is a completely undefined operator with only syntax and no meaning. Afterwards, it behaves just
-as described in [Rational Numbers](@ref) -- its entire behavior is defined in these few lines.
+as described in [유리수](@ref) -- its entire behavior is defined in these few lines.
 The first and most basic definition just makes `a ⊘ b` construct a `OurRational` by applying the
 `OurRational` constructor to `a` and `b` when they are integers. When one of the operands of `⊘`
 is already a rational number, we construct a new rational for the resulting ratio slightly differently;

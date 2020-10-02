@@ -684,7 +684,7 @@ the error message.
 
 The actual definition of `@assert` in Julia Base is more complicated. It allows the
 user to optionally specify their own error message, instead of just printing the failed expression.
-Just like in functions with a variable number of arguments ([Varargs Functions](@ref)), this is specified with an ellipses
+Just like in functions with a variable number of arguments ([가변인자 함수](@ref)), this is specified with an ellipses
 following the last argument:
 
 ```jldoctest assert2

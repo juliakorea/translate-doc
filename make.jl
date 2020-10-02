@@ -53,10 +53,10 @@ const t_html_canonical = "https://juliakorea.github.io/ko/latest/"
 # Korean text in PAGES
 const t_Home                    = "홈"
 const t_Manual                  = "매뉴얼"
-const t_Julia_Documentation     = "Julia Documentation"
+const t_Julia_Documentation     = "줄리아 문서"
 const t_Base                    = "Base"
-const t_Standard_Library        = "Standard Library"
-const t_Developer_Documentation = "Developer Documentation"
+const t_Standard_Library        = "표준 라이브러리"
+const t_Developer_Documentation = "개발자 문서"
 
 Manual = [
     "manual/getting-started.md",
