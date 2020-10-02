@@ -1,6 +1,6 @@
 # [함수](@id man-functions)
 
-함수는 인자를 받아 값을 리턴하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 다르다. 아래는 Julia에서 함수는 정의하는 가장 기본적인 방법이다:
+함수는 인자를 받아 값을 반환하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 조금 다르다. 아래는 Julia에서 함수는 정의하는 가장 기본적인 방법이다:
 
 ```jldoctest
 julia> function f(x,y)
@@ -46,7 +46,7 @@ julia> ∑(2, 3)
 `Array`와 같은 mutable 객체가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다.
 이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
 
-## 반환값
+## return 키워드
 함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다.
 다른 프로그래밍 언어처럼 `return`과 리턴값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return`앞에 있는 식을 계산하고 반환할 것이다:
 
@@ -98,6 +98,8 @@ julia> hypot(3, 4)
 ```
 위 함수는 경우에 따라 세가지 방법으로 값을 반환한다. 마지막에 `return`은 생략해도 된다.
 
+## 반환 타입
+
 반환값의 타입은 `::`로 명시할 수 있으며, 이경우 반환값이 자동 형변환된다.
 
 ```jldoctest
@@ -109,13 +111,35 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 
-[타입 선언](@ref)을 참고하자.
+위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 [Type Declarations](@ref)을 참고하자.
+
+## 반환값이 없는 함수
+
+함수가 값을 반환할 필요가 없을 경우, Julia 언어 내에서는 관습적으로 [nothing](@ref)을 반환한다:
+
+```jldoctest
+function printx(x)
+    println("x = $x")
+    return nothing
+end
+```
+
+This is a *convention* in the sense that `nothing` is not a Julia keyword
+but a only singleton object of type `Nothing`.
+Also, you may notice that the `printx` function example above is contrived,
+because `println` already returns `nothing`, so that the `return` line is redundant.
+
+There are two possible shortened forms for the `return nothing` expression.
+On the one hand, the `return` keyword implicitly returns `nothing`, so it can be used alone.
+On the other hand, since functions implicitly return their last expression evaluated,
+`nothing` can be used alone when it's the last expression.
+The preference for the expression `return nothing` as opposed to `return` or `nothing`
+alone is a matter of coding style.
 
 ## 연산자는 함수다
 
 Julia에서 연산자는 특별한 문법을 가진 함수일 뿐입니다(`&&`와 `||`는 예외다.
-이들은 [Short-Circuit Evaluation](@ref)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
+이들은 [단락 계산](@ref Short-Circuit-Evaluation)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
 따라서 연산자는 일반 함수처럼 소괄호를 이용해 인자를 전달할 수 있다:
 
 ```jldoctest
@@ -220,10 +244,9 @@ julia> x[2]
 
 크기가 1인 튜플을 만들고 싶어도 `(1,)`처럼 꼭 반점을 넣어야 한다. `(1)`은 값을 소괄호로 감싼 것으로 취급된다. `()`은 비어 있는 튜플을 생성한다.
 
-## Named Tuples
+## 지명 튜플(Named tuple)
 
-The components of tuples can optionally be named, in which case a *named tuple* is
-constructed:
+튜플의 인자에 이름을 부여할 수 있으며 이를 *지명 튜플*이라고 한다:
 
 ```jldoctest
 julia> x = (a=1, b=1+1)
@@ -233,15 +256,14 @@ julia> x.a
 1
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`).
+지명 튜플은 이름이 있다는 것을 제외하면 일반적인 튜플과 유사하며, dot 문법을 통해 값에 접근할 수 있다 (`x.a`).
 
-## Multiple Return Values
+## 다중 반환
 
-In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
-can be created and destructured without needing parentheses, thereby providing an illusion that
-multiple values are being returned, rather than a single tuple value. For example, the following
-function returns a pair of values:
+여러 값을 반환하기 위해 함수는 튜플을 반환한다.
+하지만 튜플은 괄호 없이 생성되기도 하고 분리되기도 하므로 명시적으로 튜플을 사용한다는 것을 나타낼 필요가 없다.
+이는 우리가 값을 여러개 반환한다는 환상을 심어준다.
+예제로 두개의 값을 반환하는 상황을 보자:
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -250,16 +272,14 @@ julia> function foo(a,b)
 foo (generic function with 1 method)
 ```
 
-If you call it in an interactive session without assigning the return value anywhere, you will
-see the tuple returned:
+대화형 실행환경에서 함수를 실행하면 튜플이 반환되는 것을 확인할 수 있다:
 
 ```jldoctest foofunc
 julia> foo(2,3)
 (5, 6)
 ```
 
-A typical usage of such a pair of return values, however, extracts each value into a variable.
-Julia supports simple tuple "destructuring" that facilitates this:
+보통의 경우 튜플의 값을 변수로 각각 분리하고 사용하기 때문에, Julia는 튜플을 분리할 수 있는 간단한 방법을 제공하여 편의성을 높였다:
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -272,7 +292,8 @@ julia> y
 6
 ```
 
-You can also return multiple values via an explicit usage of the `return` keyword:
+`return`으로도 다중 변수 반환을 할 수 있다.
+아래 예제는 이전 예제와 똑같이 작동한다:
 
 ```julia
 function foo(a,b)
@@ -280,9 +301,7 @@ function foo(a,b)
 end
 ```
 
-This has the exact same effect as the previous definition of `foo`.
-
-## Argument destructuring
+## 인자 분리
 
 The destructuring feature can also be used within a function argument.
 If a function argument name is written as a tuple (e.g. `(x, y)`) instead of just
@@ -301,20 +320,17 @@ Notice the extra set of parentheses in the definition of `range`.
 Without those, `range` would be a two-argument function, and this example would
 not work.
 
-## Varargs Functions
+## 가변인자 함수
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last argument with an ellipsis:
+경우에 따라 함수에 원하는 만큼 인자를 주는 것이 유용할 때도 있다.
+이러한 가변인자 함수를 만들려면 함수 인자 선언의 마지막에 `(인자 이름)...`을 넣으면 된다:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
 ```
 
-The variables `a` and `b` are bound to the first two argument values as usual, and the variable
-`x` is bound to an iterable collection of the zero or more values passed to `bar` after its first
-two arguments:
+위 예제에서 처음 두번째 인자까지는 `a`와 `b`에 할당되고, 변수 `x`에는 나머지 인자들이 튜플로 묶여서 전달된다:
 
 ```jldoctest barfunc
 julia> bar(1,2)
@@ -330,14 +346,11 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-In all these cases, `x` is bound to a tuple of the trailing values passed to `bar`.
+가변인자의 개수를 제한하는 방법은 [매개변수적으로 제한된 Varargs 메서드](@ref)에서 확인할 수 있다.
 
-It is possible to constrain the number of values passed as a variable argument; this will be discussed
-later in [Parametrically-constrained Varargs methods](@ref).
-
-On the flip side, it is often handy to "splat" the values contained in an iterable collection
-into a function call as individual arguments. To do this, one also uses `...` but in the function
-call instead:
+`...`을 다르게도 활용할 수 있다.
+interable 객체에 저장된 값 하나하나를 전부 함수 인자로 주고 싶을 때, 해당 변수에 `...`을 붙여주면 순서대로 인자를 넣어준다.
+아래의 경우 튜플이 알아서 쪼개져 각 인자에 순서대로 들어간다:
 
 ```jldoctest barfunc
 julia> x = (3, 4)
@@ -345,12 +358,7 @@ julia> x = (3, 4)
 
 julia> bar(1,2,x...)
 (1, 2, (3, 4))
-```
 
-In this case a tuple of values is spliced into a varargs call precisely where the variable number
-of arguments go. This need not be the case, however:
-
-```jldoctest barfunc
 julia> x = (2, 3, 4)
 (2, 3, 4)
 
@@ -364,7 +372,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Furthermore, the iterable object splatted into a function call need not be a tuple:
+물론 interable 객체이기만 하면 위 방법을 사용할 수 있다:
 
 ```jldoctest barfunc
 julia> x = [3,4]
@@ -386,8 +394,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Also, the function that arguments are splatted into need not be a varargs function (although it
-often is):
+이 방법은 가변인자 함수가 아니어도 사용할 수 있다:
 
 ```jldoctest
 julia> baz(a,b) = a + b;
@@ -412,16 +419,12 @@ Closest candidates are:
   baz(::Any, ::Any) at none:1
 ```
 
-As you can see, if the wrong number of elements are in the splatted container, then the function
-call will fail, just as it would if too many arguments were given explicitly.
+보다시피 인자의 개수가 잘못되면 함수 호출은 실패하고 위와 같은 에러를 보게 될 것이다.
 
-## Optional Arguments
+## 기본값이 제공된 인자(optional arguments)
 
-In many cases, function arguments have sensible default values and therefore might not need to
-be passed explicitly in every call. For example, the function [`Date(y, [m, d])`](@ref)
-from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
-However, `m` and `d` arguments are optional and their default value is `1`.
-This behavior can be expressed concisely as:
+기본값이 지정된 함수는 해당 인자를 주지 않아도 잘 작동한다.
+예를 들어`Dates`의 `Date`타입에 지정된 [`Date(y, [m, d])`](@ref) 함수는 `y`만 지정하면 `m`과 `d`는 1로 자동 지정된다:
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -431,11 +434,8 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-Observe, that this definition calls another method of `Date` function that takes one argument
-of `UTInstant{Day}` type.
-
-With this definition, the function can be called with either one, two or three arguments, and
-`1` is automatically passed when any of the arguments is not specified:
+이 예제에 부연설명을 하면, `Date`함수는 `UTInstant{Day}`라는 인자를 받는 다른 매서드 함수 `Date`를 호출한다.
+위 함수의 정의에 따라 이 함수에는 인자를 하나, 둘, 혹은 세개를 줄 수 있으며, 인자가 직접 주어지지 않을 경우 `1`이 자동으로 부여됨을 알 수 있다:
 
 ```jldoctest
 julia> using Dates
@@ -450,9 +450,8 @@ julia> Date(2000)
 2000-01-01
 ```
 
-Optional arguments are actually just a convenient syntax for writing multiple method definitions
-with different numbers of arguments (see [Note on Optional and keyword Arguments](@ref)).
-This can be checked for our `Date` function example by calling `methods` function.
+기본값 제공은 다중인자 함수의 사용 편의성을 위한 것이다([Note on Optional and keyword Arguments](@ref)를 보자).
+위 예제에서 메서드 함수를 호출한 것을 보면 알 수 있다.
 
 ## Keyword Arguments
 
@@ -608,7 +607,7 @@ end
 Here, [`open`](@ref) first opens the file for writing and then passes the resulting output stream
 to the anonymous function you defined in the `do ... end` block. After your function exits, [`open`](@ref)
 will make sure that the stream is properly closed, regardless of whether your function exited
-normally or threw an exception. (The `try/finally` construct will be described in [Control Flow](@ref).)
+normally or threw an exception. (The `try/finally` construct will be described in [제어 흐름](@ref).)
 
 With the `do` block syntax, it helps to check the documentation or implementation to know how
 the arguments of the user function are initialized.

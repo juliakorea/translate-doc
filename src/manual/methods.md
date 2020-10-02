@@ -668,7 +668,7 @@ matmul(a, b) = matmul(promote(a, b)...)
 ## [매개변수적으로 제한된 Varargs 메서드](@id Parametrically-constrained-Varargs-methods)
 
 
-함수매개변수는 "varargs"함수 ([Varargs Functions](@ref))에 제공 될 수있는 인수의 수를 제한하는 데 사용될 수도 있습니다.
+함수매개변수는 [다중인자 함수](@ref)에 제공 되는 인자의 수를 제한하는 데 사용될 수도 있습니다.
 `Vararg {T, N}` 표기법은 그러한 제약을 나타내기 위해 사용됩니다. 예:
 
 ```jldoctest
