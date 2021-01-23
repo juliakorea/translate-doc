@@ -19,9 +19,6 @@ import Markdown
 Markdown.parse(String(take!(io)))
 ```
 
-
-` `
-
 !!! note "번역 안내"
     한글 문서 번역은 깃헙 [https://github.com/juliakorea/translate-doc](https://github.com/juliakorea/translate-doc) 에서 누구나 참여하실 수 있습니다.
     많은 참여 부탁드립니다.
@@ -40,7 +37,7 @@ Markdown.parse("""
 """)
 ```
 
-### [소개글](@id man-introduction)
+### [소개 글](@id man-introduction)
 
 과학 분야 컴퓨팅은 빠른 성능을 요구함에도, 정작 대부분의 연구자들은 속도가 느린 동적인 언어로 일을 처리한다.
 동적 언어를 즐겨쓰는 여러 이유로 보아 이러한 추세는 쉽게 사그러들지는 않아 보인다.
