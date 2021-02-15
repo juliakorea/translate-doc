@@ -10,7 +10,7 @@ Julia는 대부분의 수치 계산용 언어처럼 일급 객체로써 배열 �
 일반으로 배열은 [`Any`](@ref) 타입의 객체들을 담을 수 있다.
 수치 계산용으로 사용하려면 배열은 [`Float64`](@ref)이나 [`Int32`](@ref)와 같이 더 구체적인 타입의 객체를 담는 것이 좋다.
 
-다른 많은 수치 계산용 언어에서는 성능을 위해 프로그램을 벡터화된 스타일로 작성하지만, Julia에서는 대게 그럴 필요가 없다.
+다른 많은 수치 계산용 언어에서는 성능을 위해 프로그램을 벡터화된 스타일로 작성하지만, Julia에서는 대개 그럴 필요가 없다.
 Julia 컴파일러는 타입 추론을 통해 스칼라 배열 인덱싱에 최적화된 코드를 생성한다.
 따라서 편리하고 읽기 쉬운 스타일로 프로그램을 작성해도 성능이 보존되며, 오히려 메모리를 더 적게 사용하는 경우도 있다.
 
@@ -381,17 +381,13 @@ A[I_1, I_2, ..., I_n] = X
 여기서 `I_k` 는 스칼라 정수, 정수의 배열, 혹은 [지원하는 다른 인덱스](@ref man-supported-index-types) 중 하나이다.
 여기에는 모든 인덱스를 선택하는 [`Colon`](@ref) (`:`), 연속되거나 일정한 간격의 부분수열을 선택하는 `a:c` 혹은 `a:b:c`와 같은 형태의 범위, 그리고 `true` 값을 선택하는 부울 배열도 포함된다.
 
-If all indices `I_k` are integers, then the value in location `I_1, I_2, ..., I_n` of `A` is
-overwritten with the value of `X`, [`convert`](@ref)ing to the
-[`eltype`](@ref) of `A` if necessary.
+만약 인덱스 `I_k`들이 모두 정수라면, `A`의 `I_1, I_2, ..., I_n`에 위치한 값은 `X`의 값으로 덮어씌워진다. 
+필요하다면 [`eltype`](@ref)으로 형 변환[`convert`](@ref)이 일어날 수 있다.
 
-
-If any index `I_k` selects more than one location, then the right hand side `X` must be an
-array with the same shape as the result of indexing `A[I_1, I_2, ..., I_n]` or a vector with
-the same number of elements. The value in location `I_1[i_1], I_2[i_2], ..., I_n[i_n]` of
-`A` is overwritten with the value `X[I_1, I_2, ..., I_n]`, converting if necessary. The
-element-wise assignment operator `.=` may be used to [broadcast](@ref Broadcasting) `X`
-across the selected locations:
+만약 어떤 인덱스 `I_k`가 한 개보다 많은 위치를 선택할 경우, 
+우변의 `X`는 `A[I_1, I_2, ..., I_n]`의 인덱싱 결과와 같은 모양의 배열이거나, 성분 개수가 같은 벡터여야만 한다.
+`A`의 `I_1[i_1], I_2[i_2], ..., I_n[i_n]`에 위치한 값은 값 `X[I_1, I_2, ..., I_n]`으로 덮어씌워지며, 필요한 경우 형 변환이 일어난다.
+성분별 대입 연산자(The element-wise assignment operator) `.=`는 선택된 위치 전체에 대한 `X`의 브로드캐스팅[broadcast](@ref Broadcasting)에 쓰일 수 있다.
 
 ```
 A[I_1, I_2, ..., I_n] .= X
