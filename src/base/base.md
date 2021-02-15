@@ -1,19 +1,18 @@
-# Essentials
+# 기본 골자
 
-## Introduction
+## 소개
 
 Julia Base contains a range of functions and macros appropriate for performing
 scientific and numerical computing, but is also as broad as those of many general purpose programming
-languages.  Additional functionality is available from a growing collection of available packages.
-Functions are grouped by topic below.
+languages. Additional functionality is available from a growing collection of available packages.
+Functions are grouped by topic below. 함수들은 아래의 주제별로 묶여있다.
 
-Some general notes:
+몇몇의 기본 사항은 다음과 같다:
 
-  * To use module functions, use `import Module` to import the module, and `Module.fn(x)` to use the
-    functions.
-  * Alternatively, `using Module` will import all exported `Module` functions into the current namespace.
-  * By convention, function names ending with an exclamation point (`!`) modify their arguments.
-    Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions.
+  * 모듈의 함수를 사용하기 위해서는 `import Module`로 모듈을 가지고 와서(import), `Module.fn(x)`의 형식으로 사용하면 된다.
+  * 다른 방법으로, `using Module`을 사용하면 현재의 namespace에서 `Module`의 모든 (all exported) 함수를 사용할 수 있다.
+  * 기본 규약(convention)으로, 느낌표(`!`)로 그 이름이 끝나는 함수는 전달받은 전달인자(arguments)의 값을 바꾼다.
+    몇몇 함수는 바꾸는 경우(e.g., `sort!`)와 바꾸지 않는 경우(`sort`)의 두 가지 버전을 모두 갖는다.
 
 ## Getting Around
 
@@ -35,23 +34,23 @@ Base.@show
 ans
 ```
 
-## Keywords
+## 주요 단어들
 
-This is the list of reserved keywords in Julia:
+아래의 단어 목록은 줄리아의 예약어(reserved keyword) 목록이다:
 `baremodule`, `begin`, `break`, `catch`, `const`, `continue`, `do`,
 `else`, `elseif`, `end`, `export`, `false`, `finally`, `for`, `function`,
 `global`, `if`, `import`, `let`, `local`, `macro`, `module`, `quote`,
 `return`, `struct`, `true`, `try`, `using`, `while`.
-Those keywords are not allowed to be used as variable names.
+이 단어들은 변수 이름으로 사용하는 것이 불가하다.
 
-The following two-word sequences are reserved:
+아래의 연속된 두 단어짜리 구 전체는 예약어이다 (따라서 변수 이름으로 사용할 수 없다.):
 `abstract type`, `mutable struct`, `primitive type`.
-However, you can create variables with names:
-`abstract`, `mutable`, `primitive` and `type`.
+하지만, 아래의 이름으로 변수를 만드는 것은 가능하다:
+`abstract`, `mutable`, `primitive`, and `type`.
 
-Finally,`where` is parsed as an infix operator for writing parametric method
-and type definitions. Also `in` and `isa` are parsed as infix operators.
-Creation of a variable named `where`, `in` or `isa` is allowed though.
+마지막으로, Finally, `where`는 parametric method나 type 정의를 적을 때 중위 연산자(infix operator)로 구문분석된다(is parsed).
+`in`과 `isa` 또한 중위 연산자로 구문분석된다.
+그러나 `where`, `in` 혹은 `isa`로 변수 이름을 짓는 것은 허용된다.
 
 ```@docs
 module
