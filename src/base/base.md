@@ -11,7 +11,7 @@ Functions are grouped by topic below. 함수들은 아래의 주제별로 묶여
 
   * 모듈의 함수를 사용하기 위해서는 `import Module`로 모듈을 가지고 와서(import), `Module.fn(x)`의 형식으로 사용하면 된다.
   * 다른 방법으로, `using Module`을 사용하면 현재의 namespace에서 `Module`의 모든 (all exported) 함수를 사용할 수 있다.
-  * 기본 규약(convention)으로, 느낌표(`!`)로 그 이름이 끝나는 함수는 전달받은 전달인자(arguments)의 값을 바꾼다.
+  * 관습적으로(by convention), 느낌표(`!`)로 그 이름이 끝나는 함수는 전달받은 전달인자(arguments)의 값을 바꾼다.
     몇몇 함수는 바꾸는 경우(e.g., `sort!`)와 바꾸지 않는 경우(`sort`)의 두 가지 버전을 모두 갖는다.
 
 ## Getting Around
