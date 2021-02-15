@@ -147,8 +147,9 @@ julia> .![true,false,true]
 만약 `2 .* A.^2 .+ sin.(A)`(혹은 [`@.`](@ref @__dot__) macro)을 사용하여 `@. 2A^2 + sin(A)`를 계산한다면, Julia는 `A`의 모든 원소에 대해 `2a^2 + sin(a)`를 계산한다.
 `f.(g.(x))`같은 nested dot 호출도 이런 최적화가 일어나기 때문에 `x .+ 3 .* x.^2`와 `(+).(x, (*).(3, (^).(x, 2)))`같은 함수 꼴로 사용해도 성능상 차이가 발생하지 않는다.
 
-Furthermore, "dotted" updating operators like `a .+= b` (or `@. a += b`) are parsed
-as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation
+나아가서, *제자리에 두는* 융합된 대입 연산 `.=`에 대해 
+`a .+= b` (or `@. a += b`)와 같은 "dot" 업데이트 연산자들은 `a .= a .+ b`로 구문분석된다(are parsed). 
+
 ([dot 문법 문서](@ref man-vectorized)을 참고하라).
 
 dot 연산자는 사용자 정의 연산자에서도 활용할 수 있다.
@@ -289,7 +290,7 @@ true
 ```
 
 비교연산 이어쓰기는 코드 구성을 깔끔하게 한다.
-비교연산 이어쓰기는 `&&`사용하여 연산을 한것과 똑같이 작용하고, 원소별 연산에서는 [`&`](@ref)을 사용한 것과 동일하다.
+비교연산 이어쓰기는 `&&`를 사용하여 연산을 한 것과 똑같이 작용하고, 원소별 연산에서는 [`&`](@ref)을 사용한 것과 동일하다.
 쉽게 말하면 우리가 수학적으로 예상한 것과 똑같이 나온다는 것이다.
 그 예로 `0 .< A .< 1`는 각 원소가 0과 1 사이에 있는지에 대한 참/거짓을 행렬로 반환한다.
 
@@ -314,12 +315,12 @@ false
 첫번째 결과에서 중간값이 한번만 계산됨을 확인할 수 있다.
 이를 통해 `v(1) < v(2) && v(2) <= v(3)`로 계산했을 때보다 적은 계산량을 가지고, 비교연산 이어쓰기에서는 기존 프로그래밍 언어와 달리 계산 순서는 미리 예측할 수 없다는 걸 확인할 수 있다.
 따라서 비교연산 이어쓰기에서는 계산 순서가 중요한 연산(예시: 입출력)을 하지말자.
-이런 부작용을 감안하고 써야한다면 `&&`연산자를 활용하자. ([Short-Circuit Evaluation](@ref)을 참고하라).
+이런 부작용을 감안하고 써야한다면 `&&` 연산자를 활용하자. ([Short-Circuit Evaluation](@ref)을 참고하라).
 
 ### 기본 함수
 
 Julia는 수치 계산을 위한 함수와 연산자를 전폭적으로 지원한다.
-이런 연산은 서로 다른 타입의 숫자(정수, 실수, 유리수 등)가 충돌없이 수학적인 결과와 맞아 떨어지게끔 되어있다.
+이런 연산은 서로 다른 타입의 숫자(정수, 실수, 유리수 등)가 충돌 없이 수학적인 결과와 맞아 떨어지게끔 되어있다.
 
 이런 함수 모두 [dot 문법](@ref man-vectorized)을 지원한다.
 예를 들어 `sin.(A)`는 array의 모든 `A`의 원소의 sin값을 구한다.
@@ -381,11 +382,10 @@ julia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Bas
 Julia supports three forms of numerical conversion, which differ in their handling of inexact
 conversions.
 
-  * The notation `T(x)` or `convert(T,x)` converts `x` to a value of type `T`.
+  * 표기법 `T(x)` 또는 `convert(T,x)`는 `x`를 type `T`의 값으로 변환한다.
 
-      * If `T` is a floating-point type, the result is the nearest representable value, which could be
-        positive or negative infinity.
-      * If `T` is an integer type, an `InexactError` is raised if `x` is not representable by `T`.
+      * 만약 `T`가 부동 소숫점 type이면, 결과값은 표현할 수 있는 가장 가까운 값으로 나타내며, 이는 양 혹은 음의 무한대도 될 수 있다.
+      * 만약 `T`가 정수 type이면, `x`를 `T` type으로 나타낼 수 없을 때, `InexactError`가 발생한다.
   * `x % T` converts an integer `x` to a value of integer type `T` congruent to `x` modulo `2^n`,
     where `n` is the number of bits in `T`. In other words, the binary representation is truncated
     to fit.
