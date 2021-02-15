@@ -273,12 +273,12 @@ julia> isequal(-0.0, 0.0)
 false
 ```
 
-정수의 signed나 unsigned 혹은 실수 사이의 비교연산은 까다롭습니다.
-Julia는 타입 충돌 없이 이런 것들이 잘 작동하게 보장합니다.
+정수의 signed나 unsigned 혹은 실수 사이의 비교연산은 까다롭다.
+Julia는 타입 충돌 없이 이런 것들이 잘 작동하게 보장한다.
 
-서로 다른 타입에서 `isequal`을 사용하면 [`==`](@ref)을 호출하게 되어있습니다.
-여러분이 나만의 타입에서 동일성을 정의하고 싶다면 [`==`](@ref) method를 정의하면 됩니다.
-여기에 [`hash`](@ref) method도 정의하면 `isequal(x,y)`은 `hash(x) == hash(y)`을 반환합니다.
+서로 다른 타입에서 `isequal`을 사용하면 [`==`](@ref)을 호출하게 되어있다.
+당신이 자신만의 타입에서 동일성을 정의하고 싶다면 [`==`](@ref) method를 정의하면 된다.
+여기에 [`hash`](@ref) method도 정의하면 `isequal(x,y)`은 `hash(x) == hash(y)`을 반환한다.
 
 ### 비교연산 이어쓰기
 
@@ -314,7 +314,7 @@ false
 
 첫번째 결과에서 중간값이 한번만 계산됨을 확인할 수 있다.
 이를 통해 `v(1) < v(2) && v(2) <= v(3)`로 계산했을 때보다 적은 계산량을 가지고, 비교연산 이어쓰기에서는 기존 프로그래밍 언어와 달리 계산 순서는 미리 예측할 수 없다는 걸 확인할 수 있다.
-따라서 비교연산 이어쓰기에서는 계산 순서가 중요한 연산(예시: 입출력)을 하지말자.
+따라서 비교연산 이어쓰기에서는 계산 순서가 중요한 연산(예시: 입출력)을 하지 말자.
 이런 부작용을 감안하고 써야한다면 `&&` 연산자를 활용하자. ([Short-Circuit Evaluation](@ref)을 참고하라).
 
 ### 기본 함수
@@ -374,7 +374,7 @@ julia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Bas
 (:left, :none, :right)
 ```
 
-`:sin`의 경우  우선순위가 `0`임을 확인할 수 있는데, `0`은 최하위 우선순위가 아니라 유효하지 않은 연사자를 나타낸다.
+`:sin`의 경우  우선순위가 `0`임을 확인할 수 있는데, `0`은 최하위 우선순위가 아니라 유효하지 않은 연산자를 나타낸다.
 이와 비슷한 이유로 이런 연산자는 연산자 결합성이 `:none`임을 볼 수 있다.
 
 ## Numerical Conversions
@@ -386,9 +386,8 @@ conversions.
 
       * 만약 `T`가 부동 소숫점 type이면, 결과값은 표현할 수 있는 가장 가까운 값으로 나타내며, 이는 양 혹은 음의 무한대도 될 수 있다.
       * 만약 `T`가 정수 type이면, `x`를 `T` type으로 나타낼 수 없을 때, `InexactError`가 발생한다.
-  * `x % T` converts an integer `x` to a value of integer type `T` congruent to `x` modulo `2^n`,
-    where `n` is the number of bits in `T`. In other words, the binary representation is truncated
-    to fit.
+  * `x % T`는 정수 `x`를 법 `2^n`에 대해 합동(congruent to `x` modulo `2^n`)인, type `T`의 정수값으로 변환한다(converts an integer `x` to a value of integer type `T`).
+    여기서 `n`은 `T` 안의 비트 수이다. In other words, the binary representation is truncated to fit.
   * The [Rounding functions](@ref) take a type `T` as an optional argument. For example, `round(Int,x)`
     is a shorthand for `Int(round(x))`.
 
