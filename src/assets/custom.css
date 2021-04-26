@@ -18,3 +18,7 @@ li p {
 article footer {
     padding: 0em 0em 2em 0em;
 }
+
+html.theme--documenter-dark article code {
+    color: #03cbe2;
+}

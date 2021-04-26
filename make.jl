@@ -166,12 +166,12 @@ const PAGES = [
     t_Base => BaseDocs,
     t_Standard_Library => StdlibDocs,
     t_Developer_Documentation => DevDocs,
-    hide("NEWS.md"),
+    # hide("NEWS.md"),
 ]
 else
 const PAGES = [
     t_Julia_Documentation => "index.md",
-    hide("NEWS.md"),
+    # hide("NEWS.md"),
     t_Manual => Manual,
     t_Base => BaseDocs,
     t_Standard_Library => StdlibDocs,
@@ -196,7 +196,7 @@ else
         prettyurls = !("local" in ARGS),
         canonical = t_html_canonical,
         analytics = t_analytics,
-        assets = ["assets/julia-manual.css", ],
+        assets = ["assets/julia-manual.css", "assets/custom.css"],
         collapselevel = 1,
     )
 end
