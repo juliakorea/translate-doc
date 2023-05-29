@@ -19,37 +19,39 @@ Some general notes:
 
 ```@docs
 Base.exit
-Base.quit
 Base.atexit
 Base.isinteractive
-Base.varinfo
 Base.summarysize
-Base.edit(::AbstractString, ::Integer)
-Base.edit(::Any)
-Base.@edit
-Base.less(::AbstractString)
-Base.less(::Any)
-Base.@less
-Base.clipboard(::Any)
-Base.clipboard()
 Base.require
 Base.compilecache
 Base.__precompile__
 Base.include
+Base.MainInclude.include
 Base.include_string
 Base.include_dependency
-Base.Docs.apropos
 Base.which(::Any, ::Any)
-Base.which(::Symbol)
-Base.@which
 Base.methods
-Base.methodswith
 Base.@show
-Base.versioninfo
 ans
 ```
 
 ## Keywords
+
+This is the list of reserved keywords in Julia:
+`baremodule`, `begin`, `break`, `catch`, `const`, `continue`, `do`,
+`else`, `elseif`, `end`, `export`, `false`, `finally`, `for`, `function`,
+`global`, `if`, `import`, `let`, `local`, `macro`, `module`, `quote`,
+`return`, `struct`, `true`, `try`, `using`, `while`.
+Those keywords are not allowed to be used as variable names.
+
+The following two-word sequences are reserved:
+`abstract type`, `mutable struct`, `primitive type`.
+However, you can create variables with names:
+`abstract`, `mutable`, `primitive` and `type`.
+
+Finally,`where` is parsed as an infix operator for writing parametric method
+and type definitions. Also `in` and `isa` are parsed as infix operators.
+Creation of a variable named `where`, `in` or `isa` is allowed though.
 
 ```@docs
 module
@@ -79,22 +81,30 @@ struct
 mutable struct
 abstract type
 primitive type
+where
 ...
 ;
+=
 ```
 
-## Base Modules
+## Standard Modules
 ```@docs
+Main
+Core
+Base
+```
+
+## Base Submodules
+```@docs
+Base.Broadcast
 Base.Docs
 Base.Iterators
-Base.LibGit2
 Base.Libc
-Base.Markdown
 Base.Meta
-Base.Pkg
 Base.StackTraces
 Base.Sys
 Base.Threads
+Base.GC
 ```
 
 ## All Objects
@@ -118,6 +128,7 @@ Base.deepcopy
 Base.getproperty
 Base.setproperty!
 Base.propertynames
+Base.hasproperty
 Core.getfield
 Core.setfield!
 Core.isdefined
@@ -137,7 +148,6 @@ Base.identity
 Base.supertype
 Core.:(<:)
 Base.:(>:)
-Base.subtypes
 Base.typejoin
 Base.typeintersect
 Base.promote_type
@@ -151,10 +161,12 @@ Base.isdispatchtuple
 Base.isimmutable
 Base.isabstracttype
 Base.isprimitivetype
+Base.issingletontype
 Base.isstructtype
 Base.nameof(::DataType)
 Base.fieldnames
 Base.fieldname
+Base.hasfield
 ```
 
 ### Memory layout
@@ -163,7 +175,9 @@ Base.fieldname
 Base.sizeof(::Type)
 Base.isconcretetype
 Base.isbits
+Base.isbitstype
 Core.fieldtype
+Base.fieldtypes
 Base.fieldcount
 Base.fieldoffset
 Base.datatype_alignment
@@ -176,8 +190,8 @@ Base.datatype_pointerfree
 ```@docs
 Base.typemin
 Base.typemax
-Base.realmin
-Base.realmax
+Base.floatmin
+Base.floatmax
 Base.maxintfloat
 Base.eps(::Type{<:AbstractFloat})
 Base.eps(::AbstractFloat)
@@ -192,11 +206,19 @@ Core.Union
 Union{}
 Core.UnionAll
 Core.Tuple
+Core.NamedTuple
 Base.Val
 Core.Vararg
 Core.Nothing
+Base.isnothing
 Base.Some
+Base.something
+Base.Enums.Enum
 Base.Enums.@enum
+Core.Expr
+Core.Symbol
+Core.Symbol(x...)
+Core.Module
 ```
 
 ## Generic Functions
@@ -210,26 +232,32 @@ Base.invokelatest
 new
 Base.:(|>)
 Base.:(∘)
-Base.equalto
 ```
 
 ## Syntax
 
 ```@docs
 Core.eval
+Base.MainInclude.eval
 Base.@eval
 Base.evalfile
 Base.esc
 Base.@inbounds
 Base.@boundscheck
+Base.@propagate_inbounds
 Base.@inline
 Base.@noinline
 Base.@nospecialize
+Base.@specialize
 Base.gensym
 Base.@gensym
 Base.@goto
 Base.@label
+Base.@simd
 Base.@polly
+Base.@generated
+Base.@pure
+Base.@deprecate
 ```
 
 ## Missing Values
@@ -245,15 +273,13 @@ Base.skipmissing
 
 ```@docs
 Base.run
-Base.spawn
-Base.DevNull
+Base.devnull
 Base.success
 Base.process_running
 Base.process_exited
 Base.kill(::Base.Process, ::Integer)
 Base.Sys.set_process_title
 Base.Sys.get_process_title
-Base.readandwrite
 Base.ignorestatus
 Base.detach
 Base.Cmd
@@ -262,7 +288,6 @@ Base.withenv
 Base.pipeline(::Any, ::Any, ::Any, ::Any...)
 Base.pipeline(::Base.AbstractCmd)
 Base.Libc.gethostname
-Base.getipaddr
 Base.Libc.getpid
 Base.Libc.time()
 Base.time_ns
@@ -277,9 +302,22 @@ Base.Sys.isunix
 Base.Sys.isapple
 Base.Sys.islinux
 Base.Sys.isbsd
+Base.Sys.isfreebsd
+Base.Sys.isopenbsd
+Base.Sys.isnetbsd
+Base.Sys.isdragonfly
 Base.Sys.iswindows
 Base.Sys.windows_version
+Base.Sys.free_memory
+Base.Sys.total_memory
 Base.@static
+```
+
+## Versioning
+
+```@docs
+Base.VersionNumber
+Base.@v_str
 ```
 
 ## Errors
@@ -290,11 +328,12 @@ Core.throw
 Base.rethrow
 Base.backtrace
 Base.catch_backtrace
-Base.assert
+Base.catch_stack
 Base.@assert
 Base.ArgumentError
 Base.AssertionError
 Core.BoundsError
+Base.CompositeException
 Base.DimensionMismatch
 Core.DivideError
 Core.DomainError
@@ -309,12 +348,14 @@ Base.MissingException
 Core.OutOfMemoryError
 Core.ReadOnlyMemoryError
 Core.OverflowError
-Base.ParseError
+Base.ProcessFailedException
 Core.StackOverflowError
 Base.SystemError
 Core.TypeError
+Core.UndefKeywordError
 Core.UndefRefError
 Core.UndefVarError
+Base.StringIndexError
 Base.InitError
 Base.retry
 Base.ExponentialBackOff
@@ -334,6 +375,8 @@ Base.AsyncCondition(::Function)
 ```@docs
 Base.nameof(::Module)
 Base.parentmodule
+Base.pathof(::Module)
+Base.moduleroot
 Base.@__MODULE__
 Base.fullname
 Base.names
@@ -342,7 +385,6 @@ Base.isconst
 Base.nameof(::Function)
 Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
-Base.@functionloc
 ```
 
 ## Internals
@@ -350,22 +392,24 @@ Base.@functionloc
 ```@docs
 Base.GC.gc
 Base.GC.enable
+Base.GC.@preserve
 Meta.lower
 Meta.@lower
 Meta.parse(::AbstractString, ::Int)
 Meta.parse(::AbstractString)
+Meta.ParseError
+Core.QuoteNode
 Base.macroexpand
 Base.@macroexpand
 Base.@macroexpand1
 Base.code_lowered
-Base.@code_lowered
 Base.code_typed
-Base.@code_typed
-Base.code_warntype
-Base.@code_warntype
-Base.code_llvm
-Base.@code_llvm
-Base.code_native
-Base.@code_native
 Base.precompile
+```
+
+## Meta
+```@docs
+Meta.quot
+Meta.isexpr
+Meta.show_sexpr
 ```

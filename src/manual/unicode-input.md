@@ -20,7 +20,7 @@ the symbol).
 # Generate a table containing all LaTeX and Emoji tab completions available in the REPL.
 #
 
-import REPL
+import REPL, Markdown
 const NBSP = '\u00A0'
 
 function tab_completions(symbols...)
@@ -32,7 +32,11 @@ function tab_completions(symbols...)
 end
 
 function unicode_data()
-    file = normpath(@__DIR__, "..", "..", "..", "..", "UnicodeData.txt")
+    if basename(dirname(normpath(@__DIR__, ".."))) == "_build_local"
+        file = normpath(@__DIR__, "..",  "..", "UnicodeData.txt")
+    else
+        file = normpath(@__DIR__, "..",  "..", "..", "..",  "..", "UnicodeData.txt")
+    end
     names = Dict{UInt32, String}()
     open(file) do unidata
         for line in readlines(unidata)
@@ -62,7 +66,7 @@ function table_entries(completions, unicode_dict)
     for (chars, inputs) in sort!(collect(completions), by = first)
         code_points, unicode_names, characters = String[], String[], String[]
         for char in chars
-            push!(code_points, "U+$(uppercase(hex(char, 5)))")
+            push!(code_points, "U+$(uppercase(string(UInt32(char), base = 16, pad = 5)))")
             push!(unicode_names, get(unicode_dict, UInt32(char), "(No Unicode name)"))
             push!(characters, isempty(characters) ? fix_combining_chars(char) : "$char")
         end

@@ -1,8 +1,6 @@
-# [Functions](@id man-functions)
+# [함수](@id man-functions)
 
-In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
-functions are not pure mathematical functions, in the sense that functions can alter and be affected
-by the global state of the program. The basic syntax for defining functions in Julia is:
+함수는 인자를 받아 값을 반환하는 객체이다. Julia에서 정의하는 함수는 실행 상황에 영향을 받는다는 점에서 수학적 정의에 따른 함수와는 조금 다르다. 아래는 Julia에서 함수를 정의하는 가장 기본적인 방법이다:
 
 ```jldoctest
 julia> function f(x,y)
@@ -10,29 +8,20 @@ julia> function f(x,y)
        end
 f (generic function with 1 method)
 ```
-
-There is a second, more terse syntax for defining a function in Julia. The traditional function
-declaration syntax demonstrated above is equivalent to the following compact "assignment form":
-
+아래와 같이 함수를 정의하는 방법도 있다:
 ```jldoctest fofxy
 julia> f(x,y) = x + y
 f (generic function with 1 method)
 ```
+위처럼 "할당 형식(assignment form)"으로 선언할 경우 복합 표현이더라도 한 줄로 표현해야 한다([복합 표현을 자세하고 알고 싶다면?](@ref man-compound-expressions)). 이렇게 함수를 표현하는 경우는 Julia에 흔한 일이고, 때론 코드 가독성을 높여준다.
 
-In the assignment form, the body of the function must be a single expression, although it can
-be a compound expression (see [Compound Expressions](@ref man-compound-expressions)). Short, simple function definitions
-are common in Julia. The short function syntax is accordingly quite idiomatic, considerably reducing
-both typing and visual noise.
-
-A function is called using the traditional parenthesis syntax:
+다른 언어처럼 소괄호를 통해 함수 인자를 전달한다:
 
 ```jldoctest fofxy
 julia> f(2,3)
 5
 ```
-
-Without parentheses, the expression `f` refers to the function object, and can be passed around
-like any value:
+소괄호가 없는 `f`는 함수 객체로써 하나의 값으로 취급할 수 있다:
 
 ```jldoctest fofxy
 julia> g = f;
@@ -40,8 +29,7 @@ julia> g = f;
 julia> g(2,3)
 5
 ```
-
-As with variables, Unicode can also be used for function names:
+함수의 이름은 유니코드라면 무엇이든지 가능하다:
 
 ```jldoctest
 julia> ∑(x,y) = x + y
@@ -51,22 +39,16 @@ julia> ∑(2, 3)
 5
 ```
 
-## Argument Passing Behavior
+## 인자 전달 방식
+함수에 인자를 줄 때 Julia는 "공유를 통한 전달([pass-by-sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing))"을 한다.
+이 말인즉슨, 객체를 복사하지 않고 공유한다는 뜻이다.
+전달된 인자는 함수 안에 있는 변수에 할당되고, 함수 안의 변수는 단지 그 객체를 가리킬 뿐이다.
+`Array`와 같은 mutable 객체가 함수 안에서 변하면, 함수 밖에서도 그 변화를 볼 수 있다.
+이런 방식은 Scheme, Python, Ruby, Perl 그리고 대부분의 Lisp와 같은 동적언어가 채택한 방식이다.
 
-Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
-values are not copied when they are passed to functions. Function arguments themselves act as
-new variable *bindings* (new locations that can refer to values), but the values they refer to
-are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
-a function will be visible to the caller. This is the same behavior found in Scheme, most Lisps,
-Python, Ruby and Perl, among other dynamic languages.
-
-## The `return` Keyword
-
-The value returned by a function is the value of the last expression evaluated, which, by default,
-is the last expression in the body of the function definition. In the example function, `f`, from
-the previous section this is the value of the expression `x + y`. As in C and most other imperative
-or functional languages, the `return` keyword causes a function to return immediately, providing
-an expression whose value is returned:
+## return 키워드
+함수가 반환하는 값은 암묵적으로 가장 마지막으로 계산된 값이다. 이전의 예제 함수 `f`에서는 `x+y`의 값이 반환될 것이다.
+다른 프로그래밍 언어처럼 `return`과 반환값이 명시적으로 선언될 경우, 함수는 즉시 종료되고 `return` 앞에 있는 식을 계산하고 반환할 것이다:
 
 ```julia
 function g(x,y)
@@ -74,9 +56,7 @@ function g(x,y)
     x + y
 end
 ```
-
-Since function definitions can be entered into interactive sessions, it is easy to compare these
-definitions:
+직접 테스트해보자:
 
 ```jldoctest
 julia> f(x,y) = x + y
@@ -94,12 +74,8 @@ julia> f(2,3)
 julia> g(2,3)
 6
 ```
-
-Of course, in a purely linear function body like `g`, the usage of `return` is pointless since
-the expression `x + y` is never evaluated and we could simply make `x * y` the last expression
-in the function and omit the `return`. In conjunction with other control flow, however, `return`
-is of real use. Here, for example, is a function that computes the hypotenuse length of a right
-triangle with sides of length `x` and `y`, avoiding overflow:
+함수 `g`에서 `x+y`는 절대 실행되지 않기 때문에, 이 부분을 빼고 `x*y`만 남겨놔도 똑같이 작동한다.
+`return`을 직접 선언하는 방식은 조건문과 같이 코드의 흐름을 바꾸는 구문과 사용했을 때 빛을 발한다. 아래에 직각 삼각형에서 밑변 `x`와 높이 `y`가 주어졌을 때 빗변의 길이는 구하는 예제로 확인할 수 있다. 아래 함수는 overflow를 없애기 위해 조건문을 사용했다:
 
 ```jldoctest
 julia> function hypot(x,y)
@@ -120,18 +96,51 @@ hypot (generic function with 1 method)
 julia> hypot(3, 4)
 5.0
 ```
+위 함수는 경우에 따라 세 가지 방법으로 값을 반환한다. 마지막에 `return`은 생략해도 된다.
 
-There are three possible points of return from this function, returning the values of three different
-expressions, depending on the values of `x` and `y`. The `return` on the last line could be omitted
-since it is the last expression.
+## 반환 타입
 
-## Operators Are Functions
+반환값의 타입은 `::`로 명시할 수 있으며, 이 경우 반환값이 자동 형변환된다.
 
-In Julia, most operators are just functions with support for special syntax. (The exceptions are
-operators with special evaluation semantics like `&&` and `||`. These operators cannot be functions
-since [Short-Circuit Evaluation](@ref) requires that their operands are not evaluated before evaluation
-of the operator.) Accordingly, you can also apply them using parenthesized argument lists, just
-as you would any other function:
+```jldoctest
+julia> function g(x, y)::Int8
+           return x * y
+       end;
+
+julia> typeof(g(1, 2))
+Int8
+```
+
+위 함수는 `x`와 `y`의 타입에 상관없이 반환값은 `Int8`로 정해져있다. 타입에 대해 자세히 알고 싶다면 [Type Declarations](@ref)을 참고하자.
+
+## 반환값이 없는 함수
+
+함수가 값을 반환할 필요가 없을 경우, Julia 언어 내에서는 관습적으로 [nothing](@ref)을 반환한다:
+
+```jldoctest
+function printx(x)
+    println("x = $x")
+    return nothing
+end
+```
+
+This is a *convention* in the sense that `nothing` is not a Julia keyword
+but a only singleton object of type `Nothing`.
+Also, you may notice that the `printx` function example above is contrived,
+because `println` already returns `nothing`, so that the `return` line is redundant.
+
+There are two possible shortened forms for the `return nothing` expression.
+On the one hand, the `return` keyword implicitly returns `nothing`, so it can be used alone.
+On the other hand, since functions implicitly return their last expression evaluated,
+`nothing` can be used alone when it's the last expression.
+The preference for the expression `return nothing` as opposed to `return` or `nothing`
+alone is a matter of coding style.
+
+## 연산자는 함수다
+
+Julia에서 연산자는 특별한 문법을 가진 함수일 뿐이다(`&&`와 `||`는 예외다.
+이들은 [단락 계산](@ref Short-Circuit-Evaluation)에서 나왔다시피 연산자가 피연산자보다 먼저 계산되기 때문이다).
+따라서 연산자는 일반 함수처럼 소괄호를 이용해 인자를 전달할 수 있다:
 
 ```jldoctest
 julia> 1 + 2 + 3
@@ -141,9 +150,8 @@ julia> +(1,2,3)
 6
 ```
 
-The infix form is exactly equivalent to the function application form -- in fact the former is
-parsed to produce the function call internally. This also means that you can assign and pass around
-operators such as [`+`](@ref) and [`*`](@ref) just like you would with other function values:
+infix 표기법(`1+2+3`)과 함수 표기법은 같은 결과를 낸다. 실제로 Julia는 내부에서 infix 표기를 함수 표기로 바꿔서 계산하기 때문에 같을 수밖에 없다.
+연산자가 함수이기 때문에 다음과 같이 사용할 수도 있다:
 
 ```jldoctest
 julia> f = +;
@@ -152,32 +160,29 @@ julia> f(1,2,3)
 6
 ```
 
-Under the name `f`, the function does not support infix notation, however.
+다만 위처럼 함수 이름이 바뀌면 infix 표기법을 사용할 수 없다.
 
-## Operators With Special Names
+## 특별한 이름을 가진 함수
 
-A few special expressions correspond to calls to functions with non-obvious names. These are:
+특정 함수는 호출 대신 특수한 문법으로 대체할 수 있다. 그러한 함수는 다음과 같습니다:
 
-| Expression        | Calls                   |
+| 문법        | 함수 이름                   |
 |:----------------- |:----------------------- |
 | `[A B C ...]`     | [`hcat`](@ref)          |
 | `[A; B; C; ...]`  | [`vcat`](@ref)          |
 | `[A B; C D; ...]` | [`hvcat`](@ref)         |
 | `A'`              | [`adjoint`](@ref)       |
-| `A.'`             | [`transpose`](@ref)     |
-| `1:n`             | [`colon`](@ref)         |
 | `A[i]`            | [`getindex`](@ref)      |
 | `A[i] = x`        | [`setindex!`](@ref)     |
 | `A.n`             | [`getproperty`](@ref Base.getproperty) |
 | `A.n = x`         | [`setproperty!`](@ref Base.setproperty!) |
 
-## [Anonymous Functions](@id man-anonymous-functions)
+## [익명 함수](@id man-anonymous-functions)
 
-Functions in Julia are [first-class objects](https://en.wikipedia.org/wiki/First-class_citizen):
-they can be assigned to variables, and called using the standard function call syntax from the
-variable they have been assigned to. They can be used as arguments, and they can be returned as
-values. They can also be created anonymously, without being given a name, using either of these
-syntaxes:
+Julia에서 함수는 [일급 객체](https://ko.wikipedia.org/wiki/%EC%9D%BC%EA%B8%89_%EA%B0%9D%EC%B2%B4)다:
+변수에 값으로 저장될 수 있고, 해당 변수를 함수로 사용할 수 있다.
+또 함수 객체는 다른 함수의 인자가 될 수도 있고 반환값이 될 수도 있다.
+함수의 이름이 없어도 함수를 다음과 같은 방법으로 정의할 수 있다:
 
 ```jldoctest
 julia> x -> x^2 + 2x - 1
@@ -189,13 +194,11 @@ julia> function (x)
 #3 (generic function with 1 method)
 ```
 
-This creates a function taking one argument `x` and returning the value of the polynomial `x^2 +
-2x - 1` at that value. Notice that the result is a generic function, but with a compiler-generated
-name based on consecutive numbering.
+두 방법 모두 `x`를 받아 `x^2 + 2x - 1`를 반환하는 함수를 만든다.
+위와 같은 방식으로 함수를 만들면 함수 이름 대신 컴파일러가 #1, #3과 같은 숫자로 함수를 구분하는 걸 볼 수 있다.
 
-The primary use for anonymous functions is passing them to functions which take other functions
-as arguments. A classic example is [`map`](@ref), which applies a function to each value of
-an array and returns a new array containing the resulting values:
+익명 함수는 함수를 함수 인자로 주면서, 한 번 밖에 사용하지 않을 때 유용하다.
+[`map`](@ref)이 그 중 하나로, 배열이 값 각각을 인자로 받는 함수를 받아 반환값으로 새로운 배열을 만든다:
 
 ```jldoctest
 julia> map(round, [1.2,3.5,1.7])
@@ -205,10 +208,8 @@ julia> map(round, [1.2,3.5,1.7])
  2.0
 ```
 
-This is fine if a named function effecting the transform already exists to pass as the first argument
-to [`map`](@ref). Often, however, a ready-to-use, named function does not exist. In these
-situations, the anonymous function construct allows easy creation of a single-use function object
-without needing a name:
+위에서는 이미 원하는 함수가 정의되어 있었기 때문에 문제가 없었다.
+하지만 그런 함수가 없을 때, 익명 함수를 사용하면 편리하다:
 
 ```jldoctest
 julia> map(x -> x^2 + 2x - 1, [1,3,-1])
@@ -218,18 +219,14 @@ julia> map(x -> x^2 + 2x - 1, [1,3,-1])
  -2
 ```
 
-An anonymous function accepting multiple arguments can be written using the syntax `(x,y,z)->2x+y-z`.
-A zero-argument anonymous function is written as `()->3`. The idea of a function with no arguments
-may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
-wrapped in a zero-argument function, which is later invoked by calling it as `f`.
+익명 함수에 다중 인자를 사용하려면 `(x,y,z)->2x+y-z`처럼 쓰면 된다. `()->3`처럼 인자를 받지 않는 함수를 정의할 수도 있다. 처음 프로그래밍을 접하면 "인자를 받지 않는 함수를 왜쓰지?"라고 생각할 수 있지만 코딩을 하다보면 여러모로 유용하다.
 
-## Tuples
+## 튜플
 
-Julia has a built-in data structure called a *tuple* that is closely related to function
-arguments and return values.
-A tuple is a fixed-length container that can hold any values, but cannot be modified
-(it is *immutable*).
-Tuples are constructed with commas and parentheses, and can be accessed via indexing:
+
+줄리아의 *튜플*은 함수의 입출력에 중요하게 관여한다.
+튜플은 어떤 값이든 저장할 수 있는 고정 크기의 컨테이너이며, 생성 후에는 수정이 불가능(immutable)하다.
+튜플은 반점과 소괄호를 이용해 만들고 인덱싱을 통해 값에 접근한다:
 
 ```jldoctest
 julia> (1, 1+1)
@@ -245,14 +242,11 @@ julia> x[2]
 "hello"
 ```
 
-Notice that a length-1 tuple must be written with a comma, `(1,)`, since `(1)` would just
-be a parenthesized value.
-`()` represents the empty (length-0) tuple.
+크기가 1인 튜플을 만들고 싶어도 `(1,)`처럼 꼭 반점을 넣어야 한다. `(1)`은 값을 소괄호로 감싼 것으로 취급된다. `()`은 비어 있는 튜플을 생성한다.
 
-## Named Tuples
+## 지명 튜플(Named tuple)
 
-The components of tuples can optionally be named, in which case a *named tuple* is
-constructed:
+튜플의 인자에 이름을 부여할 수 있으며 이를 *지명 튜플*이라고 한다:
 
 ```jldoctest
 julia> x = (a=1, b=1+1)
@@ -262,15 +256,14 @@ julia> x.a
 1
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`).
+지명 튜플은 이름이 있다는 것을 제외하면 일반적인 튜플과 유사하며, dot 문법을 통해 값에 접근할 수 있다 (`x.a`).
 
-## Multiple Return Values
+## 다중 반환
 
-In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
-can be created and destructured without needing parentheses, thereby providing an illusion that
-multiple values are being returned, rather than a single tuple value. For example, the following
-function returns a pair of values:
+여러 값을 반환하기 위해 함수는 튜플을 반환한다.
+하지만 튜플은 괄호 없이 생성되기도 하고 분리되기도 하므로 명시적으로 튜플을 사용한다는 것을 나타낼 필요가 없다.
+이는 우리가 값을 여러 개 반환한다는 환상을 심어준다.
+예제로 두 개의 값을 반환하는 상황을 보자:
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -279,16 +272,14 @@ julia> function foo(a,b)
 foo (generic function with 1 method)
 ```
 
-If you call it in an interactive session without assigning the return value anywhere, you will
-see the tuple returned:
+대화형 실행환경에서 함수를 실행하면 튜플이 반환되는 것을 확인할 수 있다:
 
 ```jldoctest foofunc
 julia> foo(2,3)
 (5, 6)
 ```
 
-A typical usage of such a pair of return values, however, extracts each value into a variable.
-Julia supports simple tuple "destructuring" that facilitates this:
+보통의 경우 튜플의 값을 변수로 각각 분리하고 사용하기 때문에, Julia는 튜플을 분리할 수 있는 간단한 방법을 제공하여 편의성을 높였다:
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -301,7 +292,8 @@ julia> y
 6
 ```
 
-You can also return multiple values via an explicit usage of the `return` keyword:
+`return`으로도 다중 변수 반환을 할 수 있다.
+아래 예제는 이전 예제와 똑같이 작동한다:
 
 ```julia
 function foo(a,b)
@@ -309,9 +301,7 @@ function foo(a,b)
 end
 ```
 
-This has the exact same effect as the previous definition of `foo`.
-
-## Argument destructuring
+## 인자 분리
 
 The destructuring feature can also be used within a function argument.
 If a function argument name is written as a tuple (e.g. `(x, y)`) instead of just
@@ -330,20 +320,17 @@ Notice the extra set of parentheses in the definition of `range`.
 Without those, `range` would be a two-argument function, and this example would
 not work.
 
-## Varargs Functions
+## 가변인자 함수
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last argument with an ellipsis:
+경우에 따라 함수에 원하는 만큼 인자를 주는 것이 유용할 때도 있다.
+이러한 가변인자 함수를 만들려면 함수 인자 선언의 마지막에 `(인자 이름)...`을 넣으면 된다:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
 ```
 
-The variables `a` and `b` are bound to the first two argument values as usual, and the variable
-`x` is bound to an iterable collection of the zero or more values passed to `bar` after its first
-two arguments:
+위 예제에서 처음 두번째 인자까지는 `a`와 `b`에 할당되고, 변수 `x`에는 나머지 인자들이 튜플로 묶여서 전달된다:
 
 ```jldoctest barfunc
 julia> bar(1,2)
@@ -359,14 +346,11 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-In all these cases, `x` is bound to a tuple of the trailing values passed to `bar`.
+가변인자의 개수를 제한하는 방법은 [매개변수적으로 제한된 Varargs 메서드](@ref)에서 확인할 수 있다.
 
-It is possible to constrain the number of values passed as a variable argument; this will be discussed
-later in [Parametrically-constrained Varargs methods](@ref).
-
-On the flip side, it is often handy to "splat" the values contained in an iterable collection
-into a function call as individual arguments. To do this, one also uses `...` but in the function
-call instead:
+`...`을 다르게도 활용할 수 있다.
+interable 객체에 저장된 값 하나하나를 전부 함수 인자로 주고 싶을 때, 해당 변수에 `...`을 붙여주면 순서대로 인자를 넣어준다.
+아래의 경우 튜플이 알아서 쪼개져 각 인자에 순서대로 들어간다:
 
 ```jldoctest barfunc
 julia> x = (3, 4)
@@ -374,12 +358,7 @@ julia> x = (3, 4)
 
 julia> bar(1,2,x...)
 (1, 2, (3, 4))
-```
 
-In this case a tuple of values is spliced into a varargs call precisely where the variable number
-of arguments go. This need not be the case, however:
-
-```jldoctest barfunc
 julia> x = (2, 3, 4)
 (2, 3, 4)
 
@@ -393,7 +372,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Furthermore, the iterable object splatted into a function call need not be a tuple:
+물론 interable 객체이기만 하면 위 방법을 사용할 수 있다:
 
 ```jldoctest barfunc
 julia> x = [3,4]
@@ -415,8 +394,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Also, the function that arguments are splatted into need not be a varargs function (although it
-often is):
+이 방법은 가변인자 함수가 아니어도 사용할 수 있다:
 
 ```jldoctest
 julia> baz(a,b) = a + b;
@@ -441,38 +419,39 @@ Closest candidates are:
   baz(::Any, ::Any) at none:1
 ```
 
-As you can see, if the wrong number of elements are in the splatted container, then the function
-call will fail, just as it would if too many arguments were given explicitly.
+보다시피 인자의 개수가 잘못되면 함수 호출은 실패하고 위와 같은 에러를 보게 될 것이다.
 
-## Optional Arguments
+## 기본값이 제공된 인자(optional arguments)
 
-In many cases, function arguments have sensible default values and therefore might not need to
-be passed explicitly in every call. For example, the library function [`parse(T, num, base = base)`](@ref)
-interprets a string as a number in some base. The `base` argument defaults to `10`. This behavior
-can be expressed concisely as:
+기본값이 지정된 함수는 해당 인자를 주지 않아도 잘 작동한다.
+예를 들어`Dates`의 `Date`타입에 지정된 [`Date(y, [m, d])`](@ref) 함수는 `y`만 지정하면 `m`과 `d`는 1로 자동 지정된다:
 
 ```julia
-function parse(T, num; base = 10)
-    ###
+function Date(y::Int64, m::Int64=1, d::Int64=1)
+    err = validargs(Date, y, m, d)
+    err === nothing || throw(err)
+    return Date(UTD(totaldays(y, m, d)))
 end
 ```
 
-With this definition, the function can be called with either two or three arguments, and `10`
-is automatically passed when a third argument is not specified:
+이 예제에 부연설명을 하면, `Date`함수는 `UTInstant{Day}`라는 인자를 받는 다른 매서드 함수 `Date`를 호출한다.
+위 함수의 정의에 따라 이 함수에는 인자를 하나, 둘, 혹은 세개를 줄 수 있으며, 인자가 직접 주어지지 않을 경우 `1`이 자동으로 부여됨을 알 수 있다:
 
 ```jldoctest
-julia> parse(Int, "12", base = 10)
-12
+julia> using Dates
 
-julia> parse(Int, "12", base = 3)
-5
+julia> Date(2000, 12, 12)
+2000-12-12
 
-julia> parse(Int, "12")
-12
+julia> Date(2000, 12)
+2000-12-01
+
+julia> Date(2000)
+2000-01-01
 ```
 
-Optional arguments are actually just a convenient syntax for writing multiple method definitions
-with different numbers of arguments (see [Note on Optional and keyword Arguments](@ref)).
+기본값 제공은 다중인자 함수의 사용 편의성을 위한 것이다([Note on Optional and keyword Arguments](@ref)를 보자).
+위 예제에서 메서드 함수를 호출한 것을 보면 알 수 있다.
 
 ## Keyword Arguments
 
@@ -519,8 +498,20 @@ function f(x; y=0, kwargs...)
 end
 ```
 
-Inside `f`, `kwargs` will be a named tuple. Named tuples (as well as dictionaries) can be passed as
-keyword arguments using a semicolon in a call, e.g. `f(x, z=1; kwargs...)`.
+Inside `f`, `kwargs` will be a key-value iterator over a named tuple. Named
+tuples (as well as dictionaries with keys of `Symbol`) can be passed as keyword
+arguments using a semicolon in a call, e.g. `f(x, z=1; kwargs...)`.
+
+If a keyword argument is not assigned a default value in the method definition,
+then it is *required*: an [`UndefKeywordError`](@ref) exception will be thrown
+if the caller does not assign it a value:
+```julia
+function f(x; y)
+    ###
+end
+f(3, y=5) # ok, y is assigned
+f(3)      # throws UndefKeywordError(:y)
+```
 
 One can also pass `key => value` expressions after a semicolon. For example, `plot(x, y; :width => 2)`
 is equivalent to `plot(x, y, width=2)`. This is useful in situations where the keyword name is computed
@@ -529,7 +520,9 @@ at runtime.
 The nature of keyword arguments makes it possible to specify the same argument more than once.
 For example, in the call `plot(x, y; options..., width=2)` it is possible that the `options` structure
 also contains a value for `width`. In such a case the rightmost occurrence takes precedence; in
-this example, `width` is certain to have the value `2`.
+this example, `width` is certain to have the value `2`. However, explicitly specifying the same keyword
+argument multiple times, for example `plot(x, y, width=2, width=3)`, is not allowed and results in
+a syntax error.
 
 ## Evaluation Scope of Default Values
 
@@ -614,22 +607,80 @@ end
 Here, [`open`](@ref) first opens the file for writing and then passes the resulting output stream
 to the anonymous function you defined in the `do ... end` block. After your function exits, [`open`](@ref)
 will make sure that the stream is properly closed, regardless of whether your function exited
-normally or threw an exception. (The `try/finally` construct will be described in [Control Flow](@ref).)
+normally or threw an exception. (The `try/finally` construct will be described in [제어 흐름](@ref).)
 
 With the `do` block syntax, it helps to check the documentation or implementation to know how
 the arguments of the user function are initialized.
 
-## [Dot Syntax for Vectorizing Functions](@id man-vectorized)
+A `do` block, like any other inner function, can "capture" variables from its
+enclosing scope. For example, the variable `data` in the above example of
+`open...do` is captured from the outer scope. Captured variables
+can create performance challenges as discussed in [performance tips](@ref man-performance-tips).
 
-In technical-computing languages, it is common to have "vectorized" versions of functions, which
-simply apply a given function `f(x)` to each element of an array `A` to yield a new array via
-`f(A)`. This kind of syntax is convenient for data processing, but in other languages vectorization
-is also often required for performance: if loops are slow, the "vectorized" version of a function
-can call fast library code written in a low-level language. In Julia, vectorized functions are
-*not* required for performance, and indeed it is often beneficial to write your own loops (see
-[Performance Tips](@ref man-performance-tips)), but they can still be convenient. Therefore, *any* Julia function
-`f` can be applied elementwise to any array (or other collection) with the syntax `f.(A)`.
-For example `sin` can be applied to all elements in the vector `A`, like so:
+## Function composition and piping
+
+Functions in Julia can be combined by composing or piping (chaining) them together.
+
+Function composition is when you combine functions together and apply the resulting composition to arguments.
+You use the function composition operator (`∘`) to compose the functions, so `(f ∘ g)(args...)` is the same as `f(g(args...))`.
+
+You can type the composition operator at the REPL and suitably-configured editors using `\circ<tab>`.
+
+For example, the `sqrt` and `+` functions can be composed like this:
+
+```jldoctest
+julia> (sqrt ∘ +)(3, 6)
+3.0
+```
+
+This adds the numbers first, then finds the square root of the result.
+
+The next example composes three functions and maps the result over an array of strings:
+
+```jldoctest
+julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions like this"))
+6-element Array{Char,1}:
+ 'U'
+ 'N'
+ 'E'
+ 'S'
+ 'E'
+ 'S'
+```
+
+Function chaining (sometimes called "piping" or "using a pipe" to send data to a subsequent function) is when you apply a function to the previous function's output:
+
+```jldoctest
+julia> 1:10 |> sum |> sqrt
+7.416198487095663
+```
+
+Here, the total produced by `sum` is passed to the `sqrt` function. The equivalent composition would be:
+
+```jldoctest
+julia> (sqrt ∘ sum)(1:10)
+7.416198487095663
+```
+
+The pipe operator can also be used with broadcasting, as `.|>`, to provide a useful combination of the chaining/piping and dot vectorization syntax (described next).
+
+```jldoctest
+julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length]
+4-element Array{Any,1}:
+  "A"
+  "tsil"
+  "Of"
+ 7
+```
+
+## [배열에서 사용하는 Dot 문법](@id man-vectorized)
+
+수치 계산용 언어에서는 함수의 스칼라 버전이 존재하면 벡터 버전이 자동 지원되는 것은 흔하다.
+즉 `f(x)`가 있으면 이를 행렬의 모든 원소에 적용하는 `f(A)`가 지원되기 마련이다.
+이런 문법은 데이터 처리를 편리하게 하지만, 몇몇 언어는 성능면에서 문제를 겪어 사용자가 직접 저급 언어의 라이브러리를 사용해 벡터 버전의 함수를 만들기도 한다.
+Julia는 성능 향상을 위해 이런 노력을 할 필요가 없다.
+모든 Julia 함수 `f`는 `f.(A)`이란 문법을 사용해 원소별 연산이 가능하다.
+예를 들어 `sin`로 벡터 `A`를 쉽게 계산할 수 있다:
 
 ```jldoctest
 julia> A = [1.0, 2.0, 3.0]
@@ -645,9 +696,7 @@ julia> sin.(A)
  0.1411200080598672
 ```
 
-Of course, you can omit the dot if you write a specialized "vector" method of `f`, e.g. via `f(A::AbstractArray) = map(f, A)`,
-and this is just as efficient as `f.(A)`. But that approach requires you to decide in advance
-which functions you want to vectorize.
+물론 사용자가  `f(A::AbstractArray) = map(f, A)`와 같이 직접 벡터 함수를 만드는 것도 가능하고 `f.(A)`만큼 효율적이다.
 
 More generally, `f.(args...)` is actually equivalent to `broadcast(f, args...)`, which allows
 you to operate on multiple arrays (even of different shapes), or a mix of arrays and scalars (see
@@ -692,7 +741,8 @@ the results (see [Pre-allocating outputs](@ref)). A convenient syntax for this i
 is equivalent to `broadcast!(identity, X, ...)` except that, as above, the `broadcast!` loop is
 fused with any nested "dot" calls. For example, `X .= sin.(Y)` is equivalent to `broadcast!(sin, X, Y)`,
 overwriting `X` with `sin.(Y)` in-place. If the left-hand side is an array-indexing expression,
-e.g. `X[2:end] .= sin.(Y)`, then it translates to `broadcast!` on a `view`, e.g. `broadcast!(sin, view(X, 2:endof(X)), Y)`,
+e.g. `X[2:end] .= sin.(Y)`, then it translates to `broadcast!` on a `view`, e.g.
+`broadcast!(sin, view(X, 2:lastindex(X)), Y)`,
 so that the left-hand side is updated in-place.
 
 Since adding dots to many operations and function calls in an expression
@@ -717,6 +767,17 @@ Binary (or unary) operators like `.+` are handled with the same mechanism:
 they are equivalent to `broadcast` calls and are fused with other nested "dot" calls.
  `X .+= Y` etcetera is equivalent to `X .= X .+ Y` and results in a fused in-place assignment;
  see also [dot operators](@ref man-dot-operators).
+
+You can also combine dot operations with function chaining using [`|>`](@ref), as in this example:
+```jldoctest
+julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
+5-element Array{Real,1}:
+    1
+    0.5
+    6
+   -4
+ true
+```
 
 ## Further Reading
 

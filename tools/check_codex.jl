@@ -1,11 +1,16 @@
 # check_codex.jl
-# translate-doc/codex와 ../julia/doc을 비교하는 스크립트
+# diff between  translate-doc/codex  and  ../julia/doc
 
 const TOP_PATH = abspath(dirname(@__FILE__), "..")
 const JULIA_PATH = abspath(TOP_PATH, "..", "julia")
 
+const required_julia_version = v"0.7.0-alpha"
+if !(VERSION >= required_julia_version)
+    println("Run with Julia ", required_julia_version)
+end
+
 if !isdir(JULIA_PATH)
-    println("줄리아 리파지토리 경로를 지정해 주세요 $JULIA_PATH")
+    println("Requires Julia repository at $JULIA_PATH")
 end
 
 const codex_path = abspath(TOP_PATH, "codex")
@@ -14,7 +19,7 @@ const julia_doc_src_path = abspath(JULIA_PATH, "doc", "src")
 translated_files = []
 
 function check_src_and_codex(path1, path2)
-    const ignore_assets = ["custom.css"]
+    ignore_assets = ["custom.css", "font-iropke-batang.css", "fonts", "HISTORY.md"]
     src_codex_diff = `diff -qr $path1 $path2`
     lines = readlines(ignorestatus(src_codex_diff))
     for line in lines
@@ -27,9 +32,8 @@ function check_src_and_codex(path1, path2)
                 push!(translated_files, nub)
             elseif kind == "Only"
                 (_,_,dircolon,filename) = chunk
-                dir = replace(dircolon, ":", "/")
-                # src에만 있으면 src에 있는 파일 지우기
-                if contains(dir, src_path)
+                dir = replace(dircolon, ":" => "/")
+                if occursin(src_path, dir)
                     if endswith(filename, ".swp")
                         continue
                     elseif !(filename in ignore_assets)
@@ -47,7 +51,7 @@ end
 
 function copy_julia_doc_src_to_codex_and_src(julia_doc_src_dir, filename)
     for d in (codex_path, src_path)
-        dir = replace(julia_doc_src_dir, julia_doc_src_path, d)
+        dir = replace(julia_doc_src_dir, julia_doc_src_path => d)
         #print_with_color(:cyan, "cp ")
         #print_with_color(:white, julia_doc_src_dir)
         #print_with_color(:yellow, filename, " ")
@@ -59,7 +63,7 @@ function copy_julia_doc_src_to_codex_and_src(julia_doc_src_dir, filename)
 end
 
 function manual_julia_doc_src_to_codex(julia_doc_src_dir, filename)
-    dir = replace(julia_doc_src_dir, julia_doc_src_path, codex_path)
+    dir = replace(julia_doc_src_dir, julia_doc_src_path => codex_path)
     #print_with_color(:blue, "# diff ")
     #print_with_color(:white, dir)
     #print_with_color(:yellow, filename, " ")
@@ -67,7 +71,7 @@ function manual_julia_doc_src_to_codex(julia_doc_src_dir, filename)
     #print_with_color(:yellow, filename)
     print("# diff -u ", dir, filename, " ", julia_doc_src_dir, filename)
     println()
-    edit_dir = replace(julia_doc_src_dir, julia_doc_src_path, src_path)
+    edit_dir = replace(julia_doc_src_dir, julia_doc_src_path => src_path)
     #print_with_color(:blue, "# edit ")
     #print_with_color(:white, edit_dir)
     #print_with_color(:yellow, filename)
@@ -102,18 +106,16 @@ function check_julia_doc_src_and_codex(path1, path2)
                 if endswith(filename, ".swp")
                     continue
                 end
-                dir = replace(dircolon, ":", "/")
-                # codex에만 있으면 codex, src에 있는 파일 지우기
-                if contains(dir, codex_path)
-                    for d in (dir, replace(dir, codex_path, src_path))
+                dir = replace(dircolon, ":" => "/")
+                if occursin(codex_path, dir)
+                    for d in (dir, replace(dir, codex_path => src_path))
                         #print_with_color(:red, "rm ")
                         #print_with_color(:white, d)
                         #print_with_color(:yellow, filename)
                         print("rm ", d, filename)
                         println()
                     end
-                # julia_doc_src에만 있으면 codex, src에 복사
-                elseif contains(dir, julia_doc_src_path)
+                elseif occursin(julia_doc_src_path, dir)
                     copy_julia_doc_src_to_codex_and_src(dir, filename)
                 end
             end
@@ -121,9 +123,36 @@ function check_julia_doc_src_and_codex(path1, path2)
     end
 end
 
+function get_pages(f, path)
+    s = read(path, String)
+    r = Regex("const (PAGES = .*^\\])", "ms")
+    m = match(r, s)
+    s = string("hide(s) = nothing; STDLIB_DOCS = []; ", m[1])
+    eval(Meta.parse(f(s)))
+end
+
+function check_pages()
+    makejl_path = abspath(TOP_PATH, "make.jl")
+    julia_doc_makejl_path = abspath(JULIA_PATH, "doc", "make.jl")
+    pages1 = get_pages(julia_doc_makejl_path) do s; s end
+    pages2 = get_pages(makejl_path) do s
+        for (a,b) in [("t_Home", "\"Home\""),
+                      ("t_Manual", "\"Manual\""),
+                     ]
+            s = replace(s, a => b)
+        end
+        s
+    end
+    if pages1 == pages2
+    else
+        @info "pages" setdiff(pages1, pages2)
+    end
+end
+
 const src_stdlib_path = abspath(src_path, "stdlib")
 const codex_stdlib_path = abspath(codex_path, "stdlib")
 const julia_doc_src_stdlib_path = abspath(JULIA_PATH, "doc", "src", "stdlib")
 
+check_pages()
 check_src_and_codex(src_path, codex_path)
 check_julia_doc_src_and_codex(julia_doc_src_path, codex_path)

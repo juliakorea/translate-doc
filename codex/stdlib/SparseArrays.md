@@ -1,5 +1,9 @@
 # Sparse Arrays
 
+```@meta
+DocTestSetup = :(using SparseArrays, LinearAlgebra)
+```
+
 Julia has support for sparse vectors and [sparse matrices](https://en.wikipedia.org/wiki/Sparse_matrix)
 in the `SparseArrays` stdlib module. Sparse arrays are arrays that contain enough zeros
 that storing them in a special data structure leads to savings in space and execution time,
@@ -100,10 +104,10 @@ julia> I = [1, 4, 3, 5]; J = [4, 7, 18, 9]; V = [1, 2, -5, 3];
 
 julia> S = sparse(I,J,V)
 5×18 SparseMatrixCSC{Int64,Int64} with 4 stored entries:
-  [1 ,  4]  =  1
-  [4 ,  7]  =  2
-  [5 ,  9]  =  3
-  [3 , 18]  =  -5
+  [1,  4]  =  1
+  [4,  7]  =  2
+  [5,  9]  =  3
+  [3, 18]  =  -5
 
 julia> R = sparsevec(I,V)
 5-element SparseVector{Int64,Int64} with 4 stored entries:
@@ -198,6 +202,9 @@ section of the standard library reference.
 # [Sparse Arrays](@id stdlib-sparse-arrays)
 
 ```@docs
+SparseArrays.AbstractSparseArray
+SparseArrays.AbstractSparseVector
+SparseArrays.AbstractSparseMatrix
 SparseArrays.SparseVector
 SparseArrays.SparseMatrixCSC
 SparseArrays.sparse
@@ -207,14 +214,19 @@ SparseArrays.nnz
 SparseArrays.findnz
 SparseArrays.spzeros
 SparseArrays.spdiagm
-SparseArrays.blkdiag
+SparseArrays.blockdiag
 SparseArrays.sprand
 SparseArrays.sprandn
 SparseArrays.nonzeros
 SparseArrays.rowvals
 SparseArrays.nzrange
+SparseArrays.droptol!
 SparseArrays.dropzeros!
 SparseArrays.dropzeros
 SparseArrays.permute
 permute!{Tv, Ti, Tp <: Integer, Tq <: Integer}(::SparseMatrixCSC{Tv,Ti}, ::SparseMatrixCSC{Tv,Ti}, ::AbstractArray{Tp,1}, ::AbstractArray{Tq,1})
+```
+
+```@meta
+DocTestSetup = nothing
 ```

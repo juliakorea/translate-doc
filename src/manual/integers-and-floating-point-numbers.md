@@ -40,7 +40,7 @@
 | [`Float32`](@ref) | [single](https://en.wikipedia.org/wiki/Single_precision_floating-point_format) | 32             |
 | [`Float64`](@ref) | [double](https://en.wikipedia.org/wiki/Double_precision_floating-point_format) | 64             |
 
-추가적으로 [Complex and Rational Numbers](@ref)는 위에서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
+추가적으로 [복소수와 유리수](@ref)는 위에서 언급한 타입에 기초하여 만들어졌다. 모든 기본 수치 타입들은 유연하고, 쉽게 확장이 가능한  [type promotion system](@ref conversion-and-promotion) 덕분에 자유롭게 상호운용이 가능하다.
 
 ## 정수
 
@@ -167,7 +167,7 @@ of the binary data item is the minimal needed size, if the leading digit of the 
 `0`. In the case of leading zeros, the size is determined by the minimal needed size for a
 literal, which has the same length but leading digit `1`. That allows the user to control
 the size.
-Values, which cannot be stored in `UInt128` cannot be written as such literals.
+Values which cannot be stored in `UInt128` cannot be written as such literals.
 
 Binary, octal, and hexadecimal literals may be signed by a `-` immediately preceding the
 unsigned literal. They produce an unsigned integer of the same size as the unsigned literal
@@ -311,7 +311,8 @@ julia> 10_000, 0.000_000_005, 0xdead_beef, 0b1011_0010
 
 ### 실수로서의 숫자 0
 
-부동 소수점은 양수 0과 음수 0으로 불리는 [두 개의 0](https://en.wikipedia.org/wiki/Signed_zero)을  가진다. 그 둘은 값은 0으로써 같지만, 다음과 같이 `bits`함수를 잉ㅇ하면 알 수 있듯이, 바이너리로 표기했을 때 다르다는 것을 알 수 있다:
+부동 소수점은 양수 0과 음수 0으로 불리는 [두 개의 0](https://en.wikipedia.org/wiki/Signed_zero)을 가진다.
+그 둘은 값은 0으로써 같지만, 다음과 같이 [`bitstring`](@ref) 함수를 사용하면, 바이너리로 표기했을 때와 차이를 알 수 있다:
 
 ```jldoctest
 julia> 0.0 == -0.0
@@ -334,7 +335,7 @@ julia> bitstring(-0.0)
 | `-Inf16`  | `-Inf32`  | `-Inf`    | negative infinity | 모든 유한한 부동 소수점 실수보다 작은 값              |
 | `NaN16`   | `NaN32`   | `NaN`     | not a number      | 어떤 부동 소수점 실수와도 같지 않은 값 |
 
-이와 같은 유한하지 않은 부동 소수점 값들이 서로와 다른 실수에 대해서 순서를 매길 때에는 [Numeric Comparisons](@ref)를 참고하길 바란다. [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008)에 따르면, 위에서의 부동 소수점 실수들은 어떤 산술 연산에 의한 결과임을 알 수 있다:
+이와 같은 유한하지 않은 부동 소수점 값들이 서로와 다른 실수에 대해서 순서를 매길 때에는 [비교 연산](@ref)을 참고하길 바란다. [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008)에 따르면, 위에서의 부동 소수점 실수들은 어떤 산술 연산에 의한 결과임을 알 수 있다:
 
 ```jldoctest
 julia> 1/Inf
@@ -446,33 +447,18 @@ julia> bitstring(nextfloat(x))
 
 위의 예제는 서로 이웃한 표현 가능한 부동 소수점 수는 바이너리 정수 표기법을 가질 수 있다는 기본적인 원리를 새삼 일깨워준다.
 
-### 반올림 모드
+### 라운딩 모드
 
-만약 어떤 숫자가 정확한 부동 소수점 표현을 가지고 있지 않다면, 그 수는 반드시 어떤 표현 가능한 값으로 반올림되어야 한다. 그러나, 만약 사용자가 원한다면[IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008)에 따라 반올림 방식을 변경할 수 있다.
+만약 어떤 숫자가 정확한 부동 소수점 표현을 가지고 있지 않다면, 그 수는 반드시 어떤 표현 가능한 값으로 라운딩 되어야 한다.
+[IEEE 754 표준](https://en.wikipedia.org/wiki/IEEE_754-2008)에 나오는 라운딩 모드로 라운딩 방식을 바꿀 수 있다.
 
-```jldoctest
-julia> x = 1.1; y = 0.1;
-
-julia> x + y
-1.2000000000000002
-
-julia> setrounding(Float64,RoundDown) do
-           x + y
-       end
-1.2
-```
-
-기본 반올림 모드는 항상 [`RoundNearest`](@ref)이다. 이는 가장 근접한 표현 가능한 값으로 반올림 하지만, 만약 두 표현 값 중간에 주어진 값이 걸쳐 있으면 가수부 값 중 짝수(바이너리 임으로 0)로 반올림 하는 모드이다.
-
-!!! 경고
-    : 반올림은 일반적으로 기본 산술 함수([`+`](@ref), [`-`](@ref),
-    [`*`](@ref), [`/`](@ref), [`sqrt`](@ref))와 타입 변환 연산에서만 정확하다. 많은 다른 함수들은 기본 값인 [`RoundNearest`](@ref)를 가정하고 짜여져 있고, 이는 다른 반올림 모드에서는 부정확한 값을 제공할 수 있다.
+기본 라운딩 모드는 항상 [`RoundNearest`](@ref)이다. 이는 가장 근접한 표현 가능한 값으로 라운딩 하지만, 만약 두 표현 값 중간에 주어진 값이 걸쳐 있으면 가수부 값 중 짝수(바이너리 임으로 0)로 라운딩 하는 모드이다.
 
 ### 부동 소수점 실수에 대해서 더 읽으면 좋은 문서들
 
 부동 소수점 연산은 많은 미묘한 것들을 수반하고 있기 때문에 저수준(low-level) 구현에 익숙하지 않은 유저들은 당활할 수도 있다. 그러나 그 미묘한 점들은 과학적 연산과 관련된 많은 책들에서 잘 설명되고 있고, 아래에 나열하는 참고문헌도 참고하면 좋을 것이다:
 
-  * 부동 소수점과 관련해서 가장 확실한 가이드는 [IEEE 754-2008 Standard](http://standards.ieee.org/findstds/standard/754-2008.html)이지만, 유료이다.
+  * 부동 소수점과 관련해서 가장 확실한 가이드는 [IEEE 754-2008 Standard](https://standards.ieee.org/standard/754-2008.html)이지만, 유료이다.
   * 부동 소수점이 어떻게 표현되는지에 대한 간략하면서도 명쾌한 설명은 John D. Cook's [블로그 글](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)를 참고하면 된다. 같은 주제에 관하여 이와 더불어서 그의 [소개글](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)은 부동 소수점이 실수의 이상적인 추상화와 다름으로써 생기는 몇가지 문제에 대해서도 다루고 있다.
   * Bruce Dawson의 [series of blog posts on floating-point numbers](https://randomascii.wordpress.com/2012/05/20/thats-not-normalthe-performance-of-odd-floats/)도 추천하는 바이다.
   * 상급자들은 부동 소수점의 내부 구현에 관한 이야기들과 부동 소수점 연산을 할 때 맞닥뜨릴 수 있는 수치적인 정확도에 관한 문제들에 대해서는 David Goldberg의 논문 [What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.6768&rep=rep1&type=pdf)를 참고하는 것이 좋다.
@@ -480,7 +466,7 @@ julia> setrounding(Float64,RoundDown) do
 
 ## [임의 정밀도 연산](@id Arbitrary-Precision-Arithmetic)
 
-임의 정밀도의 정수와 부동 소수점들의 연산을 위해, 줄리아는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](http://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 줄리아에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
+임의 정밀도의 정수와 부동 소수점들의 연산을 위해, 줄리아는 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org)와 [GNU MPFR Library](https://www.mpfr.org)을 각각 래빙(wrapping)하였다. [`BigInt`](@ref)와 [`BigFloat`](@ref)타입은 줄리아에서 각각 임의 정밀도의 정수와 부동 소수점을 다루기 위해 사용되고 있다.
 
 기본 수치 타입으로부터 임의 정밀도 정수와 부동 소수점 타입을 만들기 위해 생성자가 존재하며, [`parse`](@ref)는 `AbstractString`들로 부터 임의 정밀도 타입을 만들 수 있게 해준다. 한번 임의 정밀도 타입이 만들어지면, [type promotion and conversion mechanism](@ref conversion-and-promotion)덕분에 자유롭게 다른 수치타입과 연산을 수행할 수 있다:
 
@@ -523,7 +509,7 @@ julia> typeof(y)
 BigInt
 ```
 
-[`BigFloat`](@ref)타입에서 기본 정밀도(가수부의 비트수)와 반올림 모드는 [`setprecision`](@ref)와 [`setrounding`](@ref)를 호출함으로써 변경할 수 있으며, 한 번 호출된 이후에는 그 설정이 계속 유지 된다. 특정 블럭의 코드에서만 정밀도와 반올림을 변경하기 위해서는 `do`블럭의 코드에서와 같은 함수를 호출한다:
+[`BigFloat`](@ref)타입에서 기본 정밀도(가수부의 비트수)와 라운딩 모드는 [`setprecision`](@ref)와 [`setrounding`](@ref)를 호출함으로써 변경할 수 있으며, 한 번 호출된 이후에는 그 설정이 계속 유지 된다. 특정 블럭의 코드에서만 정밀도와 라운딩을 변경하기 위해서는 `do`블럭의 코드에서와 같은 함수를 호출한다:
 
 ```jldoctest
 julia> setrounding(BigFloat, RoundUp) do
@@ -564,7 +550,12 @@ julia> 2^2x
 64
 ```
 
-수치형 리터럴 계수의 선행(precedence)도 부정연산과 같은 단항 연산과 같이 작동한다. 따라서 `2^3x`는 `2^(3x)`으로, `2x^3`은 `2*(x^3)`으로 파싱(parsing)된다.
+The precedence of numeric literal coefficients is slightly lower than that of
+unary operators such as negation.
+So `-2x` is parsed as `(-2) * x` and `√2x` is parsed as `(√2) * x`.
+However, numeric literal coefficients parse similarly to unary operators when
+combined with exponentiation.
+For example `2^3x` is parsed as `2^(3x)`, and `2x^3` is parsed as `2*(x^3)`.
 
 수치형 리터럴은 괄호가 있는 식에서도 계수(coeffiients)로 작동할 수 있다:
 
@@ -602,11 +593,19 @@ ERROR: MethodError: objects of type Int64 are not callable
 
   * 16진수 리터럴 표현식 `0xff`는 수치형 리터럴 `0`과 변수 `xff`의 곱셈으로 해석될 수 있다.
   * 부동 소수점 리터럴 표현식 `1e10`은 수치형 리터럴 `1`이 변수 `e10`에 곱해지는 걸로 해석될 수 있고 이는 `e`가 아닌 `E`를 쓸 때에도 마찬가지이다.
+  * The 32-bit floating-point literal expression `1.5f22` could be interpreted as the numeric literal
+    `1.5` multiplied by the variable `f22`.
 
-이 두 가지 경우에, 우리는 수치형 리터러를 해석하는데 있어서 다음과 같은 방식으로 모호함을 해결했다:
+이와 같은 경우에, 우리는 수치형 리터러를 해석하는데 있어서 다음과 같은 방식으로 모호함을 해결했다:
 
   * `0x`로 시작하는 표현식은 항상 16진수 리터럴이다.
   * 수치형 리터럴으로 시작하는 표현식에서 수치형 리터럴 다음에 `e`또는 `E`가 뒤따라오면 항상 부동소수점 리터럴이다.
+  * Expressions starting with a numeric literal followed by `f` are always 32-bit floating-point literals.
+
+Unlike `E`, which is equivalent to `e` in numeric literals for historical reasons, `F` is just another
+letter and does not behave like `f` in numeric literals. Hence, expressions starting with a numeric literal
+followed by `F` are interpreted as the numerical literal multiplied by a variable, which means that, for
+example, `1.5F22` is equal to `1.5 * F22`.
 
 ## 리터럴 0과 1
 
@@ -617,7 +616,7 @@ ERROR: MethodError: objects of type Int64 are not callable
 | [`zero(x)`](@ref) | `x`타입이나 변수 `x`의 타입의 리터럴 0 |
 | [`one(x)`](@ref)  | `x`타입이나 변수 `x`의 타입의 리터럴 1  |
 
-위 함수들은 [Numeric Comparisons](@ref)에서 불필요한 [type conversion](@ref conversion-and-promotion)에 의한 성능저하를 줄일 때 유용하다.
+위 함수들은 [비교 연산](@ref)에서 불필요한 [type conversion](@ref conversion-and-promotion)에 의한 성능저하를 줄일 때 유용하다.
 
 Examples:
 

@@ -1,6 +1,14 @@
+/*
+    이롭게 바탕체
+    https://www.iropke.com/archive/iropke-batang-css.html
+*/
+@import url('font-iropke-batang.css');
+
+body {
+    font-family: 'Lato', 'Iropke Batang';
+}
 p {
-    font-family: serif;
-    line-height: 1.9em;
+    line-height: 1.8em;
     margin: 0em;
 }
 li p {
@@ -9,4 +17,8 @@ li p {
 }
 article footer {
     padding: 0em 0em 2em 0em;
+}
+
+html.theme--documenter-dark article code {
+    color: #03cbe2;
 }
